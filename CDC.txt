@@ -1,0 +1,65 @@
+0 - Objets :
+    Le temps
+    La carte (cachée)
+    Capital disponible
+    Nombre d’employé
+
+1 - Acteurs Internes : "worker_generator.py"
+
+Employés :
+    Entre 5 et 30
+    Nom, Prénom
+    Salaire
+    Bonheur
+    Heure de travail ? (rentre dans le bonheur ?)
+    Statut (stagiaire?, cdd, cdi)
+    Rôle (Inactif, Marketing, production, chercheur, etc.)
+    Age (retraite)
+    Nombre de jours de congés (maladie, vacances, etc.)*
+    Projet en cours
+
+    Expérience (influence sur les compétences):
+        Expérience dans la start up elle même.
+        Expérience sur un certain produit (bonus s’il travail sur son amélioration etc.)
+        Expérience pour une certaine fonction de l’entreprise.
+
+    Compétences :
+        Travail de groupe
+        Recherche
+        Gestion, Management
+        Logistique
+        Marketing
+...
+
+Produits : "product_generator.py"
+    Appétence
+    Coût de matériaux
+    Opérations usine nécessaires
+    Nombre d’améliorations effectuées
+    Valeur sur le marché
+    (durée de vie en Bonus)
+…
+
+Formations :
+    Prix
+    Durée
+    Compétences améliorées par la formation
+
+2 - Acteurs Externes :
+
+Consommateur :
+    Population : 70 M de consommateurs (sous-populations)
+    Pouvoir d’achat
+    ...
+
+Fournisseur :
+    Localisation
+    Prix
+    Matériaux vendus
+
+Usine :
+    Localisation
+    Prix/unité
+    Temps/unité
+    Opérations réalisables
+    Etat technologique
