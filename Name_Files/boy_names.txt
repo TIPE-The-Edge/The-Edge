@@ -4,7 +4,7 @@ Michel
 Maxence
 Patrick
 Nicolas
-Christophe
+Bob
 Pierre
 Éric
 Frédéric
@@ -14,7 +14,7 @@ Pedro
 Martial
 Daniel
 Alexandre
-Thierry
+Johnny
 Olivier
 Bernard
 Thomas
