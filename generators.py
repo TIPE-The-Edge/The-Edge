@@ -20,8 +20,26 @@ import os
 
 (voir CDC.txt)
 
-Rendre possible la lecture de fichier.txt situés dans des dossiers. ✘
+Population
 
+Individu :
+    self.age (je pense faire un random dans range(23, 50))
+    self.bonheur (à définir)
+    compétences (à redefinir)
+
+Produit :
+    genName()
+    self.utilite (aleatoire 0-100)
+    self.materiaux (aleatoire)
+    self.operations (aleatoire)
+    self.tps_adoption (Adrien)
+    self.age (créer la fonction modificatrice)
+
+Opération :
+    self
+
+Materiaux :
+    self
 """
 
 """ PROBLEMS
@@ -98,8 +116,8 @@ class Individu(object):
 
         # Experiences
         self.exp_startup = 0
-        self.exp_produit = []
-        self.exp_role    = []
+        self.exp_produit = [] # Experience par produit
+        self.exp_role    = [] # Esperience par role
 
         # Compétences
         self.competence_groupe      = 0
@@ -128,6 +146,39 @@ class Individu(object):
 
         return(random.choice(lignes))
 
+class Produit(object):
+    """ Class contenant toutes les informations concernant un produit.
+
+    Produits :
+        Appétence
+        Coût de matériaux
+        Opérations usine nécessaires
+        Nombre d’améliorations effectuées
+        Valeur sur le marché
+        (durée de vie en Bonus)
+    """
+
+    def __init__(self):
+        self.nom = None
+        self.utilite    = [] # Par population
+        self.materiaux  = [] # materiaux et quantités nécessaires
+        self.operations = [] # Opérations nécessaires
+        self.valeur     = 0  # Prix fixé
+
+        self.tps_adoption  = 0
+        self.age = 0 # Temps sur le marché du produit
+
+        self.nbr_ameliorations = 0
+        self.concurence = 0 # BONUS
+
+    def genName(self):
+        """ Générateur de nom pour les produits, un peu de fun.
+        VARIABLES   : une liste de nom d'objets
+                      une liste d'adjectifs
+        SORTIE      : une string représentant un nom de produit
+        Vérifié par :
+        """
+        pass
 
 
 ####################################################
