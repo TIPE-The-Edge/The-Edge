@@ -23,27 +23,38 @@ import os
 Population
 
 Individu :
-    self.age (je pense faire un random dans range(23, 50))
     self.bonheur (à définir)
     compétences (à redefinir)
+    Experiences
+    horaire
 
 Produit :
-    genName()
     self.utilite (aleatoire 0-100)
     self.materiaux (aleatoire)
     self.operations (aleatoire)
     self.tps_adoption (Adrien)
     self.age (créer la fonction modificatrice)
 
-Opération :
+Operation :
     self
 
-Materiaux :
+Materiau :
+    self
+
+Formation :
+    self
+
+Population : # de consommateurs
+    self
+
+Fournisseur :
+    self
+
+Usine :
     self
 """
 
 """ PROBLEMS
-python ne comprend pas les path que je lui donne.
 """
 
 """ NOTES
@@ -68,41 +79,22 @@ Vérifié par :
 
 class Individu(object):
     """ Class contenant toutes les informations concernant un individu.
-
-    Nom, Prénom
-    Salaire
-    Bonheur
-    Heure de travail ? (rentre dans le bonheur ?)
-    Statut (stagiaire?, cdd, cdi)
-    Rôle (Inactif, Marketing, production, chercheur, etc.)
-    Age (retraite)
-    Nombre de jours de congés (maladie, vacances, etc.)*
-    Projet en cours
-
-    Expérience (influence sur les compétences):
-        Expérience dans la start up elle même.
-        Expérience sur un certain produit (bonus s’il travail sur son amélioration etc.)
-        Expérience pour une certaine fonction de l’entreprise.
-
-    Compétences :
-        Travail de groupe
-        Recherche
-        Gestion, Management
-        Logistique
-        Marketing
     """
 
     def __init__(self):
+        # Identifiant pour le repérer rapidement dans la liste des individus
+        self.id = len(individus)+1
 
         self.genre   = random.choice(["homme", "femme"])
 
         # Nom, Prénom
         if self.genre == "homme" :
             self.prenom  = self.genName("./Name_Files/boy_names.txt")
-        else : self.prenom  = self.genName("./Name_Files/girl_names.txt")
+        else :
+            self.prenom  = self.genName("./Name_Files/girl_names.txt")
         self.nom     = self.genName("./Name_Files/family_names.txt")
 
-        self.age     = 0
+        self.age     = random.randint(23,50)
 
         self.salaire = 0
         self.bonheur = 0
@@ -148,18 +140,10 @@ class Individu(object):
 
 class Produit(object):
     """ Class contenant toutes les informations concernant un produit.
-
-    Produits :
-        Appétence
-        Coût de matériaux
-        Opérations usine nécessaires
-        Nombre d’améliorations effectuées
-        Valeur sur le marché
-        (durée de vie en Bonus)
     """
 
     def __init__(self):
-        self.nom = None
+        self.nom = self.genName()
         self.utilite    = [] # Par population
         self.materiaux  = [] # materiaux et quantités nécessaires
         self.operations = [] # Opérations nécessaires
@@ -171,6 +155,8 @@ class Produit(object):
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
 
+        produits.append(self)
+
     def genName(self):
         """ Générateur de nom pour les produits, un peu de fun.
         VARIABLES   : une liste de nom d'objets
@@ -178,8 +164,71 @@ class Produit(object):
         SORTIE      : une string représentant un nom de produit
         Vérifié par :
         """
+        # Lecture du fichier de préfixes
+        entree = open("./Name_Files/product_prefixes.txt","r") # Fichier voulu
+        contenu_entree = entree.readlines()
+        entree.close()
+        # On créé une liste qui contient toutes les lignes du fichier.
+        prefixes = [ligne.strip('\n') for ligne in contenu_entree]
+
+        # Lecture du fichier de sufixes
+        entree = open("./Name_Files/product_sufixes.txt","r") # Fichier voulu
+        contenu_entree = entree.readlines()
+        entree.close()
+        # On créé une liste qui contient toutes les lignes du fichier.
+        sufixes = [ligne.strip('\n') for ligne in contenu_entree]
+
+        return(random.choice(prefixes) + " " + random.choice(sufixes))
+
+class Operation(object):
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
         pass
 
+class Materiau(object):
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
+        pass
+
+class Formation(object):
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
+        pass
+
+class Population(object): # de consommateurs
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
+        pass
+
+class Fournisseur(object):
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
+        pass
+
+class Usine(object):
+    """ Class contenant toutes les informations concernant un
+    """
+    def __init__(self):
+        pass
+
+####################################################
+##################| VARIABLES |#####################
+####################################################
+
+# Initialisation des listes de class
+individus    = []
+produits     = []
+operations   = []
+materiaux    = []
+formations   = []
+populations  = []
+fournisseurs = []
+usines       = []
 
 ####################################################
 ##################| PROGRAMME |#####################
@@ -187,11 +236,21 @@ class Produit(object):
 
 if __name__ == "__main__" :
 
-    individus = [] # liste des individus
+
 
     os.system('clear') # works on Linux/Mac
-    Bob = Individu()
-    print(Bob.prenom, Bob.nom, Bob.age)
-    print(Bob.genre, Bob.role)
+
+    # individu
+    print("------ Classe : Individu ------")
+    for i in range(3):
+        Bob = Individu()
+        print(Bob.id, Bob.prenom, Bob.nom, Bob.age)
+        print(Bob.genre, Bob.role)
+        print()
 
     print(individus)
+
+    # produits
+    print("------ Classe : Produit ------")
+    Machine = Produit()
+    print(Machine.nom)

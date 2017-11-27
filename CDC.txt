@@ -1,8 +1,20 @@
+Novembre : Développement des classes pour les différents acteurs de l’entreprise.
+Décembre : Développement une suite de fonctions pour la gestion de fichiers.
+
+Janvier  : Finir la gestion de fichiers. Commencer les recherches et le développement de l’animation.
+Février  : Animation.
+Mars     : Graphismes pour l’animation et intégration.
+
+Avril    : Intégration des differentes fonctions au programme principal.
+Mai      : Corrections de bugs, ajouts de bonus/fonctions supplémentaires
+Juin     : Rendu final
+
+
 0 - Objets :
-    Le temps
-    La carte (cachée)
-    Capital disponible
-    Nombre d’employé
+Le temps
+La carte (cachée)
+Capital disponible
+Nombre d’employé
 
 1 - Acteurs Internes :
 
@@ -29,7 +41,6 @@ Employés :
         Gestion, Management
         Logistique
         Marketing
-...
 
 Produits :
     Appétence
@@ -38,7 +49,6 @@ Produits :
     Nombre d’améliorations effectuées
     Valeur sur le marché
     (durée de vie en Bonus)
-…
 
 Formations :
     Prix
