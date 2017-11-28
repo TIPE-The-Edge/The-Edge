@@ -29,7 +29,7 @@ Individu :
     horaire
 
 Produit :
-    self.utilite (aleatoire 0-100)
+    self.utilite (aleatoire 0-100) (avec seuil de la somme des utilites) 
     self.materiaux (aleatoire)
     self.operations (aleatoire)
     self.tps_adoption (Adrien)
