@@ -4,7 +4,7 @@
 ########################
 # Python 3.4.2
 # Author: Maxence BLANC
-# Last modified : 11/2017
+# Last modified : 12/2017
 # Titre du Fichier : generateurs d'entités
 ########################
 
@@ -20,47 +20,59 @@ import os
 
 (voir CDC.txt)
 
-Population
+
+Rajouter les fonctions genName pour plus de lisibilité.
+
+On pourrait faire de l'optimisation en important le contenu des fichiers noms
+    au début pour ne pas avoir à les rouvrir.
 
 Individu :
     self.bonheur (à définir)
     compétences (à redefinir)
-    Experiences
+    Experiences (à définir)
     horaire
 
 Produit :
-    self.utilite (aleatoire 0-100) (avec seuil de la somme des utilites) 
+    self.utilite (aleatoire 0-100) (avec seuil de la somme des utilites)
     self.materiaux (aleatoire)
     self.operations (aleatoire)
     self.tps_adoption (Adrien)
     self.age (créer la fonction modificatrice)
 
 Operation :
-    self
+    rajouter un rapport avec les materiaux?
+        Càd l'opération "découpage" se fait toujours sur un materiau "bois"
+        et pas sur "eau".
 
 Materiau :
-    self
 
 Formation :
-    self
+    self.nom
+    competences (à redéfinir)
+    self.prix   (Besoin d'une fonction pour rendre cohérent)
+    self.duree  (Besoin d'une fonction pour rendre cohérent)
 
 Population : # de consommateurs
     self
 
 Fournisseur :
-    self
+    self.localisation (Lucas)
+    self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction)
 
 Usine :
-    self
+    self.localisation (Lucas)
+    self.operations_realisables (Opérations et prix) (Besoin d'une fonction)
 """
+
 
 """ PROBLEMS
 """
-
 """ NOTES
 """
 
-''' Commentaires
+####################################################
+##################| FONCTIONS |#####################
+####################################################
 
 """ A quoi sert la fonction. Comment elle marche
 Entrée :
@@ -69,8 +81,20 @@ Sortie :
 Vérifié par :
 """
 
-'''
+def readNameFile(fichier):
+    """ Lis un fichier .txt et retourne la liste de ses éléments.
+    Entrée : le nom du fichier
+    Sortie : une liste des lignes du fichier
+    Vérifié par :
+    """
+    # Lecture du fichier
+    entree = open(fichier,"r") # Fichier voulu
+    contenu_entree = entree.readlines()
+    entree.close()
+    # On créé une liste qui contient toutes les lignes du fichier.
+    liste = [ligne.strip('\n') for ligne in contenu_entree]
 
+    return liste
 
 
 ####################################################
@@ -78,72 +102,54 @@ Vérifié par :
 ####################################################
 
 class Individu(object):
-    """ Class contenant toutes les informations concernant un individu.
-    """
 
+    id = 0
     def __init__(self):
+
         # Identifiant pour le repérer rapidement dans la liste des individus
-        self.id = len(individus)+1
+        self.id = Individu.id
+        Individu.id += 1
 
         self.genre   = random.choice(["homme", "femme"])
 
-        # Nom, Prénom
+        # Prénom
         if self.genre == "homme" :
-            self.prenom  = self.genName("./Name_Files/boy_names.txt")
+            self.prenom = random.choice(readNameFile("./Name_Files/boy_names.txt"))
         else :
-            self.prenom  = self.genName("./Name_Files/girl_names.txt")
-        self.nom     = self.genName("./Name_Files/family_names.txt")
+            self.prenom = random.choice(readNameFile("./Name_Files/girl_names.txt"))
 
+        self.nom     = random.choice(readNameFile("./Name_Files/family_names.txt"))
         self.age     = random.randint(23,50)
 
         self.salaire = 0
-        self.bonheur = 0
+        self.bonheur = 0 # A DEFINIR
 
         self.statut  = None
         self.role    = None
-        self.conges  = 0
-        self.horaire = 0 # temps de travail
+        self.conges  = 0 # BONUS
+        self.horaire = 0 # temps de travail # BONUS
 
         self.projet  = None
 
-        # Experiences
+        # Experiences # A DEFINIR
         self.exp_startup = 0
-        self.exp_produit = [] # Experience par produit
-        self.exp_role    = [] # Esperience par role
+        self.exp_produit = [[]] # Experience par produit
+        self.exp_role    = [[]] # Esperience par role
 
-        # Compétences
+        # Compétences # A REDEFINIR
         self.competence_groupe      = 0
         self.competence_recherche   = 0
         self.competence_gestion     = 0
         self.competence_logistique  = 0
         self.competence_marketing   = 0
 
+        # Ajoute à la liste
         individus.append(self)
 
-    def genName(self, fichier):
-        """ Retourne aléatoirement une ligne d'un fichier.
-        ENTREE      : un fichier.txt
-        VARIABLES   : lignes : la liste des lignes du fichier
-        SORTIE      : une string correspondant à une ligne du fichier
-        Vérifié par :
-        """
-
-        # Lecture du fichier
-        entree = open(fichier,"r") # Fichier voulu
-        contenu_entree = entree.readlines()
-        entree.close()
-
-        # On créé une liste qui contient toutes les lignes du fichier.
-        lignes = [ligne.strip('\n') for ligne in contenu_entree]
-
-        return(random.choice(lignes))
-
 class Produit(object):
-    """ Class contenant toutes les informations concernant un produit.
-    """
 
     def __init__(self):
-        self.nom = self.genName()
+        self.nom = random.choice(readNameFile("./Name_Files/product_prefixes.txt")) + " " + random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
         self.utilite    = [] # Par population
         self.materiaux  = [] # materiaux et quantités nécessaires
         self.operations = [] # Opérations nécessaires
@@ -155,66 +161,103 @@ class Produit(object):
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
 
+        # Ajoute à la liste
         produits.append(self)
 
-    def genName(self):
-        """ Générateur de nom pour les produits, un peu de fun.
-        VARIABLES   : une liste de nom d'objets
-                      une liste d'adjectifs
-        SORTIE      : une string représentant un nom de produit
-        Vérifié par :
-        """
-        # Lecture du fichier de préfixes
-        entree = open("./Name_Files/product_prefixes.txt","r") # Fichier voulu
-        contenu_entree = entree.readlines()
-        entree.close()
-        # On créé une liste qui contient toutes les lignes du fichier.
-        prefixes = [ligne.strip('\n') for ligne in contenu_entree]
-
-        # Lecture du fichier de sufixes
-        entree = open("./Name_Files/product_sufixes.txt","r") # Fichier voulu
-        contenu_entree = entree.readlines()
-        entree.close()
-        # On créé une liste qui contient toutes les lignes du fichier.
-        sufixes = [ligne.strip('\n') for ligne in contenu_entree]
-
-        return(random.choice(prefixes) + " " + random.choice(sufixes))
-
 class Operation(object):
-    """ Class contenant toutes les informations concernant un
-    """
+
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/operations.txt")
+    # Indice pour les noms générés automatiquement
+    indice_nom = 0
+
     def __init__(self):
-        pass
+
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            self.nom = random.choice(Operation.noms_dispo)
+            Operation.noms_dispo.remove(self.nom)
+        except IndexError :
+            self.nom = "Opération_"+str(Operation.indice_nom)
+            Operation.indice_nom += 1
+
+        # Ajoute à la liste
+        operations.append(self)
 
 class Materiau(object):
-    """ Class contenant toutes les informations concernant un
-    """
+
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/materiaux.txt")
+    # Indice pour les noms générés automatiquement
+    indice_nom = 0
+
     def __init__(self):
-        pass
+
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            self.nom = random.choice(Materiau.noms_dispo)
+            Materiau.noms_dispo.remove(self.nom)
+        except IndexError :
+            self.nom = "Materieau_"+str(Materiau.indice_nom)
+            Materiau.indice_nom += 1
+
+        # Ajoute à la liste
+        materiaux.append(self)
 
 class Formation(object):
-    """ Class contenant toutes les informations concernant un
-    """
+
+    competences = []
+
     def __init__(self):
-        pass
+
+        self.nom = "" # préfixe + sufixe aléatoires
+
+        self.competences = [[]] # liste des compétences améliorées
+        self.prix  = 0 # Besoin d'une fonction
+        self.duree = 0 # Besoin d'une fonction
 
 class Population(object): # de consommateurs
-    """ Class contenant toutes les informations concernant un
-    """
+
+    # Cette classe sera majoritairement paramétrée à la main
+
     def __init__(self):
-        pass
+        self.nom = ""
 
 class Fournisseur(object):
-    """ Class contenant toutes les informations concernant un
-    """
+
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/fournisseurs.txt")
+
+    # Localisation
+
     def __init__(self):
-        pass
+
+        self.nom = random.choice(Fournisseur.noms_dispo)
+        Fournisseur.noms_dispo.remove(self.nom)
+
+        self.localisation = None
+        self.materiaux_vendu = [[]] # Materiaux et prix
+
+        # Ajoute à la liste
+        fournisseurs.append(self)
 
 class Usine(object):
-    """ Class contenant toutes les informations concernant un
-    """
+
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/usines.txt")
+
     def __init__(self):
-        pass
+
+        self.nom = random.choice(Usine.noms_dispo)
+        Usine.noms_dispo.remove(self.nom)
+
+        self.localisation = None
+        self.operations_realisables = [[]] # Opérations et prix
+
+        # Ajoute à la liste
+        usines.append(self)
 
 ####################################################
 ##################| VARIABLES |#####################
@@ -242,15 +285,50 @@ if __name__ == "__main__" :
 
     # individu
     print("------ Classe : Individu ------")
-    for i in range(3):
+    for i in range(1):
         Bob = Individu()
         print(Bob.id, Bob.prenom, Bob.nom, Bob.age)
         print(Bob.genre, Bob.role)
         print()
 
-    print(individus)
-
     # produits
     print("------ Classe : Produit ------")
-    Machine = Produit()
-    print(Machine.nom)
+    for i in range(1):
+        print(Produit().nom)
+    print()
+
+    # opérations
+    print("------ Classe : Operation ------")
+    for i in range(1):
+        print(Operation().nom)
+    print()
+
+    # materiaux
+    print("------ Classe : Materiau ------")
+    for i in range(1):
+        print(Materiau().nom)
+    print()
+
+    # formations
+    print("------ Classe : Formation ------")
+    for i in range(1):
+        print(Formation().nom)
+    print()
+
+    # populations
+    print("------ Classe : Population ------")
+    for i in range(1):
+        print(Population().nom)
+    print()
+
+    # fournisseurs
+    print("------ Classe : Fournisseur ------")
+    for i in range(1):
+        print(Fournisseur().nom)
+    print()
+
+    # usines
+    print("------ Classe : Usine ------")
+    for i in range(1):
+        print(Usine().nom)
+    print()

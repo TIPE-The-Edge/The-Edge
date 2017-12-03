@@ -1,5 +1,5 @@
 Novembre : Développement des classes pour les différents acteurs de l’entreprise.
-Décembre : Développement une suite de fonctions pour la gestion de fichiers.
+Décembre : Développement d'une suite de fonctions pour la gestion de fichiers.
 
 Janvier  : Finir la gestion de fichiers. Commencer les recherches et le développement de l’animation.
 Février  : Animation.
@@ -15,6 +15,9 @@ Le temps
 La carte (cachée)
 Capital disponible
 Nombre d’employé
+Materiaux
+Opérations
+
 
 1 - Acteurs Internes :
 

@@ -1,8 +1,6 @@
 Machine
-Outil informatique
 Robot
 Assistant personnel
 Technologie
 Distributeur
 Appareil
-Logiciel
