@@ -285,7 +285,7 @@ if __name__ == "__main__" :
 
     # individu
     print("------ Classe : Individu ------")
-    for i in range(1):
+    for i in range(5):
         Bob = Individu()
         print(Bob.id, Bob.prenom, Bob.nom, Bob.age)
         print(Bob.genre, Bob.role)
@@ -293,25 +293,25 @@ if __name__ == "__main__" :
 
     # produits
     print("------ Classe : Produit ------")
-    for i in range(1):
+    for i in range(0):
         print(Produit().nom)
     print()
 
     # opérations
     print("------ Classe : Operation ------")
-    for i in range(1):
+    for i in range(0):
         print(Operation().nom)
     print()
 
     # materiaux
     print("------ Classe : Materiau ------")
-    for i in range(1):
+    for i in range(0):
         print(Materiau().nom)
     print()
 
     # formations
     print("------ Classe : Formation ------")
-    for i in range(1):
+    for i in range(0):
         print(Formation().nom)
     print()
 
