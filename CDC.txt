@@ -41,9 +41,6 @@ Employés :
     Compétences :
         Travail de groupe
         Recherche
-        Gestion, Management
-        Logistique
-        Marketing
 
 Produits :
     Appétence

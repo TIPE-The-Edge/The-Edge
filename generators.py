@@ -11,6 +11,7 @@
 # IMPORTS
 import random
 import os
+import operator
 
 # IMPORTS DE FICHIERS
 
@@ -20,6 +21,7 @@ import os
 
 (voir CDC.txt)
 
+rajouter aux classes des __repr__(self): pour plus de lisibilité
 
 Rajouter les fonctions genName pour plus de lisibilité.
 
@@ -27,10 +29,8 @@ On pourrait faire de l'optimisation en important le contenu des fichiers noms
     au début pour ne pas avoir à les rouvrir.
 
 Individu :
-    self.bonheur (à définir)
-    compétences (à redefinir)
-    Experiences (à définir)
-    horaire
+    Les fonctions d'update
+    BONUS
 
 Produit :
     self.utilite (aleatoire 0-100) (avec seuil de la somme des utilites)
@@ -48,7 +48,7 @@ Materiau :
 
 Formation :
     self.nom
-    competences (à redéfinir)
+    competences (à compléter?)
     self.prix   (Besoin d'une fonction pour rendre cohérent)
     self.duree  (Besoin d'une fonction pour rendre cohérent)
 
@@ -96,6 +96,15 @@ def readNameFile(fichier):
 
     return liste
 
+def enhancedSort(liste, comparateur, ordre):
+    """ Trie une liste d'objets selon le comparateur.
+    Entree : La liste
+             Le/les attributs de l'objet servant de comparateur(s) (str)
+             Ordre de tri (True: décroissant / False: croissant)
+    Sortie : La liste de dictionnaires triée.
+    """
+
+    return sorted(liste, key=operator.attrgetter(comparateur), reverse=ordre)
 
 ####################################################
 ###################| CLASSES |######################
@@ -104,25 +113,22 @@ def readNameFile(fichier):
 class Individu(object):
 
     id = 0
+
     def __init__(self):
 
         # Identifiant pour le repérer rapidement dans la liste des individus
         self.id = Individu.id
         Individu.id += 1
 
+        # Caractéristiques de l'individu
         self.genre   = random.choice(["homme", "femme"])
 
-        # Prénom
-        if self.genre == "homme" :
-            self.prenom = random.choice(readNameFile("./Name_Files/boy_names.txt"))
-        else :
-            self.prenom = random.choice(readNameFile("./Name_Files/girl_names.txt"))
-
-        self.nom     = random.choice(readNameFile("./Name_Files/family_names.txt"))
+        self.prenom  = self.genName(self.genre) # Prénom (en fonction du genre)
+        self.nom     = self.genName("family")
         self.age     = random.randint(23,50)
 
         self.salaire = 0
-        self.bonheur = 0 # A DEFINIR
+        self.bonheur = random.randint(3, 10)
 
         self.statut  = None
         self.role    = None
@@ -134,23 +140,36 @@ class Individu(object):
         # Experiences # A DEFINIR
         self.exp_startup = 0
         self.exp_produit = [[]] # Experience par produit
-        self.exp_role    = [[]] # Esperience par role
+        #self.exp_role    = [[]] # Experience par role # To be removed
 
-        # Compétences # A REDEFINIR
-        self.competence_groupe      = 0
-        self.competence_recherche   = 0
-        self.competence_gestion     = 0
-        self.competence_logistique  = 0
-        self.competence_marketing   = 0
+        # Compétences # A COMPLETER?
+        self.competence_groupe      = random.randint(1, 10)
+        self.competence_recherche   = random.randint(1, 10)
 
         # Ajoute à la liste
         individus.append(self)
 
+    def genName(self, genre):
+        """ Retourne un nom en fonction du genre entré.
+        """
+
+        if   genre == "femme":
+            return random.choice(readNameFile("./Name_Files/girl_names.txt"))
+        elif genre == "homme":
+            return random.choice(readNameFile("./Name_Files/boy_names.txt"))
+        else:
+            return random.choice(readNameFile("./Name_Files/family_names.txt"))
+
+    def initExpProduit():
+
+        for ind in individus:
+            ind.exp_produit = [[prod.nom, 0] for prod in produits]
+
 class Produit(object):
 
     def __init__(self):
-        self.nom = random.choice(readNameFile("./Name_Files/product_prefixes.txt")) + " " + random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
-        self.utilite    = [] # Par population
+        self.nom = self.genName()
+        self.utilite    = [[]] # Par population
         self.materiaux  = [] # materiaux et quantités nécessaires
         self.operations = [] # Opérations nécessaires
         self.valeur     = 0  # Prix fixé
@@ -163,6 +182,17 @@ class Produit(object):
 
         # Ajoute à la liste
         produits.append(self)
+
+    def genName(self):
+
+        prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
+        sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+
+        while prefixe + " " + sufixe in [prod.nom for prod in produits]:
+            prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
+            sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+
+        return prefixe + " " + sufixe
 
 class Operation(object):
 
@@ -283,52 +313,66 @@ if __name__ == "__main__" :
 
     os.system('clear') # works on Linux/Mac
 
-    # individu
-    print("------ Classe : Individu ------")
-    for i in range(5):
-        Bob = Individu()
-        print(Bob.id, Bob.prenom, Bob.nom, Bob.age)
-        print(Bob.genre, Bob.role)
-        print()
+    rang = 10
+    rang2 = 0
+
 
     # produits
     print("------ Classe : Produit ------")
-    for i in range(0):
+    for i in range(0 + rang):
         print(Produit().nom)
     print()
 
+    produits = enhancedSort(produits, "materiaux", True)
+
+    for prod in produits:
+        print(prod.materiaux)
+
+    """
     # opérations
     print("------ Classe : Operation ------")
-    for i in range(0):
+    for i in range(0 + rang):
         print(Operation().nom)
     print()
 
     # materiaux
     print("------ Classe : Materiau ------")
-    for i in range(0):
+    for i in range(0 + rang):
         print(Materiau().nom)
     print()
 
     # formations
     print("------ Classe : Formation ------")
-    for i in range(0):
+    for i in range(0 + rang):
         print(Formation().nom)
     print()
 
     # populations
     print("------ Classe : Population ------")
-    for i in range(1):
+    for i in range(0 + rang):
         print(Population().nom)
     print()
 
     # fournisseurs
     print("------ Classe : Fournisseur ------")
-    for i in range(1):
+    for i in range(0 + rang2):
         print(Fournisseur().nom)
     print()
 
     # usines
     print("------ Classe : Usine ------")
-    for i in range(1):
+    for i in range(0 + rang2):
         print(Usine().nom)
     print()
+
+    # individu
+    print("------ Classe : Individu ------")
+    for i in range(0 + rang):
+        Bob = Individu()
+        print(Bob.id, Bob.prenom, Bob.nom, Bob.age)
+        print(Bob.genre, Bob.role, Bob.competence_groupe, Bob.competence_recherche)
+        Individu.initExpProduit()
+        print(Bob.bonheur, Bob.exp_produit)
+        print()
+
+    """
