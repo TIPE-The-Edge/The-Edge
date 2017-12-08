@@ -21,19 +21,21 @@ import operator
 
 (voir CDC.txt)
 
+POUR ADRIEN : Produit materiaux population
+
 rajouter aux classes des __repr__(self): pour plus de lisibilité
 
-Rajouter les fonctions genName pour plus de lisibilité.
-
 On pourrait faire de l'optimisation en important le contenu des fichiers noms
-    au début pour ne pas avoir à les rouvrir.
+    au début pour ne pas avoir à les rouvrir ?
+
+Rajouter les fonctions d'update.
+Rajouter les fonctions de recherche.
 
 Individu :
     Les fonctions d'update
     BONUS
 
 Produit :
-    self.utilite (aleatoire 0-100) (avec seuil de la somme des utilites)
     self.materiaux (aleatoire)
     self.operations (aleatoire)
     self.tps_adoption (Adrien)
@@ -53,7 +55,7 @@ Formation :
     self.duree  (Besoin d'une fonction pour rendre cohérent)
 
 Population : # de consommateurs
-    self
+    self.produits
 
 Fournisseur :
     self.localisation (Lucas)
@@ -165,17 +167,34 @@ class Individu(object):
         for ind in individus:
             ind.exp_produit = [[prod.nom, 0] for prod in produits]
 
+class Population(object): # de consommateurs
+
+    # Cette classe sera majoritairement paramétrée à la main
+
+    def __init__(self, nom, revenu, nombre):
+        self.nom = nom
+
+        self.revenu = revenu # (Adrien)
+        self.nombre = nombre # (Adrien)
+
+        self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
+
+        # Ajoute à la liste
+        populations.append(self)
+
 class Produit(object):
 
     def __init__(self):
         self.nom = self.genName()
-        self.utilite    = [[]] # Par population
-        self.materiaux  = [] # materiaux et quantités nécessaires
+        self.utilite    = [[]] # Par population (0-100)
+        self.materiaux  = [[]] # materiaux et quantités nécessaires
         self.operations = [] # Opérations nécessaires
         self.valeur     = 0  # Prix fixé
 
         self.tps_adoption  = 0
-        self.age = 0 # Temps sur le marché du produit
+
+        self.marche = False # Le produit est sur le marché ou non
+        self.age    = 0     # Temps sur le marché du produit
 
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
@@ -194,6 +213,29 @@ class Produit(object):
 
         return prefixe + " " + sufixe
 
+    def creeUtilite(self, seuil):
+        somme = seuil + 1
+        while somme > seuil:
+
+            for pop in populations:
+                utilites = [random.randint(1,100) for pop in populations]
+                somme = sum(utilites)
+                print(utilites)
+
+        self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
+
+    def initUtilites(seuil):
+
+        for prod in produits:
+            prod.creeUtilite(seuil)
+
+    def ageUpdate():
+
+        for prod in produits:
+            if prod.marche:
+                prod.age += 1
+
+
 class Operation(object):
 
     # Liste des noms existants
@@ -203,17 +245,23 @@ class Operation(object):
 
     def __init__(self):
 
-        # Si l'on peut, on utilise un nom de la liste,
-        # Sinon on génère un nom automatiquement avec indice_nom.
-        try:
-            self.nom = random.choice(Operation.noms_dispo)
-            Operation.noms_dispo.remove(self.nom)
-        except IndexError :
-            self.nom = "Opération_"+str(Operation.indice_nom)
-            Operation.indice_nom += 1
+        self.nom = self.genName()
 
         # Ajoute à la liste
         operations.append(self)
+
+    def genName(self):
+
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            nom = random.choice(Operation.noms_dispo)
+            Operation.noms_dispo.remove(nom)
+        except IndexError :
+            Operation.indice_nom += 1
+            nom = "Opération_"+str(Operation.indice_nom)
+
+        return nom
 
 class Materiau(object):
 
@@ -224,17 +272,23 @@ class Materiau(object):
 
     def __init__(self):
 
-        # Si l'on peut, on utilise un nom de la liste,
-        # Sinon on génère un nom automatiquement avec indice_nom.
-        try:
-            self.nom = random.choice(Materiau.noms_dispo)
-            Materiau.noms_dispo.remove(self.nom)
-        except IndexError :
-            self.nom = "Materieau_"+str(Materiau.indice_nom)
-            Materiau.indice_nom += 1
+        self.nom = self.genName()
 
         # Ajoute à la liste
         materiaux.append(self)
+
+    def genName(self):
+
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            nom = random.choice(Materiau.noms_dispo)
+            Materiau.noms_dispo.remove(nom)
+        except IndexError :
+            Materiau.indice_nom += 1
+            nom = "Materieau_"+str(Materiau.indice_nom)
+
+        return nom
 
 class Formation(object):
 
@@ -248,12 +302,8 @@ class Formation(object):
         self.prix  = 0 # Besoin d'une fonction
         self.duree = 0 # Besoin d'une fonction
 
-class Population(object): # de consommateurs
-
-    # Cette classe sera majoritairement paramétrée à la main
-
-    def __init__(self):
-        self.nom = ""
+    def genName(self):
+        pass
 
 class Fournisseur(object):
 
@@ -264,14 +314,20 @@ class Fournisseur(object):
 
     def __init__(self):
 
-        self.nom = random.choice(Fournisseur.noms_dispo)
-        Fournisseur.noms_dispo.remove(self.nom)
+        self.nom = self.genName()
+
 
         self.localisation = None
         self.materiaux_vendu = [[]] # Materiaux et prix
 
         # Ajoute à la liste
         fournisseurs.append(self)
+
+    def genName(self):
+        nom = random.choice(Fournisseur.noms_dispo)
+        Fournisseur.noms_dispo.remove(nom)
+
+        return nom
 
 class Usine(object):
 
@@ -280,14 +336,19 @@ class Usine(object):
 
     def __init__(self):
 
-        self.nom = random.choice(Usine.noms_dispo)
-        Usine.noms_dispo.remove(self.nom)
+        self.nom = self.genName()
 
         self.localisation = None
         self.operations_realisables = [[]] # Opérations et prix
 
         # Ajoute à la liste
         usines.append(self)
+
+    def genName(self):
+        nom = random.choice(Usine.noms_dispo)
+        Usine.noms_dispo.remove(nom)
+
+        return nom
 
 ####################################################
 ##################| VARIABLES |#####################
@@ -310,23 +371,22 @@ usines       = []
 if __name__ == "__main__" :
 
 
-
     os.system('clear') # works on Linux/Mac
 
-    rang = 10
-    rang2 = 0
+    rang = 3
+    rang2 = 6
 
+    # populations
+    print("------ Classe : Population ------")
+    print(Population("Les Vieux", 100, 2).nom)
+    print(Population("Les Jeunes", 2000, 99).nom)
+    print()
 
     # produits
     print("------ Classe : Produit ------")
     for i in range(0 + rang):
         print(Produit().nom)
     print()
-
-    produits = enhancedSort(produits, "materiaux", True)
-
-    for prod in produits:
-        print(prod.materiaux)
 
     """
     # opérations
@@ -345,12 +405,6 @@ if __name__ == "__main__" :
     print("------ Classe : Formation ------")
     for i in range(0 + rang):
         print(Formation().nom)
-    print()
-
-    # populations
-    print("------ Classe : Population ------")
-    for i in range(0 + rang):
-        print(Population().nom)
     print()
 
     # fournisseurs
@@ -374,5 +428,12 @@ if __name__ == "__main__" :
         Individu.initExpProduit()
         print(Bob.bonheur, Bob.exp_produit)
         print()
+        """
 
-    """
+    produits = enhancedSort(produits, "nom", False)
+
+    Produit.initUtilites(2000)
+
+    for prod in produits:
+        print(prod.nom)
+        print(prod.utilite)
