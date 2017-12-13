@@ -4,8 +4,8 @@ os.system('clear') # works on Linux/Mac
 
 ######## INITIALISATION DES OBJETS ########
 
-rang = 1
-rang2 = 1
+rang = 0
+rang2 = 0
 
 # populations
 Population("Les Vieux", 100, 2)
@@ -16,7 +16,7 @@ for i in range(0 + rang):
     Produit()
 
 # opérations
-for i in range(0 + rang):
+for i in range(5 + rang):
     Operation()
 
 # materiaux

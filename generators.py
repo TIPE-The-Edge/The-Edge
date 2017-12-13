@@ -39,13 +39,13 @@ Formation :
     self.duree  (Besoin d'une fonction pour rendre cohérent)
 
 Population : # de consommateurs
-    updateProduits() (voir comment on maj les produits vendus et a quelle fréquence)
+    updateProduits() (voir comment on maj les produits vendus et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
 Fournisseur :
-    self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction)
+    self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction) (Lucas)
 
 Usine :
-    self.operations_realisables (Opérations et prix) (Besoin d'une fonction)
+    self.operations_realisables (Opérations et prix) (Besoin d'une fonction) (Lucas)
 
 Faire les BONUS.
 """
@@ -195,7 +195,7 @@ class Produit(object):
         self.materiaux  = [[]] # materiaux et quantités nécessaires
         self.operations = []   # Opérations nécessaires
 
-        self.valeur     = 0 # Prix fixé
+        self.prix     = 0 # Prix fixé
         self.tps_adoption  = 0 # ADRIEN
 
         self.marche = False # Le produit est sur le marché ou non

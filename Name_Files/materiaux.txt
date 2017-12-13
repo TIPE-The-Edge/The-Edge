@@ -1,2 +1,4 @@
-Eau
-Bois
+Transistor
+Puce
+Diode
+Metal
