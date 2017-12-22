@@ -23,6 +23,7 @@ Rajouter les fonctions d'update.
 Rajouter les fonctions de recherche.
 
 Individu :
+    Update de l'exp.
 
 Produit :
     self.materiaux    (aleatoire) (Adrien)
@@ -129,7 +130,6 @@ class Individu(object):
         # Experiences # A DEFINIR
         self.exp_startup = 0
         self.exp_produit = [[]] # Experience par produit
-        #self.exp_role    = [[]] # Experience par role # To be removed
 
         # Compétences # A COMPLETER?
         self.competence_groupe      = random.randint(1, 10) # Capacité à travailler en groupe

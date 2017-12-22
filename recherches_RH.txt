@@ -1,0 +1,12 @@
+"""
+SALAIRE
+https://www.service-public.fr/particuliers/vosdroits/N474
+http://droit-finances.commentcamarche.net/faq/4948-paiement-du-salaire-les-droits-du-salarie
+https://blog.ignition-program.com/quel-salaire-start-up/
+
+BILAN SOCIAL
+https://www.cig929394.fr/archives/diagnostics/Bilan_soc_4.pdf    p. 13-14
+
+"""
+
+SMIC = 1 480,27 €
