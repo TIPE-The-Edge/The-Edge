@@ -16,7 +16,7 @@ for i in range(0 + rang):
     Produit()
 
 # opérations
-for i in range(5 + rang):
+for i in range(0 + rang):
     Operation()
 
 # materiaux
@@ -24,7 +24,7 @@ for i in range(0 + rang):
     Materiau()
 
 # formations
-for i in range(0 + rang):
+for i in range(1 + rang):
     Formation()
 
 # fournisseurs
@@ -41,6 +41,13 @@ for i in range(0 + rang):
 
 # Tri les produits par ordre alphabétique
 produits = enhancedSort(produits, "nom", False)
+individus    = enhancedSort(individus, "id", False)
+operations   = enhancedSort(operations, "nom", False)
+materiaux    = enhancedSort(materiaux, "nom", False)
+formations   = enhancedSort(formations, "nom", False)
+populations  = enhancedSort(populations, "nom", False)
+fournisseurs = enhancedSort(fournisseurs, "nom", False)
+usines       = enhancedSort(usines, "nom", False)
 
 Individu.initExpProduit()
 
