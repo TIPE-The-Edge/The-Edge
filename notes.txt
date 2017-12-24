@@ -1,0 +1,45 @@
+// LOI NORMALE //
+
+# PROBLEME
+
+# On cherche à générer 100 valeurs comprises dans l'intervalle [|0;10|]
+#| de sorte à ce que leur fréquence d'apparition respecte une loi  
+#| normale dont on difinira l'espérance et l'écart-type. 
+
+# LIBRAIRIE
+
+>>> import numpy as np
+
+# EXPLICATIONS
+
+# Définition de l'espérance (mu) et de l'écart-type (sigma)
+# Axe de symétrie : droite d'équation x = mu.
+# Courbe plus ou moins "étirée" selon les valeurs de sigma.
+# L'intervalle [mu-3*sigma ; mu+3*sigma] rassemble à 99.7% les 
+#| valeurs possibles de X. On utilisera donc l'écart-type pour
+#| définir l'intervalle de nos variables aléatoires.
+
+# EXEMPLE
+
+# Intervalle = [0;10]
+>>> mu, sigma = 5 , 1.6
+
+# Matrice de 100 valeurs aléatoires dont la probabilité respecte
+#| la loi normale définie par mu et sigma.
+>>> matrice = np.random.normal(loc = mu, scale = sigma, size = 100)
+>>> type matrice
+ : numpy.ndarray
+
+# PRECISIONS
+
+# Les valeurs sont des float.
+# On utilise la fonction np.array(matrice, int) pour changer
+#| toutes les valeurs en int.
+
+
+# CONCLUSION
+
+>>> matrice = np.array(np.random.normal(loc=5 , scale= 1.6, size = 100), int)
+
+# Pour récupérer une seule valeur :
+>>> valeur = np.array(np.random.normal(loc=5 , scale= 1.6, size = 1), int)[0]
