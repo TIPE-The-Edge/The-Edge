@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 21/12/2017
+#>>> DATE    : 29/12/2017
 ####################################
 
 
@@ -89,6 +89,14 @@ que le produit soit rentable.
       qui affichent ou demande à l'utilisateur
       une entrée devront être remplacées pour
       l'intégration dans l'application.
+
+|→ URGENT :
+
+    - Faire les commentaires de la fonction
+      niveau dans la classe Projet.
+    - Implémenter la phase 2.
+    - Implémenter la phase 3.
+    - Commenter toutes les fonctions.
 """
 ####################################
 
@@ -143,6 +151,8 @@ def aleaLoiNormale(esperance, ecart_type) :
     SORTIE         : Un entier (int)
     REMARQUES      : On utilise la librairie numpy pour la
                      génération d'une variable aléatoire.
+                     Voir le fichier notes.txt pour des 
+                     précisions.
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
@@ -241,6 +251,13 @@ class Concept(object) :
                 avis[0] = appreciation(avis[0][1]+aleaLoiNormale(esperance=5, ecart_type=1.6))
         return(self)
 
+    def verif(self) :
+        if self.orientation in ["Jeunes","Actifs","Seniors"] :
+            return(False)
+        else :
+            return(True)
+
+
     def __repr__(self) :
         return("{} | {}".format(self.appreciation, self.orientation))
 
@@ -267,11 +284,40 @@ class Prototype(object):
         # Le coût de fabrication
         self.cout = 0
 
-    def creation(self) :
+    def creaMater(self) :
+        """
+        FONCTION       : Defini les materiaux necessaires
+                         a la creation du prototype
+        ENTREES        : Un prototype sans materiaux
+        SORTIE         : Le prototype avec des materiaux
+                         associes.
+        REMARQUES      :
+        TEST UNITAIRE  : ("OK"/"...")
+        """
+        for i in range(randint(3, 7)):
+            self.materiaux.append(Materiau())
+
+        return(self)
+
+    def creaOpera(self) :
+        """
+        FONCTION       : Defini les operations necessaires
+                         a la creation du prototype
+        ENTREES        : Un prototype sans operations
+        SORTIE         : Le prototype avec des operations
+                         associees.
+        REMARQUES      : 
+        TEST UNITAIRE  : ("OK"/"...")
+        """
+
+        for i in range(randint(2, 5)):
+            self.operations.append(Operation())
+
+        return(self)
 
     def __repr__(self) :
         return("{} | {} - {} | {} : {}". format(self.appreciation, 
-              self.orientation, self.materiaux, self.operation, self.cout))
+              self.orientation, self.materiaux, self.operations, self.cout))
 
 
 class Projet(object):
@@ -286,39 +332,58 @@ class Projet(object):
         self.produit = Concept() 
         self.avancement = 0
         self.phase = 1
-
-    def etude(self) :
-
-        # On initialise l'appétence des consommateurs
-        #| vis à vis du concept.
-        self.produit = Concept.sondage(self.produit)
-        
-        print(self.produit)
-
-        # On demande à l'utilisateur de fixer la population
-        #| qu'il souhaite cibler avec son produit.
-        Concept.ciblage(self.produit, input("Veuillez entrer le nom d'une population : "))
-
-        # On applique l'effet du ciblage sur l'opinion  
-        #| des consommateurs vis à vis du concept.
-        self.produit = Concept.effetMarketing(self.produit)
-
-        return(self)
+        self.attente = False
 
     # def development(self) :
 
     # def testing(self) :
 
+    def changePhase1(self) :
 
-    def niveau(self, liste) :
+        if self.attente==False :
+            # On applique l'effet du ciblage sur l'opinion  
+            #| des consommateurs vis à vis du concept.
+            Concept.effetMarketing(self.produit)
+            # On réinitialise l'avancement
+            self.avancement = self.avancement-60
+            # On passe à la phase suivante du projet
+            self.phase += 1
+
+        return(self)
+
+    def niveau(self, liste, utilisateur) :
         if self.phase == 1 :
-            if self.avancement >= liste[0] :
-                # Choix de l'orientation/ciblage
-                self = Projet.etude(self)
-                # On réinitialise l'avancement
-                self.avancement = self.avancement-60
-                # On passe à la phase suivante du projet
-                self.phase += 1
+            if self.avancement >= liste[0] and self.attente==False :
+                # On initialise l'appétence des consommateurs
+                #| vis à vis du concept.
+                Concept.sondage(self.produit)
+                
+                # // WARNING : Afficher les résultats du sondage sur l'interface //
+                print(self.produit)
+                # // WARNING //
+
+                # On demande à l'utilisateur de fixer la population
+                #| qu'il souhaite cibler avec son produit.
+                Concept.ciblage(self.produit, utilisateur)
+
+                # On vérifie que l'utilisateur a entré la population cible
+                self.attente = Concept.verif(self.produit)
+                
+                # Passage phase 2 ?
+                Projet.changePhase1(self)
+
+            elif self.avancement >= liste[0] and self.attente==True :
+
+                # On demande à l'utilisateur de fixer la population
+                #| qu'il souhaite cibler avec son produit.
+                Concept.ciblage(self.produit, utilisateur)
+
+                # On vérifie que l'utilisateur a entré la population cible
+                self.attente = Concept.verif(self.produit)
+
+                # Passage phase 2 ?
+                Projet.changePhase1(self)
+
             else :
                 # On fait avancer le projet.
                 self.avancement += progret(chercheurs)
@@ -340,8 +405,7 @@ class Projet(object):
 
             if self.avancement >= liste[2] :
 
-                # On passe à la phase suivante du projet
-                self.phase += 1
+                print("Fini !")
 
             else :
                 # On fait avancer le projet.
@@ -398,6 +462,7 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
+
     for cherch in chercheurs :
         print(cherch) 
 
@@ -407,9 +472,17 @@ if __name__=="__main__" :
     compt = 0
     
     while test.phase == 1 :
-        test = Projet.niveau(test, [60, 100, 50])
+        test = Projet.niveau(test, [60, 100, 50], "Jeunes")
         print(test.avancement)
         compt+=1
 
     print(test.produit)
     print(compt)
+    
+
+    """
+    test = Prototype([],[],[])
+    test = Prototype.creaOpera(test)
+
+    print(test)
+    """

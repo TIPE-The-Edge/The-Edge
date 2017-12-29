@@ -7,6 +7,7 @@ produits = []
 populations = []
 materiaux = []
 individus = []
+operations = []
 
 def readNameFile(fichier):
     """ Lis un fichier .txt et retourne la liste de ses éléments.
@@ -156,32 +157,74 @@ class Produit(object):
 				prod.age += 1
 
 
+class Operation(object):
+
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/operations.txt")
+    # Indice pour les noms générés automatiquement
+    indice_nom = 0
+
+    def __init__(self):
+
+        self.nom = self.genNom()
+
+        # Ajoute à la liste
+        operations.append(self)
+
+    def __repr__(self):
+        return "{}".format(
+                self.nom)
+
+    def genNom(self):
+
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            suffixe = random.choice(Operation.noms_dispo)
+            # On efface le nom de la liste pour éviter les doublons
+            # de noms d'opérations
+            Operation.noms_dispo.remove(suffixe)
+            nom = "Opération_"+suffixe
+        except IndexError :
+            Operation.indice_nom += 1
+            nom = "Opération_"+str(Operation.indice_nom)
+
+        return nom
+
+
 class Materiau(object):
 
-	# Liste des noms existants
-	noms_dispo = readNameFile("./Name_Files/materiaux.txt")
-	# Indice pour les noms générés automatiquement
-	indice_nom = 0
+    # Liste des noms existants
+    noms_dispo = readNameFile("./Name_Files/materiaux.txt")
+    # Indice pour les noms générés automatiquement
+    indice_nom = 0
 
-	def __init__(self):
+    def __init__(self):
 
-		self.nom = self.genName()
+        self.nom = self.genNom()
 
-		# Ajoute à la liste
-		materiaux.append(self)
+        # Ajoute à la liste
+        materiaux.append(self)
 
-	def genName(self):
+    def __repr__(self):
+        return "{}".format(
+                self.nom)
 
-		# Si l'on peut, on utilise un nom de la liste,
-		# Sinon on génère un nom automatiquement avec indice_nom.
-		try:
-			nom = random.choice(Materiau.noms_dispo)
-			Materiau.noms_dispo.remove(nom)
-		except IndexError :
-			Materiau.indice_nom += 1
-			nom = "Materieau_"+str(Materiau.indice_nom)
+    def genNom(self):
 
-		return nom
+        # Si l'on peut, on utilise un nom de la liste,
+        # Sinon on génère un nom automatiquement avec indice_nom.
+        try:
+            nom = random.choice(Materiau.noms_dispo)
+            # On efface le nom de la liste pour éviter les doublons
+            # de noms de materiaux
+            Materiau.noms_dispo.remove(nom)
+        except IndexError :
+            Materiau.indice_nom += 1
+            nom = "Materieau_"+str(Materiau.indice_nom)
+
+        return nom
+
 
 
 ###| Création des populations |###
