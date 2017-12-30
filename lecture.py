@@ -4,8 +4,8 @@
 
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
-#>>> SUJET   : Gestion fichier csv/ Lecture
-#>>> DATE    : 18/11/17
+#>>> SUJET   : Gestion Banque/ Lecture
+#>>> DATE    : 30/12/17
 ####################################
 
 
@@ -110,13 +110,13 @@ def readFileCSV(nom_fichier) :
     SORTIE         : Les lignes du fichier sous une forme de liste.
                      (string list) et la liste des paramètres que
                      les données décrivent.
-    REMARQUES      :
+    REMARQUES      : Le fichier se trouve dans le dossier "Banque"
     TEST UNITAIRE  : ...
     """
     #>>> Initialisation des variables locales <<<#
 
     # On charge le dataset que l'utilisateur entre.
-    fichier_donnees = pd.read_csv(nom_fichier)
+    fichier_donnees = pd.read_csv("./Banque/"+nom_fichier)
     # On récupère les paramètres du graphique
     parametres=[ligne for ligne in fichier_donnees]
     del parametres[-1]
@@ -222,8 +222,8 @@ class Test(unittest.TestCase) :
 
         #>>> Test 2 <<<#
 
-        reponse = [["2017","2543"],["2016","2543"]]
-        test = readLineCSV("inflation.csv", "inflation", "2543", ["periode","inflation"])
+        reponse = [["2017"],["2016"]]
+        test = readLineCSV("inflation.csv", "inflation", "2543", ["periode"])
         self.assertEqual(test, reponse)
 
 
