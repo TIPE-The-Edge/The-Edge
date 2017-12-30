@@ -1,14 +1,60 @@
-Descriptif des différents fichiers de données :
+Nous rassembllerons ici l'ensemble des informations 
+nécessaires à la compréhension des fichiers de notre
+base de données.
 
 
-| chomage.csv :
+// LEGENDE //
+	
+	|→ : un fichier de données
+	|| : aspect de la donnée
+	"" : variable
+	// : le type de la donnée
 
-| croissance.csv :
 
-| demographie.csv :
 
-| inflation.csv :
+// DESCRIPTION //
 
-| pib.csv :
+|→ chomage.csv :
 
-| transport.csv :
+	Paramètres : 
+		- periode         : |"annee"-T"numéro du trimestre"|
+		- taux de chomage : | /float/ | (en %)
+
+
+|→ croissance.csv :
+
+	Paramètres :
+		- periode    : |"annee"|
+		- croissance : | /float/ | (en %)
+
+
+|→ demographie.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- jeunes  : | /int/ | (nbr personnes)
+		- actifs  : | /int/ | (nbr personnes)
+		- seniors : | /int/ | (nbr personnes)
+
+
+|→ inflation.csv :
+
+	Paramètres :
+		- periode   : |"annee"|
+		- inflation : | /int/ | (A DEFINIR)
+
+
+|→ pib.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- pib     : | /int/ | (en millions d'euros)
+
+
+|→ transport.csv :
+
+	Paramètres :
+		- trajet   : |"lieu"/"lieu"|
+		- distance : | /int/ | (en km)
+		- cout     : | /int/ | (A DEFINIR)
+		- temps    : | /float/ | (en heure)
