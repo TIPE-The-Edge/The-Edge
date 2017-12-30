@@ -1,6 +1,8 @@
 import random
 import os
 import operator
+from outils import *
+
 
 
 produits = []
@@ -52,12 +54,11 @@ class Individu(object):
         # Experiences # A DEFINIR
         self.exp_startup = 0
         self.exp_produit = [[]] # Experience par produit
-        #self.exp_role    = [[]] # Experience par role # To be removed
 
         # Compétences # A COMPLETER?
-        self.competence_groupe      = random.randint(1, 10) # Capacité à travailler en groupe
-        self.competence_recherche   = random.randint(1, 10) # Efficacité à la recherche
-        self.competence_direction   = random.randint(1, 10) # Capacité à diriger une équipe
+        self.competence_groupe      = aleaLoiNormale(5, 1.6) # Capacité à travailler en groupe
+        self.competence_recherche   = aleaLoiNormale(5, 1.6) # Efficacité à la recherche
+        self.competence_direction   = aleaLoiNormale(5, 1.6) # Capacité à diriger une équipe
 
         self.conges  = 0 # BONUS
         self.horaire = 0 # temps de travail # BONUS
@@ -66,8 +67,9 @@ class Individu(object):
         individus.append(self)
 
     def __repr__(self):
-        return "{} - {} {}, {} ans. {}. recherche : {}. groupe : {}".format(
-                self.id, self.prenom, self.nom, self.age, self.genre, self.competence_recherche, self.competence_groupe)
+        return "{} - {} {}, {} ans. {}. recherche {}. groupe {}. leader {}".format(
+                self.id, self.prenom, self.nom, self.age, self.genre, self.competence_recherche, 
+                self.competence_groupe, self.competence_direction)
 
     def genNom(self, genre):
         """ Retourne un nom en fonction du genre entré.
@@ -84,6 +86,7 @@ class Individu(object):
 
         for ind in individus:
             ind.exp_produit = [[prod.nom, 0] for prod in produits]
+
 
 
 
@@ -105,56 +108,60 @@ class Population(object): # de consommateurs
 
 class Produit(object):
 
-	def __init__(self):
-		self.nom = self.genName()
-		self.utilite    = [[]] # Par population (0-100)
-		self.materiaux  = [[]] # materiaux et quantités nécessaires
-		self.operations = [] # Opérations nécessaires
-		self.valeur     = 0  # Prix fixé
+    def __init__(self, utilite, materiaux, operations):
+        self.nom = self.genNom()
 
-		self.tps_adoption  = 0
+        self.utilite    = utilite # Par population (0-100)
+        self.materiaux  = materiaux # materiaux et quantités nécessaires
+        self.operations = operations   # Opérations nécessaires
 
-		self.marche = False # Le produit est sur le marché ou non
-		self.age    = 0     # Temps sur le marché du produit
+        self.prix     = 0 # Prix fixé
+        self.tps_adoption  = 0 # ADRIEN
 
-		self.nbr_ameliorations = 0
-		self.concurence = 0 # BONUS
+        self.marche = False # Le produit est sur le marché ou non
+        self.age    = 0     # Temps sur le marché du produit
 
-		# Ajoute à la liste
-		produits.append(self)
+        self.nbr_ameliorations = 0
+        self.concurence = 0 # BONUS
 
-	def genName(self):
+        # Ajoute à la liste
+        produits.append(self)
 
-		prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
-		sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+    def __repr__(self):
+        return "Nom : {} \n utilite : {} \n materiaux : {} \n operation : {}".format(self.nom, self.utilite, self.materiaux, self.operations)
 
-		while prefixe + " " + sufixe in [prod.nom for prod in produits]:
-			prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
-			sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+    def genNom(self):
 
-		return prefixe + " " + sufixe
+        prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
+        sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
 
-	def creeUtilite(self, seuil):
-		somme = seuil + 1
-		while somme > seuil:
+        while prefixe + " " + sufixe in [prod.nom for prod in produits]:
+            prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
+            sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
 
-			for pop in populations:
-				utilites = [random.randint(1,100) for pop in populations]
-				somme = sum(utilites)
-				print(utilites)
+        return prefixe + " " + sufixe
 
-		self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
+    def creeUtilite(self, seuil):
+        somme = seuil + 1
+        while somme > seuil:
 
-	def initUtilites(seuil):
+            for pop in populations:
+                utilites = [random.randint(1,100) for pop in populations]
+                somme = sum(utilites)
 
-		for prod in produits:
-			prod.creeUtilite(seuil)
+        self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
 
-	def ageUpdate():
+    def initUtilites(seuil):
 
-		for prod in produits:
-			if prod.marche:
-				prod.age += 1
+        for prod in produits:
+            prod.creeUtilite(seuil)
+
+    def ageUpdate():
+
+        for prod in produits:
+            if prod.marche:
+                prod.age += 1
+
 
 
 class Operation(object):

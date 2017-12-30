@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 29/12/2017
+#>>> DATE    : 30/12/2017
 ####################################
 
 
@@ -14,9 +14,7 @@ import os
 import sys
 import unittest
 from math import *
-import numpy as np
 
-from random import randint
 from test import *
 ####################################
 
@@ -82,6 +80,8 @@ que le produit soit rentable.
       randint).
 
     - Développement de la phase 1 du projet.
+    - Développement de la phase 2 du projet.
+    - Développement de la phase 3 du projet.
 
 |→ REMARQUES :
     
@@ -92,11 +92,10 @@ que le produit soit rentable.
 
 |→ URGENT :
 
-    - Faire les commentaires de la fonction
-      niveau dans la classe Projet.
-    - Implémenter la phase 2.
-    - Implémenter la phase 3.
+    - Faire la fonction convertissant une appréciation
+      en une utilité. 
     - Commenter toutes les fonctions.
+    - Refaire la description du fichier.
 """
 ####################################
 
@@ -104,6 +103,7 @@ que le produit soit rentable.
 #| Provisoire |#
 
 #-Population
+
 pop_1 = Population("Jeunes", 300, 15)
 pop_2 = Population("Actifs", 2000, 40)
 pop_3 = Population("Seniors", 1800, 25)
@@ -140,52 +140,20 @@ def appreciation(ref) :
     #>>> Sortie <<<#
     return((rep,ref))
 
-
-def aleaLoiNormale(esperance, ecart_type) :
-    """
-    FONCTION       : Génère une valeur dont la fréquence
-                     d'apparition respecte la loi normale
-                     N(esperance, ecart_type²)
-    ENTREES        : Une espérance (float) et un écart-type
-                     (float)
-    SORTIE         : Un entier (int)
-    REMARQUES      : On utilise la librairie numpy pour la
-                     génération d'une variable aléatoire.
-                     Voir le fichier notes.txt pour des 
-                     précisions.
-    TEST UNITAIRE  : ("OK"/"...")
-    """
-    #>>> Initialisation des variables locales <<<#
-
-    # On définit la taille de la matrice qui contiendra la valeur
-    #| aléatoire.
-    taille = 1
-
-    #>>> Corps de la fonction <<<#
-
-    # On génère d'abord une valeur (float) dans une matrice.
-    matrice = np.random.normal(loc=esperance, scale=ecart_type, size = taille)
-    # On convertit notre valeur en entier.
-    matrice = np.array(matrice, int)
-    # On récupère la valeur contenue dans notre matrice
-    valeur = abs(matrice[0])
-
-    #>>> Sortie <<<#
-    return(valeur)
-
-
 # Fonction Compétence "Recherche"
 def compRecherche(individus) :
     return(sum([individu.competence_recherche for individu in individus]))
-
 
 # Fonction Compétence "Groupe"
 def compGroupe(individus) :
     # On fait la moyenne des capacités de travail de groupe des chercheurs
     moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
+    leader = max([individu.competence_direction for individu in individus])
+    if leader >= 8 :
+        moyenne += (int(leader/8))+(leader-8)
     return(10*moyenne -50)
 
-def progret(individus) :
+def progres(individus) :
     return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
 
 '''
@@ -252,7 +220,7 @@ class Concept(object) :
         return(self)
 
     def verif(self) :
-        if self.orientation in ["Jeunes","Actifs","Seniors"] :
+        if self.orientation in [pop.nom for pop in populations] :
             return(False)
         else :
             return(True)
@@ -292,9 +260,9 @@ class Prototype(object):
         SORTIE         : Le prototype avec des materiaux
                          associes.
         REMARQUES      :
-        TEST UNITAIRE  : ("OK"/"...")
+        TEST UNITAIRE  : ...
         """
-        for i in range(randint(3, 7)):
+        for i in range(random.randint(3, 7)):
             self.materiaux.append(Materiau())
 
         return(self)
@@ -307,13 +275,45 @@ class Prototype(object):
         SORTIE         : Le prototype avec des operations
                          associees.
         REMARQUES      : 
-        TEST UNITAIRE  : ("OK"/"...")
+        TEST UNITAIRE  : ...
         """
 
-        for i in range(randint(2, 5)):
+        for i in range(random.randint(2, 5)):
             self.operations.append(Operation())
 
         return(self)
+
+    def develop(self) :
+        """
+        FONCTION       : Défini les matériaux, les opérations ainsi que
+                         le coût d'un prototype.
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+        Prototype.creaMater(self)
+        Prototype.creaOpera(self)
+        return(self)
+
+    def appr_to_uti(self) :
+        """
+        FONCTION       : Convertie pour chaque population l'appréciation
+                         en utilité.
+        ENTREES        : Un prototype (Prototype) et une liste de 
+                         population (Population list)
+        SORTIE         : L'utilité associée à ces appréciations
+        REMARQUES      : 
+        TEST UNITAIRE  : ("OK"/"...")
+        """
+
+        utilite = []
+
+        for app in self.appreciation :
+            val = ((app[0][1])**2)*(4/500)
+            utilite.append([app[1], val])
+
+        return(utilite)
 
     def __repr__(self) :
         return("{} | {} - {} | {} : {}". format(self.appreciation, 
@@ -333,103 +333,233 @@ class Projet(object):
         self.avancement = 0
         self.phase = 1
         self.attente = False
+        self.essai = False
 
-    # def development(self) :
+    def verifPhase1(self, palier, utilisateur) :
+        """
+        FONCTION       : Récupère une entrée utilisateur, si 
+                         celle-ci permet de fixer une population
+                         cible alors on applique l'effet du ciblage
+                         et on passe à la phase 2
+        ENTREES        : Un projet (Projet) et une entrée utilisateur
+                         (string)
+        SORTIE         : Le projet qui tient compte de l'entrée
+                         utilisateur.
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
 
-    # def testing(self) :
+        # On fixe la population cible à l'aide de l'entrée
+        #| utilisateur.
+        Concept.ciblage(self.produit, utilisateur)
 
-    def changePhase1(self) :
-
+        # On vérifie que l'utilisateur a entré la population cible
+        self.attente = Concept.verif(self.produit)
+        
+        # Passage phase 2 ?
         if self.attente==False :
             # On applique l'effet du ciblage sur l'opinion  
             #| des consommateurs vis à vis du concept.
             Concept.effetMarketing(self.produit)
             # On réinitialise l'avancement
-            self.avancement = self.avancement-60
+            self.avancement = self.avancement-palier
             # On passe à la phase suivante du projet
             self.phase += 1
 
         return(self)
 
-    def niveau(self, liste, utilisateur) :
-        if self.phase == 1 :
-            if self.avancement >= liste[0] and self.attente==False :
-                # On initialise l'appétence des consommateurs
-                #| vis à vis du concept.
-                Concept.sondage(self.produit)
-                
-                # // WARNING : Afficher les résultats du sondage sur l'interface //
-                print(self.produit)
-                # // WARNING //
+    def phase1(self, palier, utilisateur) :
+        """
+        FONCTION       : Modélise le développement du projet à
+                         la phase 1.
+        ENTREES        : Un projet (Projet), un palier (int),
+                         et une entrée utilisateur
+        SORTIE         : Le projet mis à jour 
+        REMARQUES      : La progression du projet s'arrête si
+                         l'utilisateur ne donne pas de population
+                         cible quand l'avancement du projet est
+                         supérieur au palier.
+        TEST UNITAIRE  : ...
+        """
+        if self.avancement >= palier and self.attente==False :
+            # On initialise l'appétence des consommateurs
+            #| vis à vis du concept.
+            Concept.sondage(self.produit)
+            
+            # // WARNING : Afficher les résultats du sondage sur l'interface //
+            print(self.produit)
+            # // WARNING //
 
-                # On demande à l'utilisateur de fixer la population
-                #| qu'il souhaite cibler avec son produit.
-                Concept.ciblage(self.produit, utilisateur)
+            Projet.verifPhase1(self, palier, utilisateur)
 
-                # On vérifie que l'utilisateur a entré la population cible
-                self.attente = Concept.verif(self.produit)
-                
-                # Passage phase 2 ?
-                Projet.changePhase1(self)
+        elif self.avancement >= palier and self.attente==True :
 
-            elif self.avancement >= liste[0] and self.attente==True :
+            Projet.verifPhase1(self, palier, utilisateur)
 
-                # On demande à l'utilisateur de fixer la population
-                #| qu'il souhaite cibler avec son produit.
-                Concept.ciblage(self.produit, utilisateur)
-
-                # On vérifie que l'utilisateur a entré la population cible
-                self.attente = Concept.verif(self.produit)
-
-                # Passage phase 2 ?
-                Projet.changePhase1(self)
-
-            else :
-                # On fait avancer le projet.
-                self.avancement += progret(chercheurs)
-
-        elif self.phase == 2 :
-            if self.avancement >= liste[1] :
-
-                # On change le concept en prototype
-                self.produit = Prototype(self.chercheurs, (self.produit.appreciation), 
-                               (self.produit.orientation))
-                
-                # On passe à la phase suivante du projet
-                self.phase += 1
-            else :
-                # On fait avancer le projet.
-                self.avancement += progret(chercheurs)
-
-        elif self.phase == 3 :
-
-            if self.avancement >= liste[2] :
-
-                print("Fini !")
-
-            else :
-                # On fait avancer le projet.
-                self.avancement += progret(chercheurs)
+        else :
+            # On fait avancer le projet.
+            self.avancement += progres(chercheurs)
 
         return(self)
 
+    def verifPhase2(self, palier, utilisateur) :
+        """
+        FONCTION       : Récupère une entrée utilisateur, si
+                         celle-ci est True alors on déduit du 
+                         capital le coût de production d'un 
+                         prototype et on passe à la phase 3.
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
 
-####################################
-###########| PROCEDURES |###########
-####################################
-'''
-def nom_procedure() :
-    """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    """
-    #>>> Initialisation des variables locales <<<#
+        if utilisateur==True :
 
-    #>>> Corps de la procédure <<<#
+            # // Warning  : déduire le coût de création du prototype au budjet de l'utilisateur //
+            self.attente = False
+            # On réinitialise l'avancement
+            self.avancement = 0
+            # On passe à la phase suivante du projet
+            self.phase += 1
 
-'''
+        else :
+            self.attente = True
+
+        return(self)
+
+    def phase2(self, palier, utilisateur) :
+        """
+        FONCTION       : Modélise le développement du projet à
+                         la phase 2.
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+
+        if self.avancement >= palier and self.attente==False :
+
+            # On change le concept en prototype
+            self.produit = Prototype(self.chercheurs, (self.produit.appreciation), 
+                                    (self.produit.orientation))
+
+            Prototype.develop(self.produit)
+
+            Projet.verifPhase2(self, palier, utilisateur)
+
+        elif self.avancement >= palier and self.attente==True :
+
+            Projet.verifPhase2(self, palier, utilisateur)
+
+        else :
+            # On fait avancer le projet.
+            self.avancement += progres(chercheurs)
+
+        return(self)
+
+    def phase3(self, palier, utilisateur) :
+        """
+        FONCTION       : Modélise le développement du projet à
+                         la phase 3.
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+
+        if self.avancement >= palier :
+            # On réinitialise l'avancement
+            self.avancement = self.avancement-palier
+            # On passe à la phase suivante du projet
+            self.phase += 1
+
+        else :
+            # On fait avancer le projet.
+            self.avancement += progres(chercheurs)
+
+        return(self)
+
+    def verifPhase4(self, palier, utilisateur) :
+        """
+        FONCTION       : Récupère une entrée utilisateur, si
+                         celle-ci est True alors on déduit
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+
+        if utilisateur==True :
+            # Dépot d'un brevet (Warning : frais supplémentaires)
+
+            # Initialisation de l'utilité
+            utilite = Prototype.appr_to_uti(self.produit)
+            # Transformation en produit
+            self.produit = Produit(utilite, self.produit.materiaux, 
+                                   self.produit.operations)
+            # Le projet est fini.
+            self.phase += 1
+        return(self)
+
+    def phase4(self, palier, utilisateur) :
+        """
+        FONCTION       : Modélise le développement du projet à
+                         la phase 4.
+        ENTREES        : 
+        SORTIE         : 
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+
+        if self.avancement >= palier :
+            Projet.verifPhase4(self, palier, utilisateur)
+
+        elif utilisateur==True and self.essai == False :
+            
+            # // Warning : diminuer le capital d'une certaine somme //
+
+            # On met le prototype à l'essai
+            self.essai = True
+            # On fait avancer le projet avec le bonus de la mise
+            #| à l'essai du produit.
+            self.avancement += progres(chercheurs) + 0.5*progres(chercheurs)
+
+        else :
+            # On fait avancer le projet.
+            self.avancement += progres(chercheurs)
+
+    def progression(self, liste, utilisateur) :
+        """
+        FONCTION       : Modélise la progression du projet et
+                         selon la phase de développement, appelle 
+                         les fonctions qui sont associées.
+        ENTREES        : Un projet (Projet), une liste des différents
+                         paliers (int list) et une entrée utilisateur.
+        SORTIE         : Le projet mis à jour.
+        REMARQUES      : 
+        TEST UNITAIRE  : ...
+        """
+
+        if self.phase == 1 :
+            Projet.phase1(self, liste[0], utilisateur)
+
+        elif self.phase == 2 :
+            Projet.phase2(self, liste[1], utilisateur)
+
+        elif self.phase == 3 :
+            Projet.phase3(self, liste[2], utilisateur)
+
+        elif self.phase == 4 :
+            Projet.phase4(self, liste[3], utilisateur)
+
+        return(self)
+
+    def __repr__(self) :
+
+        return("Phase : {} | Progression : {}".format(self.phase, self.avancement))
+
+
 ####################################
 ########| TESTS UNITAIRES |#########
 ####################################
@@ -462,27 +592,39 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
-
     for cherch in chercheurs :
         print(cherch) 
 
     print(compRecherche(chercheurs))
 
     test = Projet(chercheurs)
-    compt = 0
     
+    paliers = [80, 100, 100, 100]
+    
+    # PHASE 1
     while test.phase == 1 :
-        test = Projet.niveau(test, [60, 100, 50], "Jeunes")
-        print(test.avancement)
-        compt+=1
-
+        print(test)
+        test = Projet.progression(test, paliers, input("Phase 1 : "))
+  
     print(test.produit)
-    print(compt)
+
+    # PHASE 2
+    while test.phase == 2 :
+        print(test)
+        test = Projet.progression(test, paliers, True)
+        
+    print(test.produit)
+
+    # PHASE 3
+    while test.phase == 3 :
+        print(test)
+        test = Projet.progression(test, paliers, True)
     
+    print(test.produit)
 
-    """
-    test = Prototype([],[],[])
-    test = Prototype.creaOpera(test)
+    # PHASE 4
+    while test.phase == 4 :
+        print(test)
+        test = Projet.progression(test, paliers, True)
 
-    print(test)
-    """
+    print(test.produit) 
