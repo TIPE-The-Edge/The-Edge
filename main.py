@@ -56,17 +56,11 @@ FRAME_RATE = 60
 class Window():
 
     def __init__(self,screen):
-        bg_color = (236,240,241)
-        screen.fill(bg_color)
-        nav_rect = pygame.Rect(0, 0, 80, 720)
-        info_rect = pygame.Rect(80, 0, 1200, 40)
-        pygame.draw.rect(screen, (44,62,80), nav_rect)
-        pygame.draw.rect(screen, (230,126,34), info_rect)
         self.current = '0'
         self.button_nav = ['nav_icon_0','nav_icon_1','nav_icon_2','nav_icon_3','nav_icon_4','nav_icon_5']
 
         self.create_items(screen)
-        self.draw(screen)
+        self.display(screen)
 
     def loop(self, screen):
         clock = pygame.time.Clock()
@@ -80,7 +74,7 @@ class Window():
                     return
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     return
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     for liste_items in self.items:
                         for item in liste_items:
@@ -91,17 +85,23 @@ class Window():
             pygame.display.update()
 
     def create_items(self, screen):
+        bg_color = (236,240,241)
+        screen.fill(bg_color)
+
         nav_button = self.draw_nav_button()
-        perma_info = []
+        info_bar = self.draw_info()
         frame = self.draw_item_list()
         button_info = []
 
-        self.items = [nav_button, perma_info, frame, button_info]
+        self.items = [frame, info_bar, nav_button, button_info]
 
-    def draw(self, screen):
+    def display(self, screen):
+        nav_rect = pygame.Rect(0, 0, 80, 720)
+        pygame.draw.rect(screen, (44,62,80), nav_rect)
+
         for liste_items in self.items:
             for item in liste_items:
-                print(item.type)
+                # print(item.type)
                 item.draw(screen)
 
     def draw_nav_button(self):
@@ -128,7 +128,10 @@ class Window():
 
         return [item_list]
 
+    def draw_info(self):
+        info_bar = Info_bar()
 
+        return [info_bar]
 
     def quit(self):
         pass
@@ -157,11 +160,13 @@ class Button_txt():
         self.action = action
 
     def draw(self, screen):
-        print('test')
         pygame.draw.rect(screen, self.color, self.rect)
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def move(self, shift):
+        self.rect.y -= shift
 
 class Text():
     def __init__(self, msg, f, msg_color, bg_color, x, y):
@@ -173,6 +178,7 @@ class Text():
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
+
 class Item_list():
     def __init__(self,
                  items, list_x, list_y, item_width, item_height,
@@ -181,8 +187,7 @@ class Item_list():
         self.type = 'item_list'
         self.items = []
 
-        for i in range(0,10):
-            print(i)
+        for i in range(0,100):
             button = Button_txt(330, (40 + i * item_height + i*2), item_width, item_height, test)
             self.items.append(button)
 
@@ -198,7 +203,15 @@ class Item_list():
         else:
             thumb_height = scrollbar_height * scrollbar_height / all_items_height
 
+        self.thumb_color = (189, 195, 199)
+        self.thumb_color_pressed = (149, 165, 166)
         self.rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, thumb_height)
+
+        self.pressed = False
+        self.coord_pressed = None
+        self.min_height = scrollbar_y
+        self.max_height = scrollbar_y + scrollbar_height - thumb_height
+        self.item_shift = all_items_height / scrollbar_height
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.bg_color, self.bg_rect)
@@ -207,12 +220,54 @@ class Item_list():
             item.draw(screen)
 
         pygame.draw.rect(screen, self.sb_bg_color, self.sb_bg_rect)
-        pygame.draw.rect(screen, self.bg_color, self.rect)
+
+        if self.pressed:
+            pygame.draw.rect(screen, self.thumb_color_pressed, self.rect)
+        else:
+            pygame.draw.rect(screen, self.thumb_color, self.rect)
+
+    def do(self, window, screen):
+        self.pressed = True
+
+        while self.pressed:
+            mouse_pos = pygame.mouse.get_pos()
+
+            if self.coord_pressed == None:
+                self.coord_pressed = mouse_pos
+            else:
+                shift = mouse_pos[1] - self.coord_pressed[1]
+                thumb_pos_y = self.rect.y + shift
+                if thumb_pos_y >= self.min_height and thumb_pos_y <= self.max_height:
+                    self.coord_pressed = mouse_pos
+                    self.rect.y = thumb_pos_y
+
+                    if shift != 0:
+                        if shift < 0:
+                            signe = -1
+                        else:
+                            signe = 1
+
+                        for item in self.items:
+                            item.move(self.item_shift * signe)
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                    self.pressed = False
+                    self.coord_pressed = None
+
+            window.display(screen)
+            pygame.display.update()
+
+
+class Info_bar():
+    def __init__(self):
+        self.rect = pygame.Rect(80, 0, 1200, 40)
+
+    def draw(self,screen):
+        pygame.draw.rect(screen, (230,126,34), self.rect)
 
     def do(self, window, screen):
         pass
-
-
 
 
 ####################################################
@@ -220,14 +275,12 @@ class Item_list():
 ####################################################
 
 def change_tab(button, window, screen):
-    nav_rect = pygame.Rect(0, 0, 80, 720)
-    pygame.draw.rect(screen, (44,62,80), nav_rect)
     main_rect = pygame.Rect(80,40,1200,680)
     pygame.draw.rect(screen, (236,240,241), main_rect)
 
     window.current = str(button.num)
     window.create_items(screen)
-    window.draw(screen)
+    window.display(screen)
 
 def main():
     pygame.init()
