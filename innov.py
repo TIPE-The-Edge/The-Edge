@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 30/12/2017
+#>>> DATE    : 31/12/2017
 ####################################
 
 
@@ -32,7 +32,7 @@ II/  Analyse du marché :
       - Génération d'un retour client
         sur un objet de classe Projet
       - Ciblage d'une population /
-        orientation du projet
+        cible du projet
 
 III/ Développement/Test de validation :
 (Se présente en deux étapes)
@@ -92,13 +92,10 @@ que le produit soit rentable.
 
 |→ URGENT :
 
-    - Faire la fonction convertissant une appréciation
-      en une utilité. 
     - Commenter toutes les fonctions.
     - Refaire la description du fichier.
 """
 ####################################
-
 
 #| Provisoire |#
 
@@ -140,22 +137,6 @@ def appreciation(ref) :
     #>>> Sortie <<<#
     return((rep,ref))
 
-# Fonction Compétence "Recherche"
-def compRecherche(individus) :
-    return(sum([individu.competence_recherche for individu in individus]))
-
-# Fonction Compétence "Groupe"
-def compGroupe(individus) :
-    # On fait la moyenne des capacités de travail de groupe des chercheurs
-    moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
-    leader = max([individu.competence_direction for individu in individus])
-    if leader >= 8 :
-        moyenne += (int(leader/8))+(leader-8)
-    return(10*moyenne -50)
-
-def progres(individus) :
-    return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
-
 '''
 def nom_fontion() :
     """
@@ -173,8 +154,6 @@ def nom_fontion() :
     return()
 '''
 
-
-
 ####################################
 ############| CLASSES |#############
 ####################################
@@ -186,10 +165,8 @@ class Concept(object) :
         # On initialise l'appréciation du concept
         #| par les clients (différentes populations)
         self.appreciation = []
-
         # Désignera une population.
-        self.orientation = ""
-
+        self.cible = ""
 
     def sondage(self) : 
         for pop in populations :
@@ -203,52 +180,47 @@ class Concept(object) :
                          t-il.
         ENTREES        : Un concept (Concept) et des populations 
                          (Population list)
-        SORTIE         : Le concept avec une orientation définie 
+        SORTIE         : Le concept avec une cible définie 
                          (Concept)
         REMARQUES      : Il faudra prendre en compte ici le cout 
                          d'une campagne marketing.
         TEST UNITAIRE  : OK
         """
-        # On modifie l'orientation marketing du projet
-        self.orientation = population
+        # On modifie la cible marketing du projet
+        self.cible = population
         return(self)
 
     def effetMarketing(self) :
         for avis in self.appreciation :
-            if avis[1] == self.orientation :
+            if avis[1] == self.cible :
                 avis[0] = appreciation(avis[0][1]+aleaLoiNormale(esperance=5, ecart_type=1.6))
         return(self)
 
     def verif(self) :
-        if self.orientation in [pop.nom for pop in populations] :
+        if self.cible in [pop.nom for pop in populations] :
             return(False)
         else :
             return(True)
 
-
     def __repr__(self) :
-        return("{} | {}".format(self.appreciation, self.orientation))
+
+        return("{} | {}".format(self.appreciation, self.cible))
 
 
 class Prototype(object):
 
-    def __init__(self, chercheurs, appreciation, orientation):
+    def __init__(self, chercheurs, appreciation, cible):
 
         # La liste des chercheurs parcipant au projet
         self.chercheurs = chercheurs
-
         # L'opinion des consommateurs sur le produit
         self.appreciation = appreciation
-
         # La population ciblée par le produit
-        self.orientation = orientation
-
+        self.cible = cible
         # Les matériaux 
         self.materiaux = []
-
         # Les opérations
         self.operations = []
-
         # Le coût de fabrication
         self.cout = 0
 
@@ -317,7 +289,7 @@ class Prototype(object):
 
     def __repr__(self) :
         return("{} | {} - {} | {} : {}". format(self.appreciation, 
-              self.orientation, self.materiaux, self.operations, self.cout))
+              self.cible, self.materiaux, self.operations, self.cout))
 
 
 class Projet(object):
@@ -326,7 +298,6 @@ class Projet(object):
 
         # La liste des chercheurs parcipant au projet
         self.chercheurs = chercheurs
-
         # Génération d'un produit à l'initialisation
         #| du projet.
         self.produit = Concept() 
@@ -442,7 +413,7 @@ class Projet(object):
 
             # On change le concept en prototype
             self.produit = Prototype(self.chercheurs, (self.produit.appreciation), 
-                                    (self.produit.orientation))
+                                    (self.produit.cible))
 
             Prototype.develop(self.produit)
 
@@ -497,7 +468,7 @@ class Projet(object):
             utilite = Prototype.appr_to_uti(self.produit)
             # Transformation en produit
             self.produit = Produit(utilite, self.produit.materiaux, 
-                                   self.produit.operations)
+                                   self.produit.operations, self.produit.cible)
             # Le projet est fini.
             self.phase += 1
         return(self)
@@ -581,7 +552,7 @@ class Test(unittest.TestCase) :
         reponse = "Jeunes"
         test = Concept()
         test = Concept.ciblage(test, "Jeunes")
-        self.assertEqual(test.orientation, reponse)
+        self.assertEqual(test.cible, reponse)
 
 
 ####################################
@@ -627,4 +598,9 @@ if __name__=="__main__" :
         print(test)
         test = Projet.progression(test, paliers, True)
 
-    print(test.produit) 
+    produit = 0
+
+    if test.phase == 5 :
+        produit = test.produit
+
+    print(produit)

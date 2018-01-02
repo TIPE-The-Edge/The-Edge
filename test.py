@@ -108,13 +108,14 @@ class Population(object): # de consommateurs
 
 class Produit(object):
 
-    def __init__(self, utilite, materiaux, operations):
+    def __init__(self, utilite, materiaux, operations, cible):
         self.nom = self.genNom()
 
         self.utilite    = utilite # Par population (0-100)
         self.materiaux  = materiaux # materiaux et quantités nécessaires
         self.operations = operations   # Opérations nécessaires
 
+        self.cible = cible
         self.prix     = 0 # Prix fixé
         self.tps_adoption  = 0 # ADRIEN
 
@@ -231,26 +232,6 @@ class Materiau(object):
             nom = "Materieau_"+str(Materiau.indice_nom)
 
         return nom
-
-
-
-###| Création des populations |###
-pop_1 = Population("Jeunes", 300, 15)
-pop_2 = Population("Actifs", 2000, 40)
-pop_3 = Population("Seniors", 1800, 25)
-
-"""
-pop_1A = 
-pop_2A = 
-pop_3A = 
-
-pop_1B = 
-pop_2B = 
-pop_3B = 
-"""
-
-
-
 
 if __name__=="__main__" :
 

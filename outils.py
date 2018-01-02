@@ -76,6 +76,24 @@ def aleaLoiNormale(esperance, ecart_type) :
     #>>> Sortie <<<#
     return(valeur)
 
+
+# Fonction Compétence "Recherche"
+def compRecherche(individus) :
+    return(sum([individu.competence_recherche for individu in individus]))
+
+# Fonction Compétence "Groupe"
+def compGroupe(individus) :
+    # On fait la moyenne des capacités de travail de groupe des chercheurs
+    moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
+    leader = max([individu.competence_direction for individu in individus])
+    if leader >= 8 :
+        moyenne += (int(leader/8))+(leader-8)
+    return(10*moyenne -50)
+
+def progres(individus) :
+    return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
+
+
 '''
 def nom_fontion() :
     """
