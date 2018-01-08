@@ -23,7 +23,8 @@ Rajouter les fonctions d'update.
 Rajouter les fonctions de recherche.
 
 Individu :
-    Update de l'exp.
+    updateExpProduit (voir avec Adrien si j'incrémente l'exp pour
+        les prototypes, projets etc..)
 
 Produit :
     self.materiaux    (aleatoire) (Adrien)
@@ -40,13 +41,15 @@ Formation :
     self.duree  (Besoin d'une fonction pour rendre cohérent)
 
 Population : # de consommateurs
-    updateProduits() (voir comment on maj les produits vendus et a quelle fréquence) (Adrien quand il sera dans la partie vente)
+    updateProduits() (voir comment on maj les produits vendus
+        et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
 Fournisseur :
     self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction) (Lucas)
 
 Usine :
-    self.operations_realisables (Opérations et prix) (Besoin d'une fonction) (Lucas)
+    self.operations_realisables (Opérations et prix)
+        (Besoin d'une fonction) (Lucas)
 
 Faire les BONUS.
 """
@@ -61,6 +64,13 @@ On pourrait faire de l'optimisation en important le contenu des fichiers noms
     au début pour ne pas avoir à les rouvrir ?
 
 POUR ADRIEN : Produit materiaux population
+
+J'ai eu un pti problème avec la liste departs de ce fichier car quand je tapais
+    "departs = [["Marcel", 2]]" dans le fichier test_generators.py, il me semble
+    qu'il créait une 2e liste du meme nom mais dans le fichier test seulement.
+    Donc la fonction Individu.depart() voyait une liste vide tt le temps.
+    Ainsi, j'ai écrit dans le fichier test "departs += [["Marcel", 2]]" pour
+    le forcer à garder la meme liste.
 
 """
 
@@ -119,32 +129,38 @@ class Individu(object):
         self.genre   = random.choice(["homme", "femme"])
         self.prenom  = self.genNom(self.genre) # Prénom (en fonction du genre)
         self.nom     = self.genNom("family")
-        self.age     = random.randint(23,50)
+        self.age     = self.genAge()
 
-        self.salaire = 0
-        self.bonheur = random.randint(3, 10)
-        self.statut  = None
-        self.role    = None
-        self.projet  = None
-
-        # Experiences # A DEFINIR
+        # Experiences en nombre de semaines
+        self.exp_RetD    = self.genExpRole()
         self.exp_startup = 0
-        self.exp_produit = [[]] # Experience par produit
 
-        # Compétences # A COMPLETER?
-        self.competence_groupe      = random.randint(1, 10) # Capacité à travailler en groupe
-        self.competence_recherche   = random.randint(1, 10) # Efficacité à la recherche
-        self.competence_direction   = random.randint(1, 10) # Capacité à diriger une équipe
+        # Compétences
+            # R&D
+        self.competence_groupe    = self.genCompetence() # Capacité à travailler en groupe
+        self.competence_recherche = self.genCompetence() # Efficacité à la recherche
 
-        self.conges  = 0 # BONUS
-        self.horaire = 0 # temps de travail # BONUS
+        # Caractéristique RH
+        self.bonheur = 5 # De 0 à 10, indicateur du bonheur de l'employé dans
+                         # l'entreprise.
+        self.statut  = "CDI" # Pour l'instant, un seul statut
+        self.role    = "R&D" # Pour l'instant, un seul role
+        self.projet  = None  # Projet en cours
+        self.salaire = self.genSalaire() # Salaire brut
 
-        # Ajoute à la liste
-        individus.append(self)
+        # Formations
+        self.nbr_formations  = 0 # Nbr de formations effectuées
+        self.cout_formations = 0 # Cout des formations effectuées
+
+        # BONUS
+        self.conges  = None # BONUS
+        self.horaire = None # temps de travail # BONUS
+        self.exp_produit = None # Experience par produit # BONUS
+        self.competence_direction = None # Capacité à diriger une équipe # BONUS
 
     def __repr__(self):
-        return "{} - {} {}, {} ans. {}.".format(
-                self.id, self.prenom, self.nom, self.age, self.genre)
+        return "{} - {} {}, {} ans. {}".format(
+                self.id, self.prenom, self.nom, self.age, self.salaire)
 
     def genNom(self, genre):
         """ Retourne un nom en fonction du genre entré.
@@ -157,10 +173,72 @@ class Individu(object):
         else:
             return random.choice(readNameFile("./Name_Files/family_names.txt"))
 
-    def initExpProduit():
+    def genAge(self):
+
+        liste = [2,2,2,2,2,2, 3,3,3,3,3, 4,4,4, 5,5, 6]
+        dizaine = random.choice(liste)
+
+        if dizaine == 2:
+            unite = random.randint(3, 9)
+        elif dizaine == 6:
+            unite = 0
+        else:
+            unite = random.randint(0,9)
+
+        nbr = int(str(dizaine) + str(unite))
+        return nbr
+
+    def genExpRole(self):
+        seuil_bas  = int((self.age - 23)*52/3)
+        seuil_haut = (self.age - 23)*52
+        return(random.randint(seuil_bas, seuil_haut)) # de 0 à 40 ans d'exp
+
+    def genCompetence(self):
+        comp_exp = (self.exp_RetD/52)/7.4 # Compétence tirée de l'experience
+        comp_rand = random.randint(1, 5)
+        return (int(round(comp_exp + comp_rand, 0)))
+
+    def genSalaire(self):
+
+        # R&D
+        if self.role == "R&D":
+            if self.exp_RetD >= 1768:
+                return(4025)
+            elif self.exp_RetD >= 884:
+                return(3858)
+            elif self.exp_RetD >= 468:
+                return(3483)
+            elif self.exp_RetD >= 312:
+                return(2975)
+            elif self.exp_RetD >= 208:
+                return(2975)
+            else:
+                return(2550)
+        else:
+            return(0)
+
+    def initExpProduit(individus, produits):
 
         for ind in individus:
             ind.exp_produit = [[prod.nom, 0] for prod in produits]
+
+    def updateExpProduit(individus, produits):
+        for ind in individus:
+            for prod in produits:
+                # On cherche à quel projet est affecté l'individu
+                if ind.projet == prod.nom:
+
+                    # Puis on incrémente de 1 le bon projet dans exp_produit
+                    for proj in ind.exp_produit:
+                        if prod.nom in proj:
+                            proj[1] += 1
+
+    def updateExpStartUp(individus):
+        for ind in individus:
+            ind.exp_startup += 1
+
+    def semaine_to_annee(semaines):
+        return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
 
 class Population(object): # de consommateurs
 
@@ -174,38 +252,32 @@ class Population(object): # de consommateurs
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
-        # Ajoute à la liste
-        populations.append(self)
-
     def __repr__(self):
         return "{} - nombre: {} revenu: {}".format(
                 self.nom, self.nombre, self.revenu)
 
-    def initProduits():
+    def initProduits(populations, produits):
 
         for pop in populations:
             pop.produits = [[prod.nom, 0] for prod in produits]
 
 class Produit(object):
 
-    def __init__(self):
+    def __init__(self, utilite, materiaux, operations, tps_adoption):
         self.nom = self.genNom()
 
-        self.utilite    = [[]] # Par population (0-100)
-        self.materiaux  = [[]] # materiaux et quantités nécessaires
-        self.operations = []   # Opérations nécessaires
+        self.utilite    = utilite    # Par population (0-100)
+        self.materiaux  = materiaux  # materiaux et quantités nécessaires
+        self.operations = operations # Opérations nécessaires
 
         self.prix     = 0 # Prix fixé
-        self.tps_adoption  = 0 # ADRIEN
+        self.tps_adoption  = tps_adoption
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
 
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
-
-        # Ajoute à la liste
-        produits.append(self)
 
     def __repr__(self):
         return "{} - age : {}".format(self.nom, self.age)
@@ -221,7 +293,8 @@ class Produit(object):
 
         return prefixe + " " + sufixe
 
-    def creeUtilite(self, seuil):
+    def creeUtilite(self, populations, seuil):
+
         somme = seuil + 1
         while somme > seuil:
 
@@ -231,12 +304,7 @@ class Produit(object):
 
         self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
 
-    def initUtilites(seuil):
-
-        for prod in produits:
-            prod.creeUtilite(seuil)
-
-    def ageUpdate():
+    def ageUpdate(produits):
 
         for prod in produits:
             if prod.marche:
@@ -252,9 +320,6 @@ class Operation(object):
     def __init__(self):
 
         self.nom = self.genNom()
-
-        # Ajoute à la liste
-        operations.append(self)
 
     def __repr__(self):
         return "{}".format(
@@ -287,9 +352,6 @@ class Materiau(object):
 
         self.nom = self.genNom()
 
-        # Ajoute à la liste
-        materiaux.append(self)
-
     def __repr__(self):
         return "{}".format(
                 self.nom)
@@ -320,8 +382,6 @@ class Formation(object):
         self.competences = [[]] # liste des compétences améliorées # Besoin d'une fonction
         self.prix  = 0 # Besoin d'une fonction
         self.duree = 0 # Besoin d'une fonction
-
-        formations.append(self)
 
     def __repr__(self):
         return "{} - prix: {} duree: {}".format(
@@ -358,9 +418,6 @@ class Fournisseur(object):
         self.nom = self.genNom()
 
         self.materiaux_vendu = [[]] # Materiaux et prix
-
-        # Ajoute à la liste
-        fournisseurs.append(self)
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -403,9 +460,6 @@ class Usine(object):
         self.localisation = self.genLocalistation()
         self.operations_realisables = [[]] # Opérations et prix
 
-        # Ajoute à la liste
-        usines.append(self)
-
     def __repr__(self):
         return "{} - {} : {}".format(
                 self.nom, self.localisation, self.operations_realisables)
@@ -425,20 +479,6 @@ class Usine(object):
         Usine.localisations.remove(loc)
 
         return loc
-
-####################################################
-##################| VARIABLES |#####################
-####################################################
-
-# Initialisation des listes de class
-individus    = []
-produits     = []
-operations   = []
-materiaux    = []
-formations   = []
-populations  = []
-fournisseurs = []
-usines       = []
 
 ####################################################
 ##################| PROGRAMME |#####################
