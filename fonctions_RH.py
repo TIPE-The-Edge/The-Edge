@@ -13,53 +13,45 @@
 # IMPORTS DE FICHIERS
 
 
-""" TO DO LIST ✔✘
-#randomQuote : "Une personne vivante est admirable." MB
+""" TO DO LIST
 
 RH :
     update()
+        self.cout_emploi : changer le 0 par la valeur des charges indirectes
+            (voir NOTES)
+
+        self.part_masse_sal : récupérer le budget total (LC)
+
+    Etablir le cout des locaux
 
 """
 
 """ NOTES
 
-Gérer les formations dans generators.py
-
-RH():
-
-    Listes des Infos RH :
-
-        Couts :
-            Coût moyen par emploi permanent
-            Masse salariale brute
-            Masse salariale nette
-            Part de la masse salariale dans le budget de fonctionnement
-
-        Formation :
-            Niveau de qualification des employés
-            Nombre d’agents bénéficiaires d’au moins une formation
-            Fonds investis dans la formation
-
+Cout de l'emploi :
+    Les charges indirectes :
+        - Le coût des locaux / le nombre d’employés
+        - Ses coûts de formation # Bonus
 """
 
 """ BONUS
-Travailleurs handicapés
+    Travailleurs handicapés
 
-Abscences :
-    Taux d’absence
-    Autres absences
-    Coût des absences
-    Nombre de jours travaillés dans l’année
+    Abscences :
+        Taux d’absence
+        Autres absences
+        Coût des absences
+        Nombre de jours travaillés dans l’année
 
-Salaire :
-    Primes
-    Part des primes dans la rémunération
+    Salaire :
+        Primes
+        Part des primes dans la rémunération
 
-Riques :
-    Maladie professionnelle
-    Fréquence et de gravité
-    Coûts financiers des accidents
-    Hygiène
+    Riques :
+        Maladie professionnelle
+        Fréquence et de gravité
+        Coûts financiers des accidents
+        Hygiène
 """
 
 ####################################################
@@ -80,14 +72,17 @@ def fonction():
 class RH(object):
 
     def __repr__(self):
-        return "nbr employés: {} \nbonheur moy: {} \nexp moy: {} \nage moy: {} \n\nnbr arrivees: {} \ntaux arrivees: {} \nnbr departs: {} \ntaux departs: {} \ntaux rotation: {} \n\ncout formations: {} \nmoy formations: {} \n\nsalaire moy: {} \nmasse sal brute: {} \nmasse sal nette: {} \ncout emploi: {} \ncout moy emploi: {} \npart masse sal: {}".format(
-                self.nbr_employes, self.bonheur_moy, self.exp_moy, self.age_moy, self.nbr_arrivees, self.taux_arrivees, self.nbr_departs, self.taux_departs, self.taux_rotation, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
+        return "nbr employés: {} \nbonheur moy: {} \nage moy: {} \n\nexp start up moy: {} \nexp R&D moy: {} \n\nnbr arrivees: {} \ntaux arrivees: {} \nnbr departs: {} \ntaux departs: {} \ntaux rotation: {} \n\ncout formations: {} \nmoy formations: {} \n\nsalaire moy: {} \nmasse sal brute: {} \nmasse sal nette: {} \ncout emploi: {} \ncout moy emploi: {} \npart masse sal: {}".format(
+                self.nbr_employes, self.bonheur_moy, self.age_moy, self.exp_start_up_moy, self.exp_RetD_moy, self.nbr_arrivees, self.taux_arrivees, self.nbr_departs, self.taux_departs, self.taux_rotation, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
 
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
-        self.nbr_employes = RH.nbr(individus)
-        self.bonheur_moy  = RH.bonheurMoyen(individus)
-        self.exp_moy      = RH.expStartUpMoyenne(individus)
-        self.age_moy      = RH.ageMoyen(individus)
+        self.nbr_employes     = RH.nbr(individus)
+        self.bonheur_moy      = RH.bonheurMoyen(individus)
+        self.age_moy          = RH.ageMoyen(individus)
+
+        # Experience
+        self.exp_start_up_moy = RH.expStartUpMoyenne(individus)
+        self.exp_RetD_moy     = RH.expRetDMoyenne(individus)
 
         # Flux
         self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
@@ -97,18 +92,19 @@ class RH(object):
         self.taux_rotation = (self.nbr_arrivees + self.nbr_departs)/self.nbr_employes # turn over
 
         # Formation
-        self.cout_formations = None # Fonds investis dans la formation
-        self.moy_formations  = None # Moyenne de formations par employé
+        self.cout_formations = None # Fonds investis dans la formation # BONUS
+        self.moy_formations  = None # Moyenne de formations par employé # BONUS
 
         # Couts
         self.salaire_moy     = RH.salaireMoyen(individus)
         self.masse_sal_brute = RH.masseSalBrute(individus) # Masse salariale brute
         self.masse_sal_nette = RH.masseSalNette(individus) # Masse salariale nette
-        self.cout_emploi     = None # Cout total des employés
-                               # (salaire net + charges sociales salariales)
-                               # + charges patronales
-                               # + charges indirectes
-        self.cout_moy_emploi = None # Coût moyen par emploi permanent
+        self.cout_emploi     = round(self.masse_sal_brute + (self.masse_sal_brute*0.42) + 0, 2)
+                                # Cout total des employés
+                                # (salaire net + charges sociales salariales)
+                                # + charges patronales
+                                # + charges indirectes
+        self.cout_moy_emploi = round(self.cout_emploi/self.nbr_employes, 2) # Coût moyen par emploi
         self.part_masse_sal  = None # Part de la masse salariale dans le budget de fonctionnement (LC)
 
     def nbr(individus):
@@ -126,11 +122,17 @@ class RH(object):
             moyenne += ind.exp_startup
         return (moyenne/len(individus))
 
+    def expRetDMoyenne(individus):
+        moyenne = 0
+        for ind in individus:
+            moyenne += ind.exp_RetD
+        return (round(moyenne/len(individus), 2))
+
     def ageMoyen(individus):
         moyenne = 0
         for ind in individus:
             moyenne += ind.age
-        return (moyenne/len(individus))
+        return (round(moyenne/len(individus), 2))
 
     def arrivees(individus, seuil):
         acc = 0
@@ -154,7 +156,7 @@ class RH(object):
         moyenne = 0
         for ind in individus:
             moyenne += ind.salaire
-        return (moyenne/len(individus))
+        return (round(moyenne/len(individus), 2))
 
     def masseSalBrute(individus):
         somme = 0

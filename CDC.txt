@@ -1,9 +1,9 @@
 Novembre : Développement des classes pour les différents acteurs de l’entreprise.
-Décembre : Développement d'une suite de fonctions pour la gestion de fichiers.
+Décembre : RH
 
-Janvier  : Finir la gestion de fichiers. Commencer les recherches et le développement de l’animation.
-Février  : Animation.
-Mars     : Graphismes pour l’animation et intégration.
+Janvier  :
+Février  :
+Mars     : Gestion de fichiers
 
 Avril    : Intégration des differentes fonctions au programme principal.
 Mai      : Corrections de bugs, ajouts de bonus/fonctions supplémentaires

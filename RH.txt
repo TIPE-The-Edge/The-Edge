@@ -21,21 +21,18 @@ Faire la liste des données RH à afficher pour Dorian.
 Faire la liste des données des employés à afficher pour Dorian.
 
 RECRUTEMENT :
-    Décider de la fréquence de renouvellement des candidats.
+    Décider de la fréquence de renouvellement et le nombre des candidats.
     Vérifier la bonne génération d'un individu.
     Licencier (retirer de individus, ajouter à licencies (et autres?))
 
 SALAIRE :
-    Créer la fonction qui associe un employé à un salaire.
     "Intéressement"? BONUS
     "Participation"? BONUS
-    Faire une grille des salaires.
+    Faire une grille des salaires. BONUS
 
-FORMATION :
+FORMATION : BONUS
     Décider de la fréquence de renouvellement des formations.
-    Vérifier la bonne génération d'une formation.
-    Prendre en compte le salaire total et donc faire la différence entre
-        salaires bruts et frais de personnel.
+    Génération d'une formation.
 
 STATS :
     Ce qui influe sur le bonheur.

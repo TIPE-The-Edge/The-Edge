@@ -19,23 +19,15 @@ import operator
 
 """ TO DO LIST ✔✘
 
-Rajouter les fonctions d'update.
-Rajouter les fonctions de recherche.
+Rajouter les fonctions d'update (s'il en manque).
 
 Individu :
     updateExpProduit (voir avec Adrien si j'incrémente l'exp pour
         les prototypes, projets etc..)
+    competence_direction (voir avec Adrien, qui apparemment l'utilise, ce qu'il
+        en fait et comment je l'initialise.)
 
-Produit :
-    self.materiaux    (aleatoire) (Adrien)
-    self.operations   (aleatoire) (Adrien)
-    self.tps_adoption (Adrien)
-
-Operation :
-
-Materiau :
-
-Formation :
+Formation : # BONUS
     competences (Besoin d'une fonction pour rendre cohérent)
     self.prix   (Besoin d'une fonction pour rendre cohérent)
     self.duree  (Besoin d'une fonction pour rendre cohérent)
@@ -51,7 +43,6 @@ Usine :
     self.operations_realisables (Opérations et prix)
         (Besoin d'une fonction) (Lucas)
 
-Faire les BONUS.
 """
 
 
@@ -59,19 +50,6 @@ Faire les BONUS.
 """
 
 """ NOTES
-
-On pourrait faire de l'optimisation en important le contenu des fichiers noms
-    au début pour ne pas avoir à les rouvrir ?
-
-POUR ADRIEN : Produit materiaux population
-
-J'ai eu un pti problème avec la liste departs de ce fichier car quand je tapais
-    "departs = [["Marcel", 2]]" dans le fichier test_generators.py, il me semble
-    qu'il créait une 2e liste du meme nom mais dans le fichier test seulement.
-    Donc la fonction Individu.depart() voyait une liste vide tt le temps.
-    Ainsi, j'ai écrit dans le fichier test "departs += [["Marcel", 2]]" pour
-    le forcer à garder la meme liste.
-
 """
 
 ####################################################
@@ -149,8 +127,8 @@ class Individu(object):
         self.salaire = self.genSalaire() # Salaire brut
 
         # Formations
-        self.nbr_formations  = 0 # Nbr de formations effectuées
-        self.cout_formations = 0 # Cout des formations effectuées
+        self.nbr_formations  = 0 # Nbr de formations effectuées # BONUS
+        self.cout_formations = 0 # Cout des formations effectuées # BONUS
 
         # BONUS
         self.conges  = None # BONUS
@@ -160,7 +138,7 @@ class Individu(object):
 
     def __repr__(self):
         return "{} - {} {}, {} ans. {}".format(
-                self.id, self.prenom, self.nom, self.age, self.salaire)
+                self.id, self.prenom, self.nom, self.age, self.exp_RetD)
 
     def genNom(self, genre):
         """ Retourne un nom en fonction du genre entré.

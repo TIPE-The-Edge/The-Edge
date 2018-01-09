@@ -69,7 +69,7 @@ if __name__ == "__main__" :
         usines.append(Usine())
 
     # individus
-    for i in range(10 + rang):
+    for i in range(3 + rang):
         individus.append(Individu())
 
     # candidats
