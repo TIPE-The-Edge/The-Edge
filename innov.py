@@ -25,14 +25,16 @@ Fichier rassemblant les différentes
 fonctions permettant de modéliser le
 processus d'innovation d'un produit :
 
-I/   Génération d'idées :
-      - Définition d'une classe Projet
-
-II/  Analyse du marché :
-      - Génération d'un retour client
-        sur un objet de classe Projet
+I/   Phase 1 :
+      - Création d'un objet Concept
+      - Analyse du marché
       - Ciblage d'une population /
         cible du projet
+
+II/  Phase 2 :
+      - A la fin de cette phase l'utilisateur
+        doit décider s'il veut commencer la
+        construction d'un prototype ou non.
 
 III/ Développement/Test de validation :
 (Se présente en deux étapes)
@@ -52,7 +54,7 @@ CEPENDANT
 D'après les recherches effectuées les
 chances de succès sont inférieures à
 50%, voire la plupart du temps de
-l'ordre de 1-10%. Telle sera la probabilité 
+l'ordre de 1-10%. Telle sera la probabilité
 que le produit soit rentable.
 """
 ####################################
@@ -82,9 +84,10 @@ que le produit soit rentable.
     - Développement de la phase 1 du projet.
     - Développement de la phase 2 du projet.
     - Développement de la phase 3 du projet.
+    - Développement de la phase 4 du projet.
 
 |→ REMARQUES :
-    
+
     - Garder en tête que les fonctions qui
       qui affichent ou demande à l'utilisateur
       une entrée devront être remplacées pour
@@ -168,7 +171,7 @@ class Concept(object) :
         # Désignera une population.
         self.cible = ""
 
-    def sondage(self) : 
+    def sondage(self) :
         for pop in populations :
             reference = aleaLoiNormale(esperance=50, ecart_type=16.6)
             self.appreciation.append([appreciation(reference),pop.nom])
@@ -178,11 +181,11 @@ class Concept(object) :
         """
         FONCTION       : Defini quelle population le concept cible-
                          t-il.
-        ENTREES        : Un concept (Concept) et des populations 
+        ENTREES        : Un concept (Concept) et des populations
                          (Population list)
-        SORTIE         : Le concept avec une cible définie 
+        SORTIE         : Le concept avec une cible définie
                          (Concept)
-        REMARQUES      : Il faudra prendre en compte ici le cout 
+        REMARQUES      : Il faudra prendre en compte ici le cout
                          d'une campagne marketing.
         TEST UNITAIRE  : OK
         """
@@ -217,7 +220,7 @@ class Prototype(object):
         self.appreciation = appreciation
         # La population ciblée par le produit
         self.cible = cible
-        # Les matériaux 
+        # Les matériaux
         self.materiaux = []
         # Les opérations
         self.operations = []
@@ -246,7 +249,7 @@ class Prototype(object):
         ENTREES        : Un prototype sans operations
         SORTIE         : Le prototype avec des operations
                          associees.
-        REMARQUES      : 
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -259,9 +262,9 @@ class Prototype(object):
         """
         FONCTION       : Défini les matériaux, les opérations ainsi que
                          le coût d'un prototype.
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
         Prototype.creaMater(self)
@@ -272,10 +275,10 @@ class Prototype(object):
         """
         FONCTION       : Convertie pour chaque population l'appréciation
                          en utilité.
-        ENTREES        : Un prototype (Prototype) et une liste de 
+        ENTREES        : Un prototype (Prototype) et une liste de
                          population (Population list)
         SORTIE         : L'utilité associée à ces appréciations
-        REMARQUES      : 
+        REMARQUES      :
         TEST UNITAIRE  : ("OK"/"...")
         """
 
@@ -288,7 +291,7 @@ class Prototype(object):
         return(utilite)
 
     def __repr__(self) :
-        return("{} | {} - {} | {} : {}". format(self.appreciation, 
+        return("{} | {} - {} | {} : {}". format(self.appreciation,
               self.cible, self.materiaux, self.operations, self.cout))
 
 
@@ -300,7 +303,7 @@ class Projet(object):
         self.chercheurs = chercheurs
         # Génération d'un produit à l'initialisation
         #| du projet.
-        self.produit = Concept() 
+        self.produit = Concept()
         self.avancement = 0
         self.phase = 1
         self.attente = False
@@ -308,7 +311,7 @@ class Projet(object):
 
     def verifPhase1(self, palier, utilisateur) :
         """
-        FONCTION       : Récupère une entrée utilisateur, si 
+        FONCTION       : Récupère une entrée utilisateur, si
                          celle-ci permet de fixer une population
                          cible alors on applique l'effet du ciblage
                          et on passe à la phase 2
@@ -316,7 +319,7 @@ class Projet(object):
                          (string)
         SORTIE         : Le projet qui tient compte de l'entrée
                          utilisateur.
-        REMARQUES      : 
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -326,10 +329,10 @@ class Projet(object):
 
         # On vérifie que l'utilisateur a entré la population cible
         self.attente = Concept.verif(self.produit)
-        
+
         # Passage phase 2 ?
         if self.attente==False :
-            # On applique l'effet du ciblage sur l'opinion  
+            # On applique l'effet du ciblage sur l'opinion
             #| des consommateurs vis à vis du concept.
             Concept.effetMarketing(self.produit)
             # On réinitialise l'avancement
@@ -345,7 +348,7 @@ class Projet(object):
                          la phase 1.
         ENTREES        : Un projet (Projet), un palier (int),
                          et une entrée utilisateur
-        SORTIE         : Le projet mis à jour 
+        SORTIE         : Le projet mis à jour
         REMARQUES      : La progression du projet s'arrête si
                          l'utilisateur ne donne pas de population
                          cible quand l'avancement du projet est
@@ -356,7 +359,7 @@ class Projet(object):
             # On initialise l'appétence des consommateurs
             #| vis à vis du concept.
             Concept.sondage(self.produit)
-            
+
             # // WARNING : Afficher les résultats du sondage sur l'interface //
             print(self.produit)
             # // WARNING //
@@ -376,12 +379,12 @@ class Projet(object):
     def verifPhase2(self, palier, utilisateur) :
         """
         FONCTION       : Récupère une entrée utilisateur, si
-                         celle-ci est True alors on déduit du 
-                         capital le coût de production d'un 
+                         celle-ci est True alors on déduit du
+                         capital le coût de production d'un
                          prototype et on passe à la phase 3.
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -403,16 +406,16 @@ class Projet(object):
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 2.
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
         if self.avancement >= palier and self.attente==False :
 
             # On change le concept en prototype
-            self.produit = Prototype(self.chercheurs, (self.produit.appreciation), 
+            self.produit = Prototype(self.chercheurs, (self.produit.appreciation),
                                     (self.produit.cible))
 
             Prototype.develop(self.produit)
@@ -433,9 +436,9 @@ class Projet(object):
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 3.
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -455,9 +458,9 @@ class Projet(object):
         """
         FONCTION       : Récupère une entrée utilisateur, si
                          celle-ci est True alors on déduit
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -467,7 +470,7 @@ class Projet(object):
             # Initialisation de l'utilité
             utilite = Prototype.appr_to_uti(self.produit)
             # Transformation en produit
-            self.produit = Produit(utilite, self.produit.materiaux, 
+            self.produit = Produit(utilite, self.produit.materiaux,
                                    self.produit.operations, self.produit.cible)
             # Le projet est fini.
             self.phase += 1
@@ -477,9 +480,9 @@ class Projet(object):
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 4.
-        ENTREES        : 
-        SORTIE         : 
-        REMARQUES      : 
+        ENTREES        :
+        SORTIE         :
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -487,7 +490,7 @@ class Projet(object):
             Projet.verifPhase4(self, palier, utilisateur)
 
         elif utilisateur==True and self.essai == False :
-            
+
             # // Warning : diminuer le capital d'une certaine somme //
 
             # On met le prototype à l'essai
@@ -503,12 +506,12 @@ class Projet(object):
     def progression(self, liste, utilisateur) :
         """
         FONCTION       : Modélise la progression du projet et
-                         selon la phase de développement, appelle 
+                         selon la phase de développement, appelle
                          les fonctions qui sont associées.
         ENTREES        : Un projet (Projet), une liste des différents
                          paliers (int list) et une entrée utilisateur.
         SORTIE         : Le projet mis à jour.
-        REMARQUES      : 
+        REMARQUES      :
         TEST UNITAIRE  : ...
         """
 
@@ -564,33 +567,33 @@ if __name__=="__main__" :
     # unittest.main()
 
     for cherch in chercheurs :
-        print(cherch) 
+        print(cherch)
 
     print(compRecherche(chercheurs))
 
     test = Projet(chercheurs)
-    
+
     paliers = [80, 100, 100, 100]
-    
+
     # PHASE 1
     while test.phase == 1 :
         print(test)
         test = Projet.progression(test, paliers, input("Phase 1 : "))
-  
+
     print(test.produit)
 
     # PHASE 2
     while test.phase == 2 :
         print(test)
         test = Projet.progression(test, paliers, True)
-        
+
     print(test.produit)
 
     # PHASE 3
     while test.phase == 3 :
         print(test)
         test = Projet.progression(test, paliers, True)
-    
+
     print(test.produit)
 
     # PHASE 4
