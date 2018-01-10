@@ -22,7 +22,7 @@ RH :
 
         self.part_masse_sal : récupérer le budget total (LC)
 
-    Etablir le cout des locaux
+    Etablir le cout des locaux (LC décision si achat ou location de locaux)
 
 """
 

@@ -110,7 +110,7 @@ class Individu(object):
         self.age     = self.genAge()
 
         # Experiences en nombre de semaines
-        self.exp_RetD    = self.genExpRole()
+        self.exp_RetD    = self.genExpRetD()
         self.exp_startup = 0
 
         # Compétences
@@ -166,7 +166,7 @@ class Individu(object):
         nbr = int(str(dizaine) + str(unite))
         return nbr
 
-    def genExpRole(self):
+    def genExpRetD(self):
         seuil_bas  = int((self.age - 23)*52/3)
         seuil_haut = (self.age - 23)*52
         return(random.randint(seuil_bas, seuil_haut)) # de 0 à 40 ans d'exp
