@@ -16,12 +16,12 @@ from pygame.sprite import Sprite, Group
 
 # IMPORTS DE FICHIERS
 
-# from widget.button_img import *
-# from widget.button_txt import *
-# from widget.entry import *
-# from widget.info_bar import *
-# from widget.item_list import *
-# from widget.label import *
+from widget.button_img import *
+from widget.button_txt import *
+from widget.entry import *
+from widget.info_bar import *
+from widget.item_list import *
+from widget.label import *
 
 
 """ TO DO LIST ✔✘
@@ -118,9 +118,9 @@ class Window():
             y =  i * 80 + i * 2
 
             if i == int(self.current):
-                button = Button_img(i, path + '_focus.png', 0, y, 80, 80, change_tab)
+                button = Button_img(i, path + '_focus.png', 0, y, change_tab)
             else:
-                button = Button_img(i, path + '.png', 0, y, 80, 80, change_tab)
+                button = Button_img(i, path + '.png', 0, y, change_tab)
             items.append(button)
         return items
 
@@ -128,8 +128,13 @@ class Window():
 
         # items, list_x, list_y, item_width, item_height,
         # scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
+        items = []
 
-        item_list = Item_list([], 330, 40, 930, 80,
+        for i in range(20):
+            item = Button_txt(0, 0, 930, 80, (255,255,255), [], test)
+            items.append(item)
+
+        item_list = Item_list(items, 330, 40,
                               1260, 40, 20, 680)
 
         return [item_list]
@@ -140,180 +145,6 @@ class Window():
         return [info_bar]
 
     def quit(self):
-        pass
-
-
-class Button_img():
-    def __init__(self, num, img, x, y, width, height, action):
-        self.type = 'button_img'
-        self.num = num
-        self.img = pygame.image.load(img)
-        self.rect = pygame.Rect(x,y,width,height)
-        self.action = action
-
-    def draw(self, screen):
-        screen.blit(self.img, self.rect)
-
-    def do(self, window, screen):
-        self.action(self, window, screen)
-
-
-class Button_txt():
-    def __init__(self, x, y, width, height, action):
-        self.type = 'button_txt'
-        self.color = (236, 240, 241)
-        self.rect = pygame.Rect(x, y, width, height)
-        self.action = action
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-
-    def do(self, window, screen):
-        print("test")
-        self.action(self, window, screen)
-
-    def move(self, shift):
-        self.rect.y -= shift
-
-
-class Entry():
-    def __init__(self, x, y, width, height, action):
-        self.type = 'entry'
-        self.color = (255, 255, 255)
-        self.rect = pygame.Rect(x, y, width, height)
-        self.focus = false
-        self.action = action
-        self.entry = ""
-
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def do(self, window, screen):
-        self.focus = true
-
-        while self.focus:
-            mouse_pos = pygame.mouse.get_pos()
-
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTODOWN and event.button == 1:
-                    if not(self.rect.collidepoint(mouse_pos)):
-                        self.focus = false
-                elif event.type == pygame.KEYDOWN:
-                    print("test")
-
-
-
-class Text():
-    def __init__(self, msg, font, msg_color, bg_color, x, y):
-        self.image = font.render(msg, True, msg_color, bg_color)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.action = None
-
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-
-    def do(self, window, screen):
-        pass
-
-
-class Item_list():
-    def __init__(self,
-                 items, list_x, list_y, item_width, item_height,
-                 scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
-                ):
-        self.type = 'item_list'
-        self.items = []
-
-        for i in range(0,20):
-            button = Button_txt(330, (40 + i * item_height + i*2), item_width, item_height, test)
-            self.items.append(button)
-
-        self.bg_color = (189, 195, 199)
-        self.bg_rect = pygame.Rect(list_x, list_y, item_width, scrollbar_height)
-
-        self.sb_bg_color = (127, 140, 141)
-        self.sb_bg_rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height)
-
-        all_items_height = (len(self.items)+2) * item_height
-        if all_items_height <= scrollbar_height:
-            thumb_height = 0
-        else:
-            thumb_height = (scrollbar_height * scrollbar_height) // all_items_height
-            print("thumb height", thumb_height)
-
-        self.thumb_color = (189, 195, 199)
-        self.thumb_color_pressed = (149, 165, 166)
-        self.rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, thumb_height)
-
-        self.pressed = False
-        self.coord_pressed = None
-        self.min_height = scrollbar_y
-        self.max_height = scrollbar_y + scrollbar_height - thumb_height
-        self.item_shift = (all_items_height // scrollbar_height) + 1
-        print("shift", self.item_shift)
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.bg_color, self.bg_rect)
-
-        for item in self.items:
-            item.draw(screen)
-
-        pygame.draw.rect(screen, self.sb_bg_color, self.sb_bg_rect)
-
-        if self.pressed:
-            pygame.draw.rect(screen, self.thumb_color_pressed, self.rect)
-        else:
-            pygame.draw.rect(screen, self.thumb_color, self.rect)
-
-    def do(self, window, screen):
-        self.pressed = True
-
-        while self.pressed:
-            mouse_pos = pygame.mouse.get_pos()
-
-            if self.coord_pressed == None:
-                self.coord_pressed = mouse_pos
-            else:
-                shift = mouse_pos[1] - self.coord_pressed[1]
-                thumb_pos_y = self.rect.y + shift
-
-                print(self.rect.y, self.min_height, self.max_height)
-
-                if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
-
-                    self.coord_pressed = mouse_pos
-
-                    if thumb_pos_y < self.min_height:
-                        shift = thumb_pos_y - self.min_height
-                        thumb_pos_y = self.min_height
-                    elif thumb_pos_y > self.max_height:
-                        shift = thumb_pos_y - self.max_height
-                        thumb_pos_y = self.max_height
-
-                    self.rect.y = thumb_pos_y
-
-                    for item in self.items:
-                        item.move(self.item_shift * shift)
-
-                for event in pygame.event.get():
-                    if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                        self.pressed = False
-                        self.coord_pressed = None
-
-            window.display(screen)
-            pygame.display.update()
-
-
-class Info_bar():
-    def __init__(self):
-        self.rect = pygame.Rect(80, 0, 1200, 40)
-
-    def draw(self,screen):
-        pygame.draw.rect(screen, (230,126,34), self.rect)
-
-    def do(self, window, screen):
         pass
 
 
@@ -341,7 +172,7 @@ def main():
     pygame.quit()
 
 def test(x, y, z):
-    pass
+    print('test')
 
 ####################################################
 ################| TESTS UNITAIRES |#################
