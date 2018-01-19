@@ -5,7 +5,7 @@
 # Python 3.4.2
 # Author: Maxence BLANC
 # Last modified : 12/2017
-# Titre du Fichier : generateurs d'entités
+# Titre du Fichier : Générateur d'objets
 ########################
 
 # IMPORTS
@@ -18,19 +18,6 @@ import operator
 
 
 """ TO DO LIST ✔✘
-
-Rajouter les fonctions d'update (s'il en manque).
-
-Individu :
-    updateExpProduit (voir avec Adrien si j'incrémente l'exp pour
-        les prototypes, projets etc..)
-    competence_direction (voir avec Adrien, qui apparemment l'utilise, ce qu'il
-        en fait et comment je l'initialise.)
-
-Formation : # BONUS
-    competences (Besoin d'une fonction pour rendre cohérent)
-    self.prix   (Besoin d'une fonction pour rendre cohérent)
-    self.duree  (Besoin d'une fonction pour rendre cohérent)
 
 Population : # de consommateurs
     updateProduits() (voir comment on maj les produits vendus
@@ -50,6 +37,11 @@ Usine :
 """
 
 """ NOTES
+
+Formation : # BONUS
+    competences (Besoin d'une fonction pour rendre cohérent)
+    self.prix   (Besoin d'une fonction pour rendre cohérent)
+    self.duree  (Besoin d'une fonction pour rendre cohérent)
 """
 
 ####################################################
@@ -194,28 +186,22 @@ class Individu(object):
         else:
             return(0)
 
-    def initExpProduit(individus, produits):
-
-        for ind in individus:
-            ind.exp_produit = [[prod.nom, 0] for prod in produits]
-
-    def updateExpProduit(individus, produits):
-        for ind in individus:
-            for prod in produits:
-                # On cherche à quel projet est affecté l'individu
-                if ind.projet == prod.nom:
-
-                    # Puis on incrémente de 1 le bon projet dans exp_produit
-                    for proj in ind.exp_produit:
-                        if prod.nom in proj:
-                            proj[1] += 1
-
     def updateExpStartUp(individus):
         for ind in individus:
             ind.exp_startup += 1
 
     def semaine_to_annee(semaines):
         return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
+
+    def licencie(individus, departs, id):
+        """ Place un individu dans la liste departs et le supprime de
+        individus.
+        """
+        for ind in individus:
+            if ind.id == id:
+                departs.append([ind.id, 0])
+                individus.remove(ind)
+
 
 class Population(object): # de consommateurs
 

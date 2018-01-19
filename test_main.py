@@ -1,5 +1,19 @@
+#! /usr/bin/env python
+#-*- coding: utf-8 -*-
+
+########################
+# Python 3.4.2
+# Author: Maxence BLANC
+# Last modified : 12/2017
+# Titre du Fichier : fonctions pour les RH
+########################
+
+# IMPORTS
 from objets import *
-from fonctions_RH import *
+from RH import *
+
+# IMPORTS DE FICHIERS
+import random
 
 ####################################################
 ##################| FONCTIONS |#####################
@@ -25,7 +39,7 @@ usines       = []
 
 # Initialisation des listes supplémentaires
 candidats    = [] # Individus pouvant etre recrutés
-departs      = [] # Individus quittant l'entreprise
+departs      = [] # Individus quittant l'entreprise [id, nbr semaine qu'il est parti]
 
 ####################################################
 ##################| PROGRAMME |#####################
@@ -76,6 +90,10 @@ if __name__ == "__main__" :
     for i in range (0):
         candidats.append(Individu())
 
+    # départs
+    for i in range (0):
+        departs.append([i, random.randint(0,10)])
+
     # Tri les produits par ordre alphabétique
     produits     = enhancedSort(produits,     "nom", False)
     individus    = enhancedSort(individus,    "id",  False)
@@ -86,8 +104,6 @@ if __name__ == "__main__" :
     fournisseurs = enhancedSort(fournisseurs, "nom", False)
     usines       = enhancedSort(usines,       "nom", False)
 
-    Individu.initExpProduit(individus, produits)
-    Individu.updateExpProduit(individus, produits)
     Individu.updateExpStartUp(individus)
 
     Population.initProduits(populations, produits)
@@ -150,6 +166,12 @@ if __name__ == "__main__" :
     print("------ Liste : Candidats ------")
     for cand in candidats:
         affichage_individu(cand)
+    print()
+
+    # départs
+    print("------ liste : Départs ------")
+    for dep in departs:
+        print(dep)
     print()
 
     ### espace tests

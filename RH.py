@@ -86,10 +86,10 @@ class RH(object):
 
         # Flux
         self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
-        self.taux_arrivees = self.nbr_arrivees / self.nbr_employes
+        self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
         self.nbr_departs   = RH.departs(departs, seuil_departs)
-        self.taux_departs  = self.nbr_departs / self.nbr_employes
-        self.taux_rotation = (self.nbr_arrivees + self.nbr_departs)/self.nbr_employes # turn over
+        self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
+        self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
 
         # Formation
         self.cout_formations = None # Fonds investis dans la formation # BONUS
@@ -135,6 +135,13 @@ class RH(object):
         return (round(moyenne/len(individus), 2))
 
     def arrivees(individus, seuil):
+        """ Nombre d'employé arrivés pendant les "seuil" dernières semaines.
+        Entrée    : la liste des individus
+                    le nombre de semaine. (ex: "2" permettra de trouver les
+                        employés arrivés pendant les 2 dernières semaines.)
+        Variables : acc : compte les individus correspondants aux critères.
+        Sortie    : le nombre d'individus correspondants aux critères.
+        """
         acc = 0
         for ind in individus:
             if ind.exp_startup <= seuil:
@@ -142,6 +149,8 @@ class RH(object):
         return acc
 
     def updateDeparts(departs):
+        """ Met à jour le temps de départ des individus dans la liste departs.
+        """
         for dep in departs:
             dep[1] += 1
 

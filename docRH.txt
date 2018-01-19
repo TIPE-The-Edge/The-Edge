@@ -10,20 +10,13 @@ https://www.cig929394.fr/archives/diagnostics/Bilan_soc_4.pdf    p. 13-14 et 23-
 ADRIEN (BASE DE DONNEES)
 https://www.insee.fr/fr/statistiques/2021266
 
-SMIC = 1 498,47 €
-
 
 ##################
 ###### TODO ######
 ##################
 
-Faire la liste des données RH à afficher pour Dorian.
-Faire la liste des données des employés à afficher pour Dorian.
-
 RECRUTEMENT :
-    Décider de la fréquence de renouvellement et le nombre des candidats.
-    Vérifier la bonne génération d'un individu.
-    Licencier (retirer de individus, ajouter à licencies (et autres?))
+    Décider de la fréquence de renouvellement et le nombre des candidats. (A revoir)
 
 SALAIRE :
     "Intéressement"? BONUS
