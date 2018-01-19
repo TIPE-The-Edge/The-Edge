@@ -117,6 +117,7 @@ class Individu(object):
             # R&D
         self.competence_groupe    = self.genCompetence() # Capacité à travailler en groupe
         self.competence_recherche = self.genCompetence() # Efficacité à la recherche
+        self.competence_direction = self.genCompetence() # Capacité à diriger une équipe
 
         # Caractéristique RH
         self.bonheur = 5 # De 0 à 10, indicateur du bonheur de l'employé dans
@@ -133,8 +134,6 @@ class Individu(object):
         # BONUS
         self.conges  = None # BONUS
         self.horaire = None # temps de travail # BONUS
-        self.exp_produit = None # Experience par produit # BONUS
-        self.competence_direction = None # Capacité à diriger une équipe # BONUS
 
     def __repr__(self):
         return "{} - {} {}, {} ans. {}".format(
@@ -241,15 +240,16 @@ class Population(object): # de consommateurs
 
 class Produit(object):
 
-    def __init__(self, utilite, materiaux, operations, tps_adoption):
+    def __init__(self, utilite, materiaux, operations, cible):
         self.nom = self.genNom()
 
         self.utilite    = utilite    # Par population (0-100)
         self.materiaux  = materiaux  # materiaux et quantités nécessaires
         self.operations = operations # Opérations nécessaires
 
-        self.prix     = 0 # Prix fixé
-        self.tps_adoption  = tps_adoption
+        self.cible        = cible # Population ciblée
+        self.prix         = 0     # Prix fixé
+        self.tps_adoption = 0
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
