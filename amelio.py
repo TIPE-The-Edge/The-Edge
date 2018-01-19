@@ -15,14 +15,14 @@ import sys
 import unittest
 from math import *
 
-from test import *
+from objets import *
 ####################################
 
 
 ##########| DESCRIPTION |###########
 """
-Fichier rassemblant les différentes 
-fonctions permettant de modéliser le 
+Fichier rassemblant les différentes
+fonctions permettant de modéliser le
 processus d'amélioration d'un produit.
 """
 ####################################
@@ -30,7 +30,7 @@ processus d'amélioration d'un produit.
 
 #############| NOTES |##############
 """
-Partons du principe que les chances 
+Partons du principe que les chances
 de succès pour une amélioration soient
 de l'ordre de 30% (quelque soit le nombre
 d'améliorations déjà effectuées)
@@ -68,7 +68,7 @@ class Ameliore() :
         self.palier = 0
         self.phase = 0
 
-    def changeMateriaux(self) : 
+    def changeMateriaux(self) :
 
         del self.produit.materiaux[-1]
         return(self)
@@ -82,9 +82,9 @@ class Ameliore() :
         """
         FONCTION       : Augmente l'utilité de la population ciblée.
         ENTREES        : Une amélioration (Ameliore)
-        SORTIE         : Une amélioration dont l'utilité de la 
-                         population ciblée 
-        REMARQUES      : L'augmentation est inversement 
+        SORTIE         : Une amélioration dont l'utilité de la
+                         population ciblée
+        REMARQUES      : L'augmentation est inversement
                          proportionnelle au nombre d'améliorations.
         TEST UNITAIRE  : ...
         """
@@ -96,10 +96,10 @@ class Ameliore() :
         for uti in self.produit.utilite :
             if uti[0] == self.produit.cible :
                 uti[1]+=bonus
-        
+
         return(self)
 
-    def update(self) : 
+    def update(self) :
         valeur = aleaLoiNormale(50, (16/1+(self.produit.nbr_ameliorations)))
 
         if valeur < 34 and len(self.produit.materiaux)>1 :
@@ -120,19 +120,19 @@ class Ameliore() :
         return(self)
 
     def progression(self) :
-        
+
         if self.avancement >= Ameliore.fixePalier(self).palier :
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
             self.phase += 1
 
-        else : 
+        else :
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
         return(self)
 
-    def __repr__(self) : 
+    def __repr__(self) :
         return("Phase {} |Cible : {} | Utilité : {} | Matériaux : {} | Opérations : {} | Avancement : {}".format(
                self.phase,self.produit.cible, self.produit.utilite, self.produit.materiaux, self.produit.operations, self.avancement))
 
