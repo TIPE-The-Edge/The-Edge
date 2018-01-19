@@ -9,7 +9,7 @@ class Item_list():
         self.type = 'item_list'
         self.items = items
 
-        self.place_items(list_x, list_y)
+        all_items_height = self.place_items(list_x, list_y)
 
         item_width = items[0].rect.width
         item_height = items[0].rect.height
@@ -23,11 +23,10 @@ class Item_list():
         self.sb_bg_rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height)
 
         # Set thumb
-        all_items_height = (len(self.items)+2) * item_height
         if all_items_height <= scrollbar_height:
             thumb_height = 0
         else:
-            thumb_height = (scrollbar_height * scrollbar_height) // all_items_height
+            thumb_height = (scrollbar_height * scrollbar_height) // all_items_height - 1
 
         self.thumb_color = (189, 195, 199)
         self.thumb_color_pressed = (149, 165, 166)
@@ -42,9 +41,13 @@ class Item_list():
 
     # Forme une liste avec les items
     def place_items(self, x, y):
+        total_height = 0
         for i in range(len(self.items)):
             self.items[i].rect.x = x
-            self.items[i].rect.y = y + i * self.items[i].rect.height + i * 2
+            self.items[i].rect.y = y + total_height
+            total_height += self.items[i].rect.height + 2
+
+        return total_height
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.bg_color, self.bg_rect)
@@ -85,7 +88,7 @@ class Item_list():
                     self.rect.y = thumb_pos_y
 
                     for item in self.items:
-                        item.move(self.item_shift * shift)
+                        item.rect.y -= self.item_shift * shift
 
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -94,3 +97,23 @@ class Item_list():
 
             window.display(screen)
             pygame.display.update()
+
+    def move(self, window, screen, shift):
+        if shift >= 0:
+            signe = 1
+        else:
+            signe = -1
+
+        for i in range(abs(shift)):
+            self.pressed = True
+            self.rect.y = thumb_pos_y + signe
+
+            for item in self.items:
+                item.rect.y -= self.item_shift * signe
+
+            window.display(screen)
+            pygame.display.update()
+
+        self.pressed = False
+        window.display(screen)
+        pygame.display.update()

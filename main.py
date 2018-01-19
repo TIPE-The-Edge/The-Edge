@@ -13,6 +13,8 @@
 import unittest
 import pygame
 from pygame.sprite import Sprite, Group
+import random
+import os
 
 # IMPORTS DE FICHIERS
 
@@ -22,6 +24,7 @@ from widget.entry import *
 from widget.info_bar import *
 from widget.item_list import *
 from widget.label import *
+from widget.progress_bar import *
 
 
 """ TO DO LIST ✔✘
@@ -87,6 +90,11 @@ class Window():
                             if item.rect.collidepoint(mouse_pos):
                                 item.do(self,screen)
 
+                            if item.type == 'item_list':
+                                for sub_item in item.items:
+                                    sub_item.rect.collidepoint(mouse_pos)
+                                    sub_item.do(self, screen)
+
             # update display
             pygame.display.update()
 
@@ -131,7 +139,7 @@ class Window():
         items = []
 
         for i in range(20):
-            item = Button_txt(0, 0, 930, 80, (255,255,255), [], test)
+            item = Button_txt(0, 0, 930, random.randint(50,200), (255,255,255), [], test)
             items.append(item)
 
         item_list = Item_list(items, 330, 40,
@@ -161,6 +169,7 @@ def change_tab(button, window, screen):
     window.display(screen)
 
 def main():
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('Start-up Simulator')

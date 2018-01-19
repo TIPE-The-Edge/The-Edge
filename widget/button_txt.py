@@ -22,6 +22,3 @@ class Button_txt():
 
     def do(self, window, screen):
         self.action(self, window, screen)
-
-    def move(self, shift):
-        self.rect.y -= shift
