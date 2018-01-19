@@ -1,0 +1,39 @@
+
+SALAIRE
+https://www.service-public.fr/particuliers/vosdroits/N474
+http://droit-finances.commentcamarche.net/faq/4948-paiement-du-salaire-les-droits-du-salarie
+https://blog.ignition-program.com/quel-salaire-start-up/
+
+BILAN SOCIAL
+https://www.cig929394.fr/archives/diagnostics/Bilan_soc_4.pdf    p. 13-14 et 23-25
+
+ADRIEN (BASE DE DONNEES)
+https://www.insee.fr/fr/statistiques/2021266
+
+SMIC = 1 498,47 €
+
+
+##################
+###### TODO ######
+##################
+
+Faire la liste des données RH à afficher pour Dorian.
+Faire la liste des données des employés à afficher pour Dorian.
+
+RECRUTEMENT :
+    Décider de la fréquence de renouvellement et le nombre des candidats.
+    Vérifier la bonne génération d'un individu.
+    Licencier (retirer de individus, ajouter à licencies (et autres?))
+
+SALAIRE :
+    "Intéressement"? BONUS
+    "Participation"? BONUS
+    Faire une grille des salaires. BONUS
+
+FORMATION : BONUS
+    Décider de la fréquence de renouvellement des formations.
+    Génération d'une formation.
+
+STATS :
+    Ce qui influe sur le bonheur.
+    Conditions de démission.
