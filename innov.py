@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 31/12/2017
+#>>> DATE    : 19/01/2018
 ####################################
 
 
@@ -30,32 +30,34 @@ I/   Phase 1 :
       - Analyse du marché
       - Ciblage d'une population /
         cible du projet
+      - Génération de coûts par rapport
+        à une campagne marketing.
 
 II/  Phase 2 :
       - A la fin de cette phase l'utilisateur
         doit décider s'il veut commencer la
         construction d'un prototype ou non.
+      - Génération de coûts
 
-III/ Développement/Test de validation :
-(Se présente en deux étapes)
-      1. Une première ébauche qui va
-         donner une idée des matériaux
-         à utiliser, et donc des coûts.
-      -----| Avis client |-----
-      2. Développement, ajustement des
-         matériaux nécessaires et fixation
-         du prix minimum pour être rentable
-         (Phase de test : si le prix minimum
-         est trop élevé alors cela échoue)
+III/ Phase 3 :
+      - Développement du prototype. (génération
+        des matériaux et des opérations)
 
-Une fois ces 3 étapes validées les
+IV/ Phase 4 :
+      - Développement du produit (fixation de
+        l'utilité).
+      - Option de mise à l'essai.
+      - Génération des coûts pour le brevet.
+
+Une fois ces 4 étapes validées les
 produit est prêt à être vendu.
 CEPENDANT
 D'après les recherches effectuées les
 chances de succès sont inférieures à
 50%, voire la plupart du temps de
-l'ordre de 1-10%. Telle sera la probabilité
-que le produit soit rentable.
+l'ordre de 1-10%. Telle devra être la
+probabilité que le produit soit rentable.
+A TESTER.
 """
 ####################################
 
@@ -73,18 +75,7 @@ que le produit soit rentable.
 
 |→ TÂCHES EFFECTUEES :
 
-    - Création de l'objet Concept, avec les
-      les fonctions qui lui sont associées.
-
-    - Implémentation d'une fonction de
-      génération d'entiers en suivant une
-      loi normale (alternative à la fonction
-      randint).
-
-    - Développement de la phase 1 du projet.
-    - Développement de la phase 2 du projet.
-    - Développement de la phase 3 du projet.
-    - Développement de la phase 4 du projet.
+    - Terminé
 
 |→ REMARQUES :
 
@@ -92,11 +83,6 @@ que le produit soit rentable.
       qui affichent ou demande à l'utilisateur
       une entrée devront être remplacées pour
       l'intégration dans l'application.
-
-|→ URGENT :
-
-    - Commenter toutes les fonctions.
-    - Refaire la description du fichier.
 """
 ####################################
 
@@ -119,11 +105,12 @@ chercheurs =[ Individu() for i in range(3)]
 
 def appreciation(ref) :
     """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
+    FONCTION       : Retourne un couple avec d'une
+                     part le résultat du sondage et
+                     d'autre part l'indice de l'appreciation
+    ENTREES        : Une référence (int)
+    SORTIE         : Un couple (appréciation(string), référence(int))
+    TEST UNITAIRE  : OK
     """
     #>>> Initialisation des variables locales <<<#
     rep = ""
@@ -140,22 +127,6 @@ def appreciation(ref) :
     #>>> Sortie <<<#
     return((rep,ref))
 
-'''
-def nom_fontion() :
-    """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
-    """
-    #>>> Initialisation des variables locales <<<#
-
-    #>>> Corps de la fonction <<<#
-
-    #>>> Sortie <<<#
-    return()
-'''
 
 ####################################
 ############| CLASSES |#############
@@ -172,6 +143,14 @@ class Concept(object) :
         self.cible = ""
 
     def sondage(self) :
+        """
+        FONCTION       : Crée une appréciation sur le concept pour chaque
+                         population.
+        ENTREES        : Un concept
+        SORTIE         : Un concept avec une appréciation.
+        REMARQUES      : Utilisation de la loi normale pour la
+                         génération de l'appréciation.
+        """
         for pop in populations :
             reference = aleaLoiNormale(esperance=50, ecart_type=16.6)
             self.appreciation.append([appreciation(reference),pop.nom])
@@ -194,12 +173,25 @@ class Concept(object) :
         return(self)
 
     def effetMarketing(self) :
+        """
+        FONCTION       : Applique sur l'appréciation de la population
+                         cible l'effet de la campagne marketing.
+        ENTREES        : Un concept
+        SORTIE         : Le concept avec une nouvelle appréciation
+                         de la population cible.
+        """
         for avis in self.appreciation :
             if avis[1] == self.cible :
                 avis[0] = appreciation(avis[0][1]+aleaLoiNormale(esperance=5, ecart_type=1.6))
         return(self)
 
     def verif(self) :
+        """
+        FONCTION       : Vérifie si la population cible est à définir
+        ENTREES        : Un concept
+        SORTIE         : Le booléen indiquant si la population cible
+                         est à définir.
+        """
         if self.cible in [pop.nom for pop in populations] :
             return(False)
         else :
@@ -262,10 +254,8 @@ class Prototype(object):
         """
         FONCTION       : Défini les matériaux, les opérations ainsi que
                          le coût d'un prototype.
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+        ENTREES        : Un prototype
+        SORTIE         : Le prototype avec des matériaux et des opérations.
         """
         Prototype.creaMater(self)
         Prototype.creaOpera(self)
@@ -319,8 +309,6 @@ class Projet(object):
                          (string)
         SORTIE         : Le projet qui tient compte de l'entrée
                          utilisateur.
-        REMARQUES      :
-        TEST UNITAIRE  : ...
         """
 
         # On fixe la population cible à l'aide de l'entrée
@@ -353,7 +341,6 @@ class Projet(object):
                          l'utilisateur ne donne pas de population
                          cible quand l'avancement du projet est
                          supérieur au palier.
-        TEST UNITAIRE  : ...
         """
         if self.avancement >= palier and self.attente==False :
             # On initialise l'appétence des consommateurs
@@ -376,16 +363,16 @@ class Projet(object):
 
         return(self)
 
-    def verifPhase2(self, palier, utilisateur) :
+    def verifPhase2(self, utilisateur) :
         """
         FONCTION       : Récupère une entrée utilisateur, si
                          celle-ci est True alors on déduit du
                          capital le coût de production d'un
                          prototype et on passe à la phase 3.
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+        ENTREES        : Un projet, une entrée utilisateur.
+        SORTIE         : Si l'entrée est valide (True), retourne
+                         le projet initialisé pour la phase suivante.
+                         Sinon met le projet en attente.
         """
 
         if utilisateur==True :
@@ -406,10 +393,13 @@ class Projet(object):
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 2.
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+        ENTREES        : Un projet (Projet), un palier (int),
+                         et une entrée utilisateur
+        SORTIE         : Le projet mis à jour
+        REMARQUES      : La progression du projet s'arrête si
+                         l'utilisateur ne donne pas son accord
+                         pour le lancement de la construction
+                         du prototype.
         """
 
         if self.avancement >= palier and self.attente==False :
@@ -420,11 +410,11 @@ class Projet(object):
 
             Prototype.develop(self.produit)
 
-            Projet.verifPhase2(self, palier, utilisateur)
+            Projet.verifPhase2(self, utilisateur)
 
         elif self.avancement >= palier and self.attente==True :
 
-            Projet.verifPhase2(self, palier, utilisateur)
+            Projet.verifPhase2(self, utilisateur)
 
         else :
             # On fait avancer le projet.
@@ -436,10 +426,11 @@ class Projet(object):
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 3.
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+        ENTREES        : Un projet (Projet), un palier (int),
+                         et une entrée utilisateur
+        SORTIE         : Le projet mis à jour
+        REMARQUES      : Une phase qui va modéliser le temps
+                         de construction du prototype.
         """
 
         if self.avancement >= palier :
@@ -454,14 +445,16 @@ class Projet(object):
 
         return(self)
 
-    def verifPhase4(self, palier, utilisateur) :
+    def verifPhase4(self, utilisateur) :
         """
         FONCTION       : Récupère une entrée utilisateur, si
-                         celle-ci est True alors on déduit
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+                         celle-ci est True alors on déduit les
+                         frais de brevet et le prototype devient
+                         un produit. Sinon rien.
+        ENTREES        : Un projet et une entrée utilisateur.
+        SORTIE         : Le projet mis à jour.
+        REMARQUES      : Si l'entrée est True cela marque la fin
+                         du projet.
         """
 
         if utilisateur==True :
@@ -479,15 +472,15 @@ class Projet(object):
     def phase4(self, palier, utilisateur) :
         """
         FONCTION       : Modélise le développement du projet à
-                         la phase 4.
-        ENTREES        :
-        SORTIE         :
-        REMARQUES      :
-        TEST UNITAIRE  : ...
+                         la phase 4. Proposition de mise à l'essai
+                         du prototype.
+        ENTREES        : Un projet (Projet), un palier (int),
+                         et une entrée utilisateur
+        SORTIE         : Le projet mis à jour
         """
 
         if self.avancement >= palier :
-            Projet.verifPhase4(self, palier, utilisateur)
+            Projet.verifPhase4(self, utilisateur)
 
         elif utilisateur==True and self.essai == False :
 
@@ -511,8 +504,6 @@ class Projet(object):
         ENTREES        : Un projet (Projet), une liste des différents
                          paliers (int list) et une entrée utilisateur.
         SORTIE         : Le projet mis à jour.
-        REMARQUES      :
-        TEST UNITAIRE  : ...
         """
 
         if self.phase == 1 :
