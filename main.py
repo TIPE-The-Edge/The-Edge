@@ -65,10 +65,14 @@ FRAME_RATE = 60
 class Window():
 
     def __init__(self,screen):
-        self.current = '0'
-        self.button_nav = ['nav_icon_0','nav_icon_1','nav_icon_2','nav_icon_3','nav_icon_4','nav_icon_5']
 
-        self.create_items(screen)
+        self.nav = self.draw_nav_button()
+        self.info_bar = self.draw_info()
+        self.body = self.draw_item_list()
+        self.button_info = []
+
+        self.items = [self.body, self.info_bar, self.nav, self.button_info]
+
         self.display(screen)
 
     def loop(self, screen):
@@ -112,18 +116,12 @@ class Window():
             # update display
             pygame.display.update()
 
-    def create_items(self, screen):
-        bg_color = (236,240,241)
-        screen.fill(bg_color)
-
-        nav_button = self.draw_nav_button()
-        info_bar = self.draw_info()
-        frame = self.draw_item_list()
-        button_info = []
-
-        self.items = [frame, info_bar, nav_button, button_info]
 
     def display(self, screen):
+        # Draw background
+        bg_color = (236,240,241)
+        screen.fill(bg_color)
+        # Draw nav background
         nav_rect = pygame.Rect(0, 0, 80, 720)
         pygame.draw.rect(screen, (44,62,80), nav_rect)
 
@@ -133,16 +131,15 @@ class Window():
 
     def draw_nav_button(self):
         items = []
-        for i in range(0,len(self.button_nav)):
 
-            path = 'img/icon/' + self.button_nav[i]
+        for i in range(0,6):
+            path = 'img/icon/nav_icon_' + str(i)
             y =  i * 80 + i * 2
-
-            if i == int(self.current):
-                button = Button_img(i, path + '_focus.png', 0, y, change_tab)
-            else:
-                button = Button_img(i, path + '.png', 0, y, change_tab)
+            button = Button_img(i, path, 0, y, change_tab)
+            if i == 0:
+                button.set_focus()
             items.append(button)
+
         return items
 
     def draw_item_list(self):
@@ -174,11 +171,12 @@ class Window():
 ####################################################
 
 def change_tab(button, window, screen):
-    main_rect = pygame.Rect(80,40,1200,680)
-    pygame.draw.rect(screen, (236,240,241), main_rect)
+    for icon in window.nav:
+        if icon.num == button.num:
+            icon.set_focus()
+        else:
+            icon.remove_focus()
 
-    window.current = str(button.num)
-    window.create_items(screen)
     window.display(screen)
 
 def main():
