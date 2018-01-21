@@ -39,6 +39,8 @@ class Item_list():
         self.max_height = scrollbar_y + scrollbar_height - thumb_height
         self.item_shift = (all_items_height // scrollbar_height) + 1
 
+        self.hover = pygame.Rect(list_x, list_y, item_width+scrollbar_width, scrollbar_height)
+
     # Forme une liste avec les items
     def place_items(self, x, y):
         total_height = 0
@@ -106,10 +108,21 @@ class Item_list():
 
         for i in range(abs(shift)):
             self.pressed = True
-            self.rect.y = thumb_pos_y + signe
+            thumb_pos_y = self.rect.y + signe
 
-            for item in self.items:
-                item.rect.y -= self.item_shift * signe
+            if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
+
+                if thumb_pos_y < self.min_height:
+                    shift = thumb_pos_y - self.min_height
+                    thumb_pos_y = self.min_height
+                elif thumb_pos_y > self.max_height:
+                    shift = thumb_pos_y - self.max_height
+                    thumb_pos_y = self.max_height
+
+                self.rect.y = thumb_pos_y
+
+                for item in self.items:
+                    item.rect.y -= self.item_shift * signe
 
             window.display(screen)
             pygame.display.update()

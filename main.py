@@ -79,21 +79,35 @@ class Window():
 
             # INPUT
             for event in pygame.event.get():
+
                 if event.type == pygame.QUIT:
                     return
+
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     return
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    mouse_pos = pygame.mouse.get_pos()
-                    for liste_items in self.items:
-                        for item in liste_items:
-                            if item.rect.collidepoint(mouse_pos):
-                                item.do(self,screen)
 
-                            if item.type == 'item_list':
-                                for sub_item in item.items:
-                                    sub_item.rect.collidepoint(mouse_pos)
-                                    sub_item.do(self, screen)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+
+                    if event.button == 1:
+                        for liste_items in self.items:
+                            for item in liste_items:
+                                if item.rect.collidepoint(mouse_pos):
+                                    item.do(self,screen)
+
+                                if item.type == 'item_list':
+                                    for sub_item in item.items:
+                                        if sub_item.rect.collidepoint(mouse_pos):
+                                            sub_item.do(self, screen)
+
+                    elif event.button == 4 or event.button == 5:
+                        for liste_items in self.items:
+                            for item in liste_items:
+                                if item.type == 'item_list' and item.hover.collidepoint(mouse_pos):
+                                    if event.button == 4:
+                                        item.move(self, screen, -40)
+                                    else:
+                                        item.move(self, screen, 40)
 
             # update display
             pygame.display.update()
@@ -115,7 +129,6 @@ class Window():
 
         for liste_items in self.items:
             for item in liste_items:
-                # print(item.type)
                 item.draw(screen)
 
     def draw_nav_button(self):

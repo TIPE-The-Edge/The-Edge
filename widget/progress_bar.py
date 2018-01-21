@@ -3,7 +3,7 @@ from pygame.sprite import Sprite, Group
 
 class Progress_bar():
 
-    def __init__(self, x, y, width, height, action
+    def __init__(self, x, y, width, height, action,
                  value, max_value):
         self.type = 'progress_bar'
 
