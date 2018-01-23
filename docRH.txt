@@ -27,6 +27,6 @@ FORMATION : BONUS
     Décider de la fréquence de renouvellement des formations.
     Génération d'une formation.
 
-STATS :
+STATS : BONUS
     Ce qui influe sur le bonheur.
     Conditions de démission.
