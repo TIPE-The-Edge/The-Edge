@@ -287,6 +287,9 @@ class Operation(object):
 
         self.nom = self.genNom()
 
+        self.prix = 0  # TODO
+        self.duree = 0 # TODO
+
     def __repr__(self):
         return "{}".format(
                 self.nom)
@@ -317,6 +320,8 @@ class Materiau(object):
     def __init__(self):
 
         self.nom = self.genNom()
+
+        self.prix = 0 # TODO
 
     def __repr__(self):
         return "{}".format(
@@ -379,11 +384,10 @@ class Fournisseur(object):
 
     def __init__(self):
 
+        self.nom = self.genNom()
         self.localisation = self.genLocalistation()
 
-        self.nom = self.genNom()
-
-        self.materiaux_vendu = [[]] # Materiaux et prix
+        self.materiaux_vendu = [] # TODO
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -408,6 +412,17 @@ class Fournisseur(object):
 
         return loc
 
+    def approvisionnement(fournisseur, destination, commande):
+        """ Créé un cout et créé un objet transport à partir des données d'une
+        commande de materiaux.
+        Entrée : le nom du fournisseur
+                 le nom de la destination (entrepot ou usine)
+                 la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
+        """
+        pass
+        # TODO
+
+
 class Usine(object):
 
     # Liste des noms existants
@@ -423,10 +438,15 @@ class Usine(object):
 
     def __init__(self):
 
+        # Infos basiques
         self.nom = self.genNom()
-
         self.localisation = self.genLocalistation()
-        self.operations_realisables = [[]] # Opérations et prix
+
+        # Production
+        self.operations_realisables = [] # TODO
+        self.commandes = [[]]
+
+        # Stockage
 
     def __repr__(self):
         return "{} - {} : {}".format(
