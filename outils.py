@@ -16,6 +16,7 @@ import unittest
 from math import *
 
 import numpy as np
+import operator
 ####################################
 
 
@@ -31,12 +32,6 @@ boite à outils.
 
 
 #############| NOTES |##############
-"""
-Actuellement il n'y a que la fonction
-qui va nous permettre d'obtenir des
-valeurs aléatoirement selon une loi
-normale.
-"""
 ####################################
 
 
@@ -54,7 +49,7 @@ def aleaLoiNormale(esperance, ecart_type) :
     SORTIE         : Un entier (int)
     REMARQUES      : On utilise la librairie numpy pour la
                      génération d'une variable aléatoire.
-                     Voir le fichier notes.txt pour des 
+                     Voir le fichier notes.txt pour des
                      précisions.
     TEST UNITAIRE  : OK
     """
@@ -92,6 +87,42 @@ def compGroupe(individus) :
 
 def progres(individus) :
     return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
+
+
+def readNameFile(fichier):
+    """ Lis un fichier .txt et retourne la liste de ses éléments.
+    Entrée : le nom du fichier
+    Sortie : une liste des lignes du fichier
+    Vérifié par :
+    """
+    # Lecture du fichier
+    entree = open(fichier,"r") # Fichier voulu
+    contenu_entree = entree.readlines()
+    entree.close()
+    # On créé une liste qui contient toutes les lignes du fichier.
+    liste = [ligne.strip('\n') for ligne in contenu_entree]
+
+    return liste
+
+
+def enhancedSort(liste, comparateur, ordre):
+    """ Trie une liste d'objets selon le comparateur.
+    Entree : La liste
+             Le/les attributs de l'objet servant de comparateur(s) (str)
+             Ordre de tri (True: décroissant / False: croissant)
+    Sortie : La liste de dictionnaires triée.
+    """
+
+    return sorted(liste, key=operator.attrgetter(comparateur), reverse=ordre)
+
+
+def semaine_to_annee(semaines):
+    """ converti un nombre de semaines en années.
+    Entree : Nbr de semaines
+    Sortie : Nbr d'années
+    """
+    return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
+
 
 
 '''
