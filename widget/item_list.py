@@ -74,23 +74,48 @@ class Item_list():
                 self.coord_pressed = mouse_pos
             else:
                 shift = mouse_pos[1] - self.coord_pressed[1]
-                thumb_pos_y = self.rect.y + shift
+                # thumb_pos_y = self.rect.y + shift
 
-                if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
+                # if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
+                #
+                #     self.coord_pressed = mouse_pos
+                #
+                #     if thumb_pos_y < self.min_height:
+                #         shift = thumb_pos_y - self.min_height
+                #         thumb_pos_y = self.min_height
+                #     elif thumb_pos_y > self.max_height:
+                #         shift = thumb_pos_y - self.max_height
+                #         thumb_pos_y = self.max_height
+                #
+                #     self.rect.y = thumb_pos_y
+                #
+                #     for item in self.items:
+                #         item.rect.y -= self.item_shift * shift
 
-                    self.coord_pressed = mouse_pos
+                if shift >= 0:
+                    signe = 1
+                else:
+                    signe = -1
 
-                    if thumb_pos_y < self.min_height:
-                        shift = thumb_pos_y - self.min_height
-                        thumb_pos_y = self.min_height
-                    elif thumb_pos_y > self.max_height:
-                        shift = thumb_pos_y - self.max_height
-                        thumb_pos_y = self.max_height
+                for i in range(abs(shift)):
+                    self.pressed = True
+                    thumb_pos_y = self.rect.y + signe
 
-                    self.rect.y = thumb_pos_y
+                    if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
 
-                    for item in self.items:
-                        item.rect.y -= self.item_shift * shift
+                        if thumb_pos_y < self.min_height:
+                            shift = thumb_pos_y - self.min_height
+                            thumb_pos_y = self.min_height
+                        elif thumb_pos_y > self.max_height:
+                            shift = thumb_pos_y - self.max_height
+                            thumb_pos_y = self.max_height
+
+                        self.rect.y = thumb_pos_y
+
+                        for item in self.items:
+                            item.rect.y -= self.item_shift * signe
+
+                self.coord_pressed = mouse_pos
 
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -124,8 +149,9 @@ class Item_list():
                 for item in self.items:
                     item.rect.y -= self.item_shift * signe
 
-            window.display(screen)
-            pygame.display.update()
+            # if (abs(shift)%3) == 1:
+            #     window.display(screen)
+            #     pygame.display.update()
 
         self.pressed = False
         window.display(screen)
