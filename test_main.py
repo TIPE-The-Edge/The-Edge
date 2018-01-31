@@ -9,11 +9,12 @@
 ########################
 
 # IMPORTS
-from objets import *
-from RH import *
+import random
 
 # IMPORTS DE FICHIERS
-import random
+from outils import *
+from objets import *
+from RH import *
 
 ####################################################
 ##################| FONCTIONS |#####################
@@ -175,6 +176,6 @@ if __name__ == "__main__" :
     print()
 
     ### espace tests
-    lesRH = RH()
-    lesRH.update(individus, departs, 3, 3)
-    print(lesRH)
+    # lesRH = RH()
+    # lesRH.update(individus, departs, 3, 3)
+    # print(lesRH)
