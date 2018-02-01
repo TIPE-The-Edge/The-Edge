@@ -11,10 +11,9 @@
 # IMPORTS
 import random
 import os
-import operator
 
 # IMPORTS DE FICHIERS
-
+from outils import *
 
 
 """ TO DO LIST ✔✘
@@ -55,31 +54,6 @@ Sortie :
 Vérifié par :
 """
 
-def readNameFile(fichier):
-    """ Lis un fichier .txt et retourne la liste de ses éléments.
-    Entrée : le nom du fichier
-    Sortie : une liste des lignes du fichier
-    Vérifié par :
-    """
-    # Lecture du fichier
-    entree = open(fichier,"r") # Fichier voulu
-    contenu_entree = entree.readlines()
-    entree.close()
-    # On créé une liste qui contient toutes les lignes du fichier.
-    liste = [ligne.strip('\n') for ligne in contenu_entree]
-
-    return liste
-
-def enhancedSort(liste, comparateur, ordre):
-    """ Trie une liste d'objets selon le comparateur.
-    Entree : La liste
-             Le/les attributs de l'objet servant de comparateur(s) (str)
-             Ordre de tri (True: décroissant / False: croissant)
-    Sortie : La liste de dictionnaires triée.
-    """
-
-    return sorted(liste, key=operator.attrgetter(comparateur), reverse=ordre)
-
 ####################################################
 ###################| CLASSES |######################
 ####################################################
@@ -107,9 +81,9 @@ class Individu(object):
 
         # Compétences
             # R&D
-        self.competence_groupe    = self.genCompetence() # Capacité à travailler en groupe
-        self.competence_recherche = self.genCompetence() # Efficacité à la recherche
-        self.competence_direction = self.genCompetence() # Capacité à diriger une équipe
+        self.competence_groupe    = self.genCompetenceRH() # Capacité à travailler en groupe
+        self.competence_recherche = self.genCompetenceRH() # Efficacité à la recherche
+        self.competence_direction = self.genCompetenceRH() # Capacité à diriger une équipe
 
         # Caractéristique RH
         self.bonheur = 5 # De 0 à 10, indicateur du bonheur de l'employé dans
@@ -143,14 +117,17 @@ class Individu(object):
             return random.choice(readNameFile("./Name_Files/family_names.txt"))
 
     def genAge(self):
+        """ Génère un age. # AMELIORABLE
+        """
 
-        liste = [2,2,2,2,2,2, 3,3,3,3,3, 4,4,4, 5,5, 6]
+        liste = [2,2,2,2,2,2, 3,3,3,3,3, 4,4,4, 5,5, 6] # Détermine les proba des ages.
+                                                        # Favorise la jeunesse.
         dizaine = random.choice(liste)
 
         if dizaine == 2:
-            unite = random.randint(3, 9)
+            unite = random.randint(3, 9) # Pour commencer à 23 ans.
         elif dizaine == 6:
-            unite = 0
+            unite = 0                    # Pour terminer à 60 ans.
         else:
             unite = random.randint(0,9)
 
@@ -158,13 +135,26 @@ class Individu(object):
         return nbr
 
     def genExpRetD(self):
-        seuil_bas  = int((self.age - 23)*52/3)
-        seuil_haut = (self.age - 23)*52
+        """ Génère l'experience de l'individu en fonction de son age.
+        """
+
+        exp_max = (self.age - 23)*52# Experience max que peut avoir l'individu en nbr de semaine
+
+        seuil_bas  = int(exp_max/3) # pour ne pas que les "vieux" n'aient aucune exp.
+        seuil_haut = exp_max
+
         return(random.randint(seuil_bas, seuil_haut)) # de 0 à 40 ans d'exp
 
-    def genCompetence(self):
-        comp_exp = (self.exp_RetD/52)/7.4 # Compétence tirée de l'experience
+    def genCompetenceRH(self):
+        """ Génère les valeurs des compétences de RH. # AMELIORABLE
+        """
+        pas = 37/5 # Tous les "pas", l'individu gagne 1 d'exp.
+
+        # Compétence tirée de l'experience
+        comp_exp = (self.exp_RetD/52) / pas
+        # Compétence tirée de l'aleatoire
         comp_rand = random.randint(1, 5)
+
         return (int(round(comp_exp + comp_rand, 0)))
 
     def genSalaire(self):
@@ -187,11 +177,10 @@ class Individu(object):
             return(0)
 
     def updateExpStartUp(individus):
+        """ MàJ le nbr de semaine qu'à passé l'employé dans l'entreprise.
+        """
         for ind in individus:
             ind.exp_startup += 1
-
-    def semaine_to_annee(semaines):
-        return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
 
     def licencie(individus, departs, id):
         """ Place un individu dans la liste departs et le supprime de
@@ -201,7 +190,6 @@ class Individu(object):
             if ind.id == id:
                 departs.append([ind.id, 0])
                 individus.remove(ind)
-
 
 class Population(object): # de consommateurs
 
@@ -220,9 +208,18 @@ class Population(object): # de consommateurs
                 self.nom, self.nombre, self.revenu)
 
     def initProduits(populations, produits):
+        """ Initialise le nombre de produit que possède les populations.
+        """
 
         for pop in populations:
             pop.produits = [[prod.nom, 0] for prod in produits]
+
+    def ajoutProduit(populations, produit):
+        """ Ajoute un nouveau produit aux populations.
+        """
+
+        for pop in populations:
+            pop.produits.append([produit.nom, 0])
 
 class Produit(object):
 
@@ -258,8 +255,11 @@ class Produit(object):
         return prefixe + " " + sufixe
 
     def creeUtilite(self, populations, seuil):
+        """ Associe une utilité à chaque population. Le total des utilites ne
+        dépasse pas le seuil.
+        """
 
-        somme = seuil + 1
+        somme = seuil + 1 # Init pour rentrer dans la boucle
         while somme > seuil:
 
             for pop in populations:
@@ -269,6 +269,8 @@ class Produit(object):
         self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
 
     def ageUpdate(produits):
+        """ MaJ le temps qu'ont passé les produits sur le marché.
+        """
 
         for prod in produits:
             if prod.marche:
@@ -284,6 +286,9 @@ class Operation(object):
     def __init__(self):
 
         self.nom = self.genNom()
+
+        self.prix = 0  # TODO
+        self.duree = 0 # TODO
 
     def __repr__(self):
         return "{}".format(
@@ -316,6 +321,8 @@ class Materiau(object):
 
         self.nom = self.genNom()
 
+        self.prix = 0 # TODO
+
     def __repr__(self):
         return "{}".format(
                 self.nom)
@@ -335,7 +342,7 @@ class Materiau(object):
 
         return nom
 
-class Formation(object):
+class Formation(object): # BONUS
 
     competences = ["competence_groupe", "competence_recherche", "competence_direction"]
 
@@ -377,11 +384,10 @@ class Fournisseur(object):
 
     def __init__(self):
 
+        self.nom = self.genNom()
         self.localisation = self.genLocalistation()
 
-        self.nom = self.genNom()
-
-        self.materiaux_vendu = [[]] # Materiaux et prix
+        self.materiaux_vendu = [] # TODO
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -397,12 +403,25 @@ class Fournisseur(object):
         return nom
 
     def genLocalistation(self):
+        """ Etabli la localisation du Fournisseur
+        """
 
         loc = random.choice(Fournisseur.localisations)
         # On efface la localisation de la liste car elles sont uniques.
         Fournisseur.localisations.remove(loc)
 
         return loc
+
+    def approvisionnement(fournisseur, destination, commande):
+        """ Créé un cout et créé un objet transport à partir des données d'une
+        commande de materiaux.
+        Entrée : le nom du fournisseur
+                 le nom de la destination (entrepot ou usine)
+                 la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
+        """
+        pass
+        # TODO
+
 
 class Usine(object):
 
@@ -419,10 +438,15 @@ class Usine(object):
 
     def __init__(self):
 
+        # Infos basiques
         self.nom = self.genNom()
-
         self.localisation = self.genLocalistation()
-        self.operations_realisables = [[]] # Opérations et prix
+
+        # Production
+        self.operations_realisables = [] # TODO
+        self.commandes = [[]]
+
+        # Stockage
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -437,6 +461,8 @@ class Usine(object):
         return nom
 
     def genLocalistation(self):
+        """ Etabli la localisation de l'usine.
+        """
 
         loc = random.choice(Usine.localisations)
         # On efface la localisation de la liste car elles sont uniques.

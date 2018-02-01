@@ -18,6 +18,10 @@ https://www.insee.fr/fr/statistiques/2021266
 RECRUTEMENT :
     Décider de la fréquence de renouvellement et le nombre des candidats. (A revoir)
 
+###################
+###### BONUS ######
+###################
+
 SALAIRE :
     "Intéressement"? BONUS
     "Participation"? BONUS
@@ -27,6 +31,6 @@ FORMATION : BONUS
     Décider de la fréquence de renouvellement des formations.
     Génération d'une formation.
 
-STATS :
+STATS : BONUS
     Ce qui influe sur le bonheur.
     Conditions de démission.
