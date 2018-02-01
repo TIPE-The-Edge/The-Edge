@@ -27,7 +27,7 @@ Fournisseur :
 
 Usine :
     self.operations_realisables (Opérations et prix)
-        (Besoin d'une fonction) (Lucas)
+        (Besoin d'une fonction)
 
 """
 
@@ -47,12 +47,21 @@ Formation : # BONUS
 ##################| FONCTIONS |#####################
 ####################################################
 
-""" A quoi sert la fonction. Comment elle marche
-Entrée :
-Variables :
-Sortie :
-Vérifié par :
-"""
+def initProduits(objets, produits):
+    """ Initialise le nombre de produits que possède les objets.
+    Les objets doivent avoir l'attribut .produits.
+    """
+
+    for ob in objets:
+        ob.produits = [[prod.nom, 0] for prod in produits]
+
+def initMateriaux(objets, materiaux):
+    """ Initialise le nombre de materiaux que possède les objets.
+    Les objets doivent avoir l'attribut .materiaux.
+    """
+
+    for ob in objets:
+        ob.materiaux = [[mat.nom, 0] for mat in materiaux]
 
 ####################################################
 ###################| CLASSES |######################
@@ -204,15 +213,8 @@ class Population(object): # de consommateurs
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
     def __repr__(self):
-        return "{} - nombre: {} revenu: {}".format(
-                self.nom, self.nombre, self.revenu)
-
-    def initProduits(populations, produits):
-        """ Initialise le nombre de produit que possède les populations.
-        """
-
-        for pop in populations:
-            pop.produits = [[prod.nom, 0] for prod in produits]
+        return "{} - nombre: {} revenu: {}. {}".format(
+                self.nom, self.nombre, self.revenu, self.materiaux)
 
     def ajoutProduit(populations, produit):
         """ Ajoute un nouveau produit aux populations.
@@ -422,7 +424,6 @@ class Fournisseur(object):
         pass
         # TODO
 
-
 class Usine(object):
 
     # Liste des noms existants
@@ -447,10 +448,14 @@ class Usine(object):
         self.commandes = [[]]
 
         # Stockage
+        self.capacite  = 0 #TODO
+        self.cout      = 0 #TODO
+        self.materiaux = [[]]
+        self.produits  = [[]]
 
     def __repr__(self):
-        return "{} - {} : {}".format(
-                self.nom, self.localisation, self.operations_realisables)
+        return "{} - {} : {}, {}".format(
+                self.nom, self.localisation, self.operations_realisables, self.materiaux)
 
     def genNom(self):
         nom = random.choice(Usine.noms_dispo)
@@ -469,6 +474,63 @@ class Usine(object):
         Usine.localisations.remove(loc)
 
         return loc
+
+class Transport(object):
+
+    def __init__(self, depart, arrivee, materiaux, produits):
+
+        self.materiaux = materiaux
+        self.produits  = produits
+
+        self.depart  = depart  # Stock/Usine/Fournisseur de départ
+        self.arrivee = arrivee # Stock/Usine d'arrivée
+        self.tps_trajet = 0    #TODO fontion calcul tps trajet
+
+    def __repr__(self):
+        return "{} -> {} : {} et {}".format(
+                self.depart, self.arrivee, self.materiaux, self.produits)
+
+    def updateTempsTrajet(transports):
+        for trans in transports:
+            trans.tps_trajet -= 1
+
+    def arrivees(transports, usines, stocks):
+        for trans in transports:
+            if trans.tps_trajet == 0:
+
+                for usine in usines:
+                    if usine.nom == trans.arrivee:
+                        Transport.ajout(trans.materiaux, usine.materiaux)
+                        Transport.ajout(trans.produits, usine.produits)
+
+                for stock in stocks:
+                    if stock.nom == trans.arrivee:
+                        Transport.ajout(trans.materiaux, trans.materiaux)
+                        Transport.ajout(trans.produits, trans.produits)
+
+    def ajout(liste_depart, liste_arrivee):
+        """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
+        Entree : une liste [["nom", val], ..]
+                 une liste [["nom", val], ..]
+        """
+
+        for couple_depart in liste_depart:
+            for couple_arrivee in liste_arrivee:
+                if couple_depart[0] == couple_arrivee[0]:
+                    couple_arrivee[1] += couple_depart[1]
+
+class Stock(object):
+
+    def __init__(self):
+
+        self.nom = "" #TODO
+
+        self.capacite  = 0 #TODO
+        self.cout      = 0 # Cout par unite #TODO
+
+        self.materiaux = [[]]
+        self.produits  = [[]]
+
 
 ####################################################
 ##################| PROGRAMME |#####################

@@ -37,6 +37,8 @@ formations   = []
 populations  = []
 fournisseurs = []
 usines       = []
+transports   = []
+stocks       = []
 
 # Initialisation des listes supplémentaires
 candidats    = [] # Individus pouvant etre recrutés
@@ -56,8 +58,8 @@ if __name__ == "__main__" :
     rang2 = 0
 
     # populations
-    #populations.append(Population("Les Vieux", 100, 2))
-    #populations.append(Population("Les Jeunes", 2000, 99))
+    # populations.append(Population("Les Vieux", 100, 2))
+    # populations.append(Population("Les Jeunes", 2000, 99))
 
     # produits
     for i in range(0 + rang):
@@ -68,7 +70,7 @@ if __name__ == "__main__" :
         operations.append(Operation())
 
     # materiaux
-    for i in range(0 + rang):
+    for i in range(3 + rang):
         materiaux.append(Materiau())
 
     # formations
@@ -80,11 +82,11 @@ if __name__ == "__main__" :
         fournisseurs.append(Fournisseur())
 
     # usines
-    for i in range(0 + rang2):
+    for i in range(3 + rang2):
         usines.append(Usine())
 
     # individus
-    for i in range(3 + rang):
+    for i in range(0 + rang):
         individus.append(Individu())
 
     # candidats
@@ -94,6 +96,11 @@ if __name__ == "__main__" :
     # départs
     for i in range (0):
         departs.append([i, random.randint(0,10)])
+
+    # transports
+    transports.append(Transport("Oui", usines[0].nom, [[materiaux[0].nom, 10], [materiaux[1].nom, 15]], []))
+
+    ######## INIT/UPDATE/EVENTS DES OBJETS ########
 
     # Tri les produits par ordre alphabétique
     produits     = enhancedSort(produits,     "nom", False)
@@ -105,10 +112,24 @@ if __name__ == "__main__" :
     fournisseurs = enhancedSort(fournisseurs, "nom", False)
     usines       = enhancedSort(usines,       "nom", False)
 
+    # init produits
+    initProduits(populations, produits)
+    initProduits(usines, produits)
+    initProduits(stocks, produits)
+
+    # init materiaux
+    initMateriaux(populations, materiaux)
+    initMateriaux(usines, materiaux)
+    initMateriaux(stocks, materiaux)
+
+    # Individus
     Individu.updateExpStartUp(individus)
 
-    Population.initProduits(populations, produits)
+    # Transports
+    Transport.arrivees(transports, usines, stocks)
+    Transport.updateTempsTrajet(transports)
 
+    # Produits
     for prod in produits:
         prod.creeUtilite(populations, 150)
 
@@ -179,3 +200,14 @@ if __name__ == "__main__" :
     # lesRH = RH()
     # lesRH.update(individus, departs, 3, 3)
     # print(lesRH)
+
+    for trans in transports:
+        print(trans)
+
+    Transport.arrivees(transports, usines, stocks)
+
+    # usines
+    print("------ Classe : Usine ------")
+    for usi in usines:
+        print(usi)
+    print()
