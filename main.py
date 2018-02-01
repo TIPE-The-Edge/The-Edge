@@ -68,7 +68,7 @@ class Window():
 
         self.nav = self.draw_nav_button()
         self.info_bar = self.draw_info()
-        self.body = self.draw_item_list()
+        self.body = self.draw_entry()
         self.button_info = []
 
         self.items = [self.body, self.info_bar, self.nav, self.button_info]
@@ -142,20 +142,27 @@ class Window():
 
         return items
 
-    def draw_item_list(self):
 
-        # items, list_x, list_y, item_width, item_height,
-        # scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
-        items = []
+    def draw_entry(self):
+        entry = Entry(150, 500, 200, test)
 
-        for i in range(20):
-            item = Button_txt(0, 0, 930, random.randint(50,200), (255,255,255), [], test)
-            items.append(item)
+        return [entry]
 
-        item_list = Item_list(items, 330, 40,
-                              1260, 40, 20, 680)
 
-        return [item_list]
+    # def draw_item_list(self):
+    #
+    #     # items, list_x, list_y, item_width, item_height,
+    #     # scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
+    #     items = []
+    #
+    #     for i in range(20):
+    #         item = Button_txt(0, 0, 930, random.randint(50,200), (255,255,255), [], test)
+    #         items.append(item)
+    #
+    #     item_list = Item_list(items, 330, 40,
+    #                           1260, 40, 20, 680)
+    #
+    #     return [item_list]
 
     def draw_info(self):
         info_bar = Info_bar()

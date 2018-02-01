@@ -5,8 +5,9 @@ class Widget():
 
     def __init__(self, num, img, x, y, width, height, action):
         self.type = ''
-        self.items =
+        self.items = []
         self.action = action
+        self.hover= pygame.Rect(x, y, width, height)
 
     def draw(self, screen):
         for item in self.items:

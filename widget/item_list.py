@@ -9,7 +9,7 @@ class Item_list():
         self.type = 'item_list'
         self.items = items
 
-        all_items_height = self.place_items(list_x, list_y)
+        all_items_height = self.place_items(list_x, list_y, 2)
 
         item_width = items[0].rect.width
         item_height = items[0].rect.height
@@ -42,12 +42,12 @@ class Item_list():
         self.hover = pygame.Rect(list_x, list_y, item_width+scrollbar_width, scrollbar_height)
 
     # Forme une liste avec les items
-    def place_items(self, x, y):
+    def place_items(self, x, y, space_y):
         total_height = 0
         for i in range(len(self.items)):
             self.items[i].rect.x = x
             self.items[i].rect.y = y + total_height
-            total_height += self.items[i].rect.height + 2
+            total_height += self.items[i].rect.height + space_y
 
         return total_height
 
