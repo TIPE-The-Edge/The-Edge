@@ -216,16 +216,23 @@ class Test(unittest.TestCase) :
 
         #>>> Test 1 <<<#
 
-        reponse = [["2011","2455"]]
-        test = readLineCSV("inflation.csv", "periode", "2011", ["periode","inflation"])
+        reponse = [["3859168","10324453"]]
+        test = readLineCSV("demographie.csv", "periode", "2010", ["jeunes","seniors"])
         self.assertEqual(test, reponse)
 
         #>>> Test 2 <<<#
 
-        reponse = [["2017"],["2016"]]
-        test = readLineCSV("inflation.csv", "inflation", "2543", ["periode"])
+        reponse = [["New_York","25.0"],["Hong_Kong","23.0"],["Allemagne","26.0"]]
+        test = readLineCSV("materiaux.csv", "materiaux", "clef_usb", ["pays","cout_unitaire"])
         self.assertEqual(test, reponse)
 
+        #>>> Test 3 <<<#
+
+        reponse = [["diode","0.41"],["vis","5.0"],["cable","26.0"],["gros_bouton_rouge","15.0"],
+                  ["graveur_blueray","170.0"],["port_audio","12.0"],["circuit_imprimé","25.0"],
+                  ["radiateur","150.0"]]
+        test = readLineCSV("materiaux.csv","pays","France",["materiaux","cout_unitaire"])
+        self.assertEqual(test, reponse)
 
 ####################################
 ###########| PROGRAMME |############

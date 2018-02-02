@@ -1,4 +1,4 @@
-Nous rassembllerons ici l'ensemble des informations 
+﻿Nous rassembllerons ici l'ensemble des informations 
 nécessaires à la compréhension des fichiers de notre
 base de données.
 
@@ -20,6 +20,13 @@ base de données.
 		- periode         : |"annee"-T"numéro du trimestre"|
 		- taux de chomage : | /float/ | (en %)
 
+|→ composants.csv :
+
+	Paramètres :
+		- produit       : | "nom" |
+		- pays          : | "nom du pays" |
+		- cout_unitaire : | /float/ |
+
 
 |→ croissance.csv :
 
@@ -32,9 +39,9 @@ base de données.
 
 	Paramètres :
 		- periode : |"annee"|
-		- jeunes  : | /int/ | (nbr personnes)
-		- actifs  : | /int/ | (nbr personnes)
-		- seniors : | /int/ | (nbr personnes)
+		- jeunes  : | /int/ | (nbr de ménages)
+		- actifs  : | /int/ | (nbr de ménages)
+		- seniors : | /int/ | (nbr de ménages)
 
 
 |→ inflation.csv :
@@ -44,11 +51,25 @@ base de données.
 		- inflation : | /int/ | (A DEFINIR)
 
 
+|→ operation.csv :
+
+	Paramètres :
+		- operation     : | "nom" |
+		- cout_unitaire : | /float/ |
+
 |→ pib.csv :
 
 	Paramètres :
 		- periode : |"annee"|
 		- pib     : | /int/ | (en millions d'euros)
+
+|→ revenu.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- jeunes  : |/int/| (revenu annuel par ménage)
+		- actifs  : |/int/| (revenu annuel par ménage)
+		- seniors : |/int/| (revenu annuel par ménage)
 
 
 |→ transport.csv :
@@ -57,4 +78,4 @@ base de données.
 		- trajet   : |"lieu"/"lieu"|
 		- distance : | /int/ | (en km)
 		- cout     : | /int/ | (A DEFINIR)
-		- temps    : | /float/ | (en heure)
+		- temps    : | /float/ | (en jour)
