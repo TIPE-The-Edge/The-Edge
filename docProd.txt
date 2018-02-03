@@ -15,9 +15,11 @@ TRANSPORT :
 STOCK :
 
 PRODUCTION :
-    Fonction qui prend l'ordre de commande (dans le menu Production).
-    Génère une commande usine:
-        - temps/unité = somme des temps des opérations nécessaires.
-        - nombre de materiaux entrés
-        - nombre de materiaux pour un produit
-        - ... (A completer?)
+    Faire une classe Commande ?
+    
+    Fonction qui prend l'ordre de commande (dans le menu Production) et génère
+        une commande usine:
+            - temps/unité = somme des temps des opérations nécessaires.
+            - nombre de materiaux entrés
+            - nombre de materiaux pour un produit
+            - ... (A completer?)

@@ -25,7 +25,9 @@ Population : # de consommateurs
 Fournisseur :
     self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction) (Lucas)
 
-Usine :
+    approvisionnement()
+
+Machine :
     self.operations_realisables (Opérations et prix)
         (Besoin d'une fonction)
 
@@ -225,8 +227,8 @@ class Population(object): # de consommateurs
 
 class Produit(object):
 
-    def __init__(self, utilite, materiaux, operations, cible):
-        self.nom = self.genNom()
+    def __init__(self, produits, utilite, materiaux, operations, cible):
+        self.nom = self.genNom(produits)
 
         self.utilite    = utilite    # Par population (0-100)
         self.materiaux  = materiaux  # materiaux et quantités nécessaires
@@ -234,7 +236,6 @@ class Produit(object):
 
         self.cible        = cible # Population ciblée
         self.prix         = 0     # Prix fixé
-        self.tps_adoption = 0
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
@@ -245,7 +246,7 @@ class Produit(object):
     def __repr__(self):
         return "{} - age : {}".format(self.nom, self.age)
 
-    def genNom(self):
+    def genNom(self, produits):
 
         prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
         sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
@@ -255,20 +256,6 @@ class Produit(object):
             sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
 
         return prefixe + " " + sufixe
-
-    def creeUtilite(self, populations, seuil):
-        """ Associe une utilité à chaque population. Le total des utilites ne
-        dépasse pas le seuil.
-        """
-
-        somme = seuil + 1 # Init pour rentrer dans la boucle
-        while somme > seuil:
-
-            for pop in populations:
-                utilites = [random.randint(1,100) for pop in populations]
-                somme = sum(utilites)
-
-        self.utilite = [[populations[i].nom, utilites[i]] for i in range(len(populations))]
 
     def ageUpdate(produits):
         """ MaJ le temps qu'ont passé les produits sur le marché.
@@ -418,62 +405,40 @@ class Fournisseur(object):
         """ Créé un cout et créé un objet transport à partir des données d'une
         commande de materiaux.
         Entrée : le nom du fournisseur
-                 le nom de la destination (entrepot ou usine)
+                 le nom de la destination
                  la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
         """
         pass
         # TODO
 
-class Usine(object):
+class Machine(object):
 
     # Liste des noms existants
-    noms_dispo = readNameFile("./Name_Files/usines.txt")
-
-    # Localisations
-    localisations = ["Paris",
-                    "New York",
-                    "Los Angeles",
-                    "Hong Kong",
-                    "Allemagne",
-                    "Pays-Bas"]
+    noms_dispo = readNameFile("./Name_Files/machine.txt")
 
     def __init__(self):
 
         # Infos basiques
         self.nom = self.genNom()
-        self.localisation = self.genLocalistation()
 
         # Production
         self.operations_realisables = [] # TODO
         self.commandes = [[]]
 
-        # Stockage
-        self.capacite  = 0 #TODO
-        self.cout      = 0 #TODO
+        # Stockage/Mat réservés pour la machine
         self.materiaux = [[]]
-        self.produits  = [[]]
 
     def __repr__(self):
-        return "{} - {} : {}, {}".format(
-                self.nom, self.localisation, self.operations_realisables, self.materiaux)
+        return "{} : {}, {}".format(
+                self.nom, self.operations_realisables, self.materiaux)
 
     def genNom(self):
-        nom = random.choice(Usine.noms_dispo)
+        nom = random.choice(Machine.noms_dispo)
         # On efface le nom de la liste pour éviter les doublons
-        # de noms d'usines
-        Usine.noms_dispo.remove(nom)
+        # de noms de machines
+        Machine.noms_dispo.remove(nom)
 
         return nom
-
-    def genLocalistation(self):
-        """ Etabli la localisation de l'usine.
-        """
-
-        loc = random.choice(Usine.localisations)
-        # On efface la localisation de la liste car elles sont uniques.
-        Usine.localisations.remove(loc)
-
-        return loc
 
 class Transport(object):
 
@@ -482,9 +447,9 @@ class Transport(object):
         self.materiaux = materiaux
         self.produits  = produits
 
-        self.depart  = depart  # Stock/Usine/Fournisseur de départ
-        self.arrivee = arrivee # Stock/Usine d'arrivée
-        self.tps_trajet = 0    #TODO fontion calcul tps trajet
+        self.depart  = depart  # Fournisseur de départ
+        self.arrivee = arrivee # Stock d'arrivée
+        self.tps_trajet = 1    #TODO fontion calcul tps trajet
 
     def __repr__(self):
         return "{} -> {} : {} et {}".format(
@@ -494,19 +459,19 @@ class Transport(object):
         for trans in transports:
             trans.tps_trajet -= 1
 
-    def arrivees(transports, usines, stocks):
+    def arrivees(transports, stocks):
+        """ Si un transport est terminé, ses materiaux et produits sont
+        transférés dans le stock de destination.
+        """
         for trans in transports:
             if trans.tps_trajet == 0:
 
-                for usine in usines:
-                    if usine.nom == trans.arrivee:
-                        Transport.ajout(trans.materiaux, usine.materiaux)
-                        Transport.ajout(trans.produits, usine.produits)
-
                 for stock in stocks:
                     if stock.nom == trans.arrivee:
-                        Transport.ajout(trans.materiaux, trans.materiaux)
-                        Transport.ajout(trans.produits, trans.produits)
+                        Transport.ajout(trans.materiaux, stock.materiaux)
+                        Transport.ajout(trans.produits, stock.produits)
+
+                transports.remove(trans) # Retire le transport de la liste
 
     def ajout(liste_depart, liste_arrivee):
         """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
@@ -521,15 +486,34 @@ class Transport(object):
 
 class Stock(object):
 
+    # Localisations
+    localisations = ["Paris"]
+
     def __init__(self):
 
-        self.nom = "" #TODO
+        self.nom = "The Edge" #TODO
+        self.localisation = self.genLocalistation()
 
         self.capacite  = 0 #TODO
         self.cout      = 0 # Cout par unite #TODO
 
         self.materiaux = [[]]
         self.produits  = [[]]
+
+    def __repr__(self):
+        return "{} - {}, {}".format(
+                self.nom, self.materiaux, self.produits)
+
+    def genLocalistation(self):
+        """ Etabli la localisation du Fournisseur
+        """
+
+        loc = random.choice(Stock.localisations)
+
+        # On efface la localisation de la liste car elles sont uniques.
+        Stock.localisations.remove(loc)
+
+        return loc
 
 
 ####################################################
