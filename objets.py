@@ -23,13 +23,12 @@ Population : # de consommateurs
         et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
 Fournisseur :
-    self.materiaux_vendu (Materiaux et prix) (Besoin d'une fonction) (Lucas)
+    self.materiaux_vendu (Besoin d'une fonction)
 
     approvisionnement()
 
 Machine :
-    self.operations_realisables (Opérations et prix)
-        (Besoin d'une fonction)
+    self.operations_realisables (Besoin d'une fonction)
 
 """
 
@@ -104,13 +103,14 @@ class Individu(object):
         self.projet  = None  # Projet en cours
         self.salaire = self.genSalaire() # Salaire brut
 
+        #BONUS
         # Formations
-        self.nbr_formations  = 0 # Nbr de formations effectuées # BONUS
-        self.cout_formations = 0 # Cout des formations effectuées # BONUS
-
-        # BONUS
-        self.conges  = None # BONUS
-        self.horaire = None # temps de travail # BONUS
+        # self.nbr_formations  = 0 # Nbr de formations effectuées
+        # self.cout_formations = 0 # Cout des formations effectuées
+        #
+        # Autres
+        # self.conges  = None
+        # self.horaire = None # temps de travail
 
     def __repr__(self):
         return "{} - {} {}, {} ans. {}".format(
@@ -192,15 +192,6 @@ class Individu(object):
         """
         for ind in individus:
             ind.exp_startup += 1
-
-    def licencie(individus, departs, id):
-        """ Place un individu dans la liste departs et le supprime de
-        individus.
-        """
-        for ind in individus:
-            if ind.id == id:
-                departs.append([ind.id, 0])
-                individus.remove(ind)
 
 class Population(object): # de consommateurs
 
@@ -310,7 +301,7 @@ class Materiau(object):
 
         self.nom = self.genNom()
 
-        self.prix = 0 # TODO
+        self.prix = 1 # TODO
 
     def __repr__(self):
         return "{}".format(
@@ -401,15 +392,42 @@ class Fournisseur(object):
 
         return loc
 
-    def approvisionnement(fournisseur, destination, commande):
+    def approvisionnement(transports, materiaux, couts, fournisseur, destination, commande): #TODO
         """ Créé un cout et créé un objet transport à partir des données d'une
         commande de materiaux.
         Entrée : le nom du fournisseur
                  le nom de la destination
                  la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
         """
-        pass
-        # TODO
+
+        cout_mat       = Fournisseur.coutMateriaux(materiaux, commande)
+        cout_transport = Fournisseur.coutTransport(fournisseur, destination)
+        tps_transport  = Fournisseur.tpsTransport(fournisseur, destination)
+
+        transports.append(Transport(fournisseur,
+                                    destination,
+                                    commande,
+                                    [],
+                                    tps_transport))
+
+        couts.append(["cout materiaux", cout_mat])
+        couts.append(["cout transport", cout_transport])
+
+    def coutMateriaux(materiaux, commande):
+        somme = 0
+        for com in commande:
+            for mat in materiaux:
+                if com[0] == mat.nom:
+                    somme += com[1] * mat.prix
+
+        return(somme)
+
+    def coutTransport(fournisseur, destination): #TODO
+        return(1)
+
+    def tpsTransport(fournisseur, destination): #TODO
+        return(1)
+
 
 class Machine(object):
 
@@ -442,14 +460,15 @@ class Machine(object):
 
 class Transport(object):
 
-    def __init__(self, depart, arrivee, materiaux, produits):
+    def __init__(self, depart, arrivee, materiaux, produits, tps_trajet):
 
         self.materiaux = materiaux
         self.produits  = produits
 
-        self.depart  = depart  # Fournisseur de départ
-        self.arrivee = arrivee # Stock d'arrivée
-        self.tps_trajet = 1    #TODO fontion calcul tps trajet
+        self.depart  = depart  # Nom du Fournisseur de départ
+        self.arrivee = arrivee # Nom du Stock d'arrivée
+
+        self.tps_trajet = tps_trajet #TODO fontion calcul tps trajet
 
     def __repr__(self):
         return "{} -> {} : {} et {}".format(

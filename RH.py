@@ -150,6 +150,21 @@ class RH(object):
                 acc += 1
         return acc
 
+    def licencier(individus, departs, id):
+        """ Place un individu dans la liste departs et le supprime de
+        individus.
+        """
+        for ind in individus:
+            if ind.id == id:
+                departs.append([ind.id, 0])
+                individus.remove(ind)
+
+    def recruter(individus, candidats, id):
+        for cand in candidats:
+            if cand.id == id:
+                individus.append(cand)
+                candidats.remove(cand)
+
     def updateDeparts(departs):
         """ Met à jour le temps de départ des individus dans la liste departs.
         """

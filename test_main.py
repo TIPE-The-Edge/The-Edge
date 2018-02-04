@@ -43,6 +43,7 @@ stocks       = []
 # Initialisation des listes supplémentaires
 candidats    = [] # Individus pouvant etre recrutés
 departs      = [] # Individus quittant l'entreprise [id, nbr semaine qu'il est parti]
+couts        = [] # tous les couts générés
 
 ####################################################
 ##################| PROGRAMME |#####################
@@ -50,15 +51,12 @@ departs      = [] # Individus quittant l'entreprise [id, nbr semaine qu'il est p
 
 if __name__ == "__main__" :
 
-    os.system('clear') # works on Linux/Mac
-
     ######## INITIALISATION DES OBJETS ########
 
-    rang = 0
-    rang2 = 0
+    preset_prod = 0
 
     # individus # Pour les test uniquement
-    for i in range(0 + rang):
+    for i in range(0):
         individus.append(Individu())
 
     # populations
@@ -66,15 +64,15 @@ if __name__ == "__main__" :
     # populations.append(Population("Les Jeunes", 2000, 99))
 
     # produits
-    for i in range(3 + rang):
+    for i in range(0 + preset_prod):
         produits.append(Produit(produits, None, None, None, None))
 
     # opérations
-    for i in range(3 + rang):
+    for i in range(0 + preset_prod):
         operations.append(Operation())
 
     # materiaux
-    for i in range(3 + rang):
+    for i in range(3 + preset_prod):
         materiaux.append(Materiau())
 
     # formations #BONUS
@@ -82,15 +80,15 @@ if __name__ == "__main__" :
     #     formations.append(Formation())
 
     # fournisseurs
-    for i in range(3 + rang2):
+    for i in range(2 + preset_prod):
         fournisseurs.append(Fournisseur())
 
     # machines
-    for i in range(3 + rang2):
+    for i in range(0 + preset_prod):
         machines.append(Machine())
 
     # transports
-    transports.append(Transport("Admin", "The Edge", [[materiaux[0].nom, 10], [materiaux[1].nom, 15]], []))
+    # transports.append(Transport("Admin", "The Edge", [[materiaux[0].nom, 10], [materiaux[1].nom, 15]], []))
 
     # stocks
     for i in range (1):
@@ -104,128 +102,165 @@ if __name__ == "__main__" :
     for i in range (0):
         departs.append([i, random.randint(0,10)])
 
+    # RH
+    lesRH = RH()
+    #lesRH.update(individus, departs, 3, 3)
+
     ######## INIT/UPDATE/EVENTS DES OBJETS ########
+    on = 0
 
-    # Tri les produits par ordre alphabétique
-    # produits     = enhancedSort(produits,     "nom", False)
-    # individus    = enhancedSort(individus,    "id",  False)
-    # operations   = enhancedSort(operations,   "nom", False)
-    # materiaux    = enhancedSort(materiaux,    "nom", False)
-    # formations   = enhancedSort(formations,   "nom", False)
-    # populations  = enhancedSort(populations,  "nom", False)
-    # fournisseurs = enhancedSort(fournisseurs, "nom", False)
-    # machines     = enhancedSort(machines,     "nom", False)
+    while on != " ":
 
-    # init produits
-    initProduits(populations, produits)
-    initProduits(machines, produits)
-    initProduits(stocks, produits)
+        os.system('clear') # works on Linux/Mac
 
-    # init materiaux
-    initMateriaux(populations, materiaux)
-    initMateriaux(machines, materiaux)
-    initMateriaux(stocks, materiaux)
+        # Tri les produits par ordre alphabétique
+        # produits     = enhancedSort(produits,     "nom", False)
+        # individus    = enhancedSort(individus,    "id",  False)
+        # operations   = enhancedSort(operations,   "nom", False)
+        # materiaux    = enhancedSort(materiaux,    "nom", False)
+        # formations   = enhancedSort(formations,   "nom", False)
+        # populations  = enhancedSort(populations,  "nom", False)
+        # fournisseurs = enhancedSort(fournisseurs, "nom", False)
+        # machines     = enhancedSort(machines,     "nom", False)
 
-    # Individus
-    Individu.updateExpStartUp(individus)
+        # init produits
+        initProduits(populations, produits)
+        initProduits(machines, produits)
+        initProduits(stocks, produits)
 
-    # Transports
-    # Transport.arrivees(transports, stocks)
-    Transport.updateTempsTrajet(transports)
+        # init materiaux
+        initMateriaux(populations, materiaux)
+        initMateriaux(machines, materiaux)
+        initMateriaux(stocks, materiaux)
 
-    ######## AFFICHAGE ########
+        # Individus
+        Individu.updateExpStartUp(individus)
 
-    # individus
-    print("------ Classe : Individu ------")
-    for ind in individus:
-        print(ind)
-    print()
+        # Transports
+        Transport.arrivees(transports, stocks)
+        Transport.updateTempsTrajet(transports)
 
-    # populations
-    print("------ Classe : Population ------")
-    for pop in populations:
-        print(pop)
-    print()
+        # RH
+        #lesRH.update(individus, departs, 3, 3)
+        RH.updateDeparts(departs)
 
-    # produits
-    print("------ Classe : Produit ------")
-    for prod in produits:
-        print(prod)
-    print()
 
-    # opérations
-    print("------ Classe : Operation ------")
-    for ope in operations:
-        print(ope)
-    print()
+        ######## AFFICHAGE ########
 
-    # materiaux
-    print("------ Classe : Materiau ------")
-    for mat in materiaux:
-        print(mat)
-    print()
+        # individus
+        print("------ Classe : Individu ------")
+        for ind in individus:
+            print(ind)
+        print()
 
-    # formations #BONUS
-    # print("------ Classe : Formation ------")
-    # for form in formations:
-    #     print(form)
-    # print()
+        # populations
+        print("------ Classe : Population ------")
+        for pop in populations:
+            print(pop)
+        print()
 
-    # fournisseurs
-    print("------ Classe : Fournisseur ------")
-    for four in fournisseurs:
-        print(four)
-    print()
+        # produits
+        print("------ Classe : Produit ------")
+        for prod in produits:
+            print(prod)
+        print()
 
-    # machines
-    print("------ Classe : Machine ------")
-    for mach in machines:
-        print(mach)
-    print()
+        # opérations
+        print("------ Classe : Operation ------")
+        for ope in operations:
+            print(ope)
+        print()
 
-    # transports
-    print("------ Classe : Transport ------")
-    for trans in transports:
-        print(trans)
-    print()
+        # materiaux
+        print("------ Classe : Materiau ------")
+        for mat in materiaux:
+            print(mat)
+        print()
 
-    # stocks
-    print("------ Classe : Stock ------")
-    for stock in stocks:
-        print(stock)
-    print()
+        # formations #BONUS
+        # print("------ Classe : Formation ------")
+        # for form in formations:
+        #     print(form)
+        # print()
 
-    # candidats
-    print("------ Liste : Candidats ------")
-    for cand in candidats:
-        affichage_individu(cand)
-    print()
+        # fournisseurs
+        print("------ Classe : Fournisseur ------")
+        for four in fournisseurs:
+            print(four)
+        print()
 
-    # départs
-    print("------ liste : Départs ------")
-    for dep in departs:
-        print(dep)
-    print()
+        # machines
+        print("------ Classe : Machine ------")
+        for mach in machines:
+            print(mach)
+        print()
 
-    ####################
-    ### espace tests ###
-    ####################
-    print("---------------<vvvvvvv> ESPACE TESTS <vvvvvvv>---------------\n")
+        # transports
+        print("------ Classe : Transport ------")
+        for trans in transports:
+            print(trans)
+        print()
 
-    # lesRH = RH()
-    # lesRH.update(individus, departs, 3, 3)
-    # print(lesRH)
+        # stocks
+        print("------ Classe : Stock ------")
+        for stock in stocks:
+            print(stock)
+        print()
 
-    Transport.arrivees(transports, stocks)
+        # candidats
+        print("------ Liste : Candidats ------")
+        for cand in candidats:
+            print(cand)
+            #affichage_individu(cand)
+        print()
 
-    # transports
-    print("------ Classe : Transport ------")
-    for trans in transports:
-        print(trans)
-    print()
+        # départs
+        print("------ liste : Départs ------")
+        for dep in departs:
+            print(dep)
+        print()
 
-    # stocks
-    print("------ Classe : Stock ------")
-    for stock in stocks:
-        print(stock)
-    print()
+        # couts
+        print("------ liste : Coûts ------")
+        for cou in couts:
+            print(cou)
+        print()
+
+        ####################
+        ### espace tests ###
+        ####################
+        print("---------------<vvvvvvv> ESPACE TESTS <vvvvvvv>---------------\n")
+
+        # lesRH = RH()
+        # lesRH.update(individus, departs, 3, 3)
+        # print(lesRH)
+
+        # Transport.arrivees(transports, stocks)
+        #
+        # # transports
+        # print("------ Classe : Transport ------")
+        # for trans in transports:
+        #     print(trans)
+        # print()
+        #
+        # # stocks
+        # print("------ Classe : Stock ------")
+        # for stock in stocks:
+        #     print(stock)
+        # print()
+
+        # idt = int(input("recruter ? "))
+        # RH.recruter(individus, candidats, idt)
+        #
+        # idt = int(input("virer ? "))
+        # RH.licencier(individus, departs, idt)
+        #
+        # candidats.append(Individu())
+        
+        mat = input("mat? ")
+        nbr = int(input("combien? "))
+        commande = [[mat, nbr]]
+        Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
+
+        # Fin
+        on = input("on? : ")
