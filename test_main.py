@@ -56,7 +56,7 @@ if __name__ == "__main__" :
     preset_prod = 0
 
     # individus # Pour les test uniquement
-    for i in range(0):
+    for i in range(1):
         individus.append(Individu())
 
     # populations
@@ -72,7 +72,7 @@ if __name__ == "__main__" :
         operations.append(Operation())
 
     # materiaux
-    for i in range(3 + preset_prod):
+    for i in range(0 + preset_prod):
         materiaux.append(Materiau())
 
     # formations #BONUS
@@ -80,7 +80,7 @@ if __name__ == "__main__" :
     #     formations.append(Formation())
 
     # fournisseurs
-    for i in range(2 + preset_prod):
+    for i in range(0 + preset_prod):
         fournisseurs.append(Fournisseur())
 
     # machines
@@ -95,7 +95,7 @@ if __name__ == "__main__" :
         stocks.append(Stock())
 
     # candidats
-    for i in range (0):
+    for i in range (5):
         candidats.append(Individu())
 
     # départs # Pour les test uniquement
@@ -231,23 +231,8 @@ if __name__ == "__main__" :
         ####################
         print("---------------<vvvvvvv> ESPACE TESTS <vvvvvvv>---------------\n")
 
-        # lesRH = RH()
-        # lesRH.update(individus, departs, 3, 3)
-        # print(lesRH)
-
-        # Transport.arrivees(transports, stocks)
-        #
-        # # transports
-        # print("------ Classe : Transport ------")
-        # for trans in transports:
-        #     print(trans)
-        # print()
-        #
-        # # stocks
-        # print("------ Classe : Stock ------")
-        # for stock in stocks:
-        #     print(stock)
-        # print()
+        lesRH.update(individus, departs, 3, 3)
+        print(lesRH)
 
         # idt = int(input("recruter ? "))
         # RH.recruter(individus, candidats, idt)
@@ -256,11 +241,11 @@ if __name__ == "__main__" :
         # RH.licencier(individus, departs, idt)
         #
         # candidats.append(Individu())
-        
-        mat = input("mat? ")
-        nbr = int(input("combien? "))
-        commande = [[mat, nbr]]
-        Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
+        #
+        # mat = input("mat? ")
+        # nbr = int(input("combien? "))
+        # commande = [[mat, nbr]]
+        # Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
 
         # Fin
         on = input("on? : ")
