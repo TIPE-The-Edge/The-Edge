@@ -144,7 +144,7 @@ class Window():
 
 
     def draw_entry(self):
-        entry = Entry(150, 500, 200, test)
+        entry = Entry(150, 500, 200, test, True)
 
         return [entry]
 
