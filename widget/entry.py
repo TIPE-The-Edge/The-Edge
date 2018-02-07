@@ -14,9 +14,17 @@ class Entry():
 
         self.focus = False
         self.entry = ""
-        self.entry_display = ""
+
+        # Pour la position du curseur
         self.cursor_pos = 0
         self.max_cursor_pos = 0
+
+        # Pour l'affichage
+        self.entry_display = ""
+        self.len_display = 0
+        self.get_len_display()
+        self.range_min = 0
+        self.range_max = 1
 
         # Entry type
         if onlynum:
@@ -37,33 +45,57 @@ class Entry():
     def do(self, window, screen):
         self.focus = True
         self.cursor_pos = self.max_cursor_pos
+        if self.cursor_pos > self.range_max:
+            self.range_min = self.cursor_pos-self.len_display+1
+            self.range_max = self.cursor_pos+1
 
         while self.focus:
             print('cursor_pos :',self.cursor_pos)
             print('max_cursor_pos :',self.max_cursor_pos)
+            print('range_min :',self.range_min)
+            print('range_max :',self.range_max)
             mouse_pos = pygame.mouse.get_pos()
 
             for event in pygame.event.get():
 
+                # Clique en dehors de l'entry
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if not(self.rect.collidepoint(mouse_pos)):
                         self.focus = False
 
+                # Clique sur l'entry
                 elif event.type == pygame.KEYDOWN:
+                    # Sortir de l'entry, du focus
                     if event.key == pygame.K_ESCAPE:
                         self.focus = False
 
+                    # Se déplacer à gauche
                     elif event.key == pygame.K_LEFT and self.cursor_pos > 0:
                         self.cursor_pos -= 1
+                        if self.range_min != 0:
+                            self.range_max -= 1
+                            self.range_min -= 1
 
+                    # Se déplacer à droite
                     elif event.key == pygame.K_RIGHT and self.cursor_pos < self.max_cursor_pos:
                         self.cursor_pos += 1
+                        if self.range_max <= self.max_cursor_pos and self.range_max - self.range_min > self.len_display:
+                            self.range_max += 1
+                            self.range_min += 1
 
+                    # Supprimer un caractère
                     elif event.key == pygame.K_BACKSPACE and self.entry != "" and self.cursor_pos != 0:
                         self.entry = self.entry[:self.cursor_pos-1] + self.entry[self.cursor_pos:]
                         self.cursor_pos -= 1
                         self.max_cursor_pos -= 1
 
+                        if self.range_min != 0:
+                            self.range_max -= 1
+                            self.range_min -= 1
+                        elif self.range_max == self.max_cursor_pos+2:
+                            self.range_max -= 1
+
+                    # Ajouter un caractère
                     elif event.key not in [pygame.K_RETURN, pygame.K_BACKSPACE, pygame.K_LEFT, pygame.K_RIGHT]:
                         char = event.unicode
                         if self.entry_type == 'num':
@@ -71,19 +103,34 @@ class Entry():
                                 int(char)
                             except:
                                 char = ''
-                                self.cursor_pos -= 1
-                                self.max_cursor_pos -= 1
 
+                        if char != '':
+                            if self.range_max - self.range_min > self.len_display:
+                                self.range_max += 1
+                                self.range_min += 1
+                            else:
+                                self.range_max += 1
 
-                        self.entry = self.entry[:self.cursor_pos] + char + self.entry[self.cursor_pos:]
-                        self.cursor_pos += 1
-                        self.max_cursor_pos += 1
+                            self.entry = self.entry[:self.cursor_pos] + char + self.entry[self.cursor_pos:]
+                            self.cursor_pos += 1
+                            self.max_cursor_pos += 1
 
             self.entry_display = self.entry[:self.cursor_pos] + '|' + self.entry[self.cursor_pos:]
-
+            self.entry_display = self.entry_display[self.range_min:self.range_max]
             self.draw(screen)
             pygame.display.update()
 
-        self.entry_display = self.entry
+        self.entry_display = self.entry[self.range_min:self.range_max]
         self.draw(screen)
         pygame.display.update()
+
+    # Récupère la taille maximum du texte à afficher
+    def get_len_display(self):
+        text = "A"
+        img = self.font.render(text, True, (0,0,0), self.color_unfocus)
+        img_rect = img.get_rect()
+        while img_rect.width < self.rect.width:
+            text += "A"
+            img = self.font.render(text, True, (0,0,0), self.color_unfocus)
+            img_rect = img.get_rect()
+        self.len_display = len(text)-1

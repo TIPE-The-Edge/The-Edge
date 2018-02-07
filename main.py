@@ -207,7 +207,7 @@ def test(x, y, z):
 
 # class Test(unittest.TestCase) :
 #
-#     """
+#     """&
 #      def test_fonction(self) :
 #
 #         #>>> Test 1 <<<#
