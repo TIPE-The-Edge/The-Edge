@@ -157,7 +157,7 @@ class Transport(object):
         self.depart  = depart  # Nom du Fournisseur de départ
         self.arrivee = arrivee # Nom du Stock d'arrivée
 
-        self.tps_trajet = tps_trajet #TODO fontion calcul tps trajet
+        self.tps_trajet = tps_trajet # fontion calcul tps trajet
 
     def __repr__(self):
         return "{} -> {} : {} et {}".format(
@@ -199,7 +199,7 @@ class Stock(object):
 
     def __init__(self):
 
-        self.nom = "The Edge" #TODO
+        self.nom = "The Edge"
         self.localisation = self.genLocalistation()
 
         self.capacite  = 0 #TODO

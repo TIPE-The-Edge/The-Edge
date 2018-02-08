@@ -5,10 +5,6 @@
 ##################
 
 APPROVISIONNEMENT :
-    Fonction qui prend l'ordre de commande (dans le menu approvisionnement).
-    Génère un cout vis-à-vis du bon fournisseur (cout des materiaux).
-    Génère le cout de transport. Créé un objet transport avec la bonne quantité
-    et le bon type de mats vers la bonne destination.
 
 TRANSPORT :
 
@@ -16,7 +12,7 @@ STOCK :
 
 PRODUCTION :
     Faire une classe Commande ?
-    
+
     Fonction qui prend l'ordre de commande (dans le menu Production) et génère
         une commande usine:
             - temps/unité = somme des temps des opérations nécessaires.
