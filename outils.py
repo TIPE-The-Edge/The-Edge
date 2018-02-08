@@ -10,8 +10,6 @@
 
 
 ############| IMPORTS |#############
-import os
-import sys
 import unittest
 from math import *
 

@@ -29,6 +29,9 @@ Rajouter les couts dans la liste des couts pour LC.
 """
 
 """ NOTES
+Pour LC :
+    Couts générés :
+        "cout RH"
 
 Cout de l'emploi :
     Les charges indirectes :
@@ -195,6 +198,9 @@ class RH(object):
         for ind in individus:
             somme += (ind.salaire * 0.78)
         return(int(somme))
+
+    def coutsRH(couts, lesRH):
+        couts.append(["cout RH", lesRH.cout_emploi])
 
 
 

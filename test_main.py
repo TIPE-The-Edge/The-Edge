@@ -10,11 +10,14 @@
 
 # IMPORTS
 import random
+import os
+import datetime
 
 # IMPORTS DE FICHIERS
 from outils import *
 from objets import *
 from RH import *
+from production import *
 
 ####################################################
 ##################| FONCTIONS |#####################
@@ -106,12 +109,16 @@ if __name__ == "__main__" :
     lesRH = RH()
     #lesRH.update(individus, departs, 3, 3)
 
-    ######## INIT/UPDATE/EVENTS DES OBJETS ########
-    on = 0
+    ######## VARIABLES DE JEU ########
+    temps = datetime.datetime(2018,1,1) # Temps en semaines
+    month = 1
 
-    while on != " ":
+    on = 0
+    while on != " ": # Boucle de jeu
 
         os.system('clear') # works on Linux/Mac
+
+        ######## INIT/UPDATE/EVENTS DES OBJETS ########
 
         # Tri les produits par ordre alphabétique
         # produits     = enhancedSort(produits,     "nom", False)
@@ -143,9 +150,15 @@ if __name__ == "__main__" :
         # RH
         #lesRH.update(individus, departs, 3, 3)
         RH.updateDeparts(departs)
+        if (temps.month != month): # Ajoute les couts de RH tous les mois
+            month = temps.month
+            RH.coutsRH(couts, lesRH)
 
 
         ######## AFFICHAGE ########
+
+        # Temps
+        print("------------------------ |{} {} {}| ------------------------\n".format(temps.day, temps.strftime("%B"), temps.year))
 
         # individus
         print("------ Classe : Individu ------")
@@ -229,7 +242,7 @@ if __name__ == "__main__" :
         ####################
         ### espace tests ###
         ####################
-        print("---------------<vvvvvvv> ESPACE TESTS <vvvvvvv>---------------\n")
+        print("------------------------ ESPACE TESTS ------------------------\n")
 
         lesRH.update(individus, departs, 3, 3)
         print(lesRH)
@@ -249,3 +262,10 @@ if __name__ == "__main__" :
 
         # Fin
         on = input("on? : ")
+
+        #################################
+        ### evenements de fin de tour ###
+        #################################
+
+        # variables de jeu
+        temps += datetime.timedelta(weeks = 1)
