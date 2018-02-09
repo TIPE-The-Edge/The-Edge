@@ -145,16 +145,17 @@ class Window():
 
 
     def draw_test(self):
-        entry1 = Entry(0, 0, 200, test, True)
+        entry1 = Entry(0, 0, 300, test, True)
         entry2 = Entry(200, 200, 200, test, True)
 
         frame = Frame(80, 80, [entry1, entry2], test)
 
-        # frame.set_direction('vertical')
-        # frame.set_items_pos('auto')
-        # frame.set_width(300)
+        frame.set_direction('vertical')
+        frame.set_items_pos('auto')
+        frame.resize('auto', None)
+        # frame.set_width('300')
         '''ou'''
-        frame.resize('auto', 'auto')
+        # frame.resize('auto', 'auto')
 
         frame.set_padding(10,10,10,10)
         frame.set_marge_items(10)

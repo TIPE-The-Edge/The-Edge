@@ -52,19 +52,19 @@ class Frame():
     """ Modifie les paramètres de redimensionnement du widget
     Entrée :
         # self
-        # width : entier ou 'auto'
-        # height : entier ou 'auto'
+        # width : entier ou 'auto' ou anything
+        # height : entier ou 'auto' ou anything
     """
     def resize(self, width, height):
         if width == 'auto':
             self.size_w = 'auto'
-        else:
+        elif type(width) == int:
             self.size_w = 'fixed'
             self.width = width
 
         if height == 'auto':
             self.size_h = 'auto'
-        else:
+        elif type(height) == int:
             self.size_h = 'fixed'
             self.height = height
 
