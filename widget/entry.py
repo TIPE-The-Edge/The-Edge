@@ -7,7 +7,6 @@ class Entry():
         self.color = (255, 255, 255)
         self.color_unfocus = (200, 200, 200)
         self.rect = pygame.Rect(x, y, width, 35)
-        self.rect_txt = pygame.Rect(x+5, y+8, width, 35)
         self.action = action
 
         self.font = pygame.font.SysFont("calibri", 25)
@@ -33,6 +32,8 @@ class Entry():
             self.entry_type = 'text'
 
     def draw(self, screen):
+        self.rect_txt = pygame.Rect(self.rect.x+5, self.rect.y+8, self.rect.width, self.rect.height)
+
         if self.focus == True:
             pygame.draw.rect(screen, self.color, self.rect)
             self.image = self.font.render(self.entry_display, True, (0,0,0), self.color)

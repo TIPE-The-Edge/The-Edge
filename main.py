@@ -25,6 +25,7 @@ from widget.info_bar import *
 from widget.item_list import *
 from widget.label import *
 from widget.progress_bar import *
+from widget.frame import *
 
 
 """ TO DO LIST ✔✘
@@ -68,7 +69,7 @@ class Window():
 
         self.nav = self.draw_nav_button()
         self.info_bar = self.draw_info()
-        self.body = self.draw_entry()
+        self.body = self.draw_test()
         self.button_info = []
 
         self.items = [self.body, self.info_bar, self.nav, self.button_info]
@@ -99,7 +100,7 @@ class Window():
                                 if item.rect.collidepoint(mouse_pos):
                                     item.do(self,screen)
 
-                                if item.type == 'item_list':
+                                if item.type == 'item_list' or item.type == 'frame':
                                     for sub_item in item.items:
                                         if sub_item.rect.collidepoint(mouse_pos):
                                             sub_item.do(self, screen)
@@ -143,13 +144,25 @@ class Window():
         return items
 
 
-    def draw_entry(self):
-        entry = Entry(150, 500, 200, test, True)
+    def draw_test(self):
+        entry1 = Entry(0, 0, 200, test, True)
+        entry2 = Entry(200, 200, 200, test, True)
 
-        return [entry]
+        frame = Frame(80, 80, [entry1, entry2], test)
+
+        # frame.set_direction('vertical')
+        # frame.set_items_pos('auto')
+        # frame.set_width(300)
+        '''ou'''
+        frame.resize('auto', 'auto')
+
+        frame.set_padding(10,10,10,10)
+        frame.set_marge_items(10)
+
+        return [frame]
 
 
-    # def draw_item_list(self):
+    # def draw_test(self):
     #
     #     # items, list_x, list_y, item_width, item_height,
     #     # scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
@@ -199,7 +212,7 @@ def main():
     pygame.quit()
 
 def test(x, y, z):
-    print('test')
+    print('click on the widget')
 
 ####################################################
 ################| TESTS UNITAIRES |#################
