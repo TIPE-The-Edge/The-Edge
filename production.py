@@ -16,6 +16,17 @@ from outils import *
 
 
 """ TO DO LIST
+
+Commande()
+    tempsRestant() & updateCommandes()
+        On pourra laisser le temps en flottant et faire en sorte que
+        les commandes dans les machines s'enchainent meme en pleine
+        semaine.
+        Actuellement si la machine peut produire 1200 prod par
+        semaine, et qu'elle a de quoi en fabriquer 1201, elle va mettre
+        2 semaines à terminer (soit une semaine ou elle va produire 1
+        et ne sera pas dispo pour une autre commande.)
+
 """
 
 """ PROBLEMS
@@ -23,9 +34,14 @@ from outils import *
 
 """ NOTES
 """
+####################################################
+###################| CONSTANTES |###################
+####################################################
+
+MINS_PAR_SEMAINE = 2400
 
 ####################################################
-##################| FONCTIONS |#####################
+###################| FONCTIONS |####################
 ####################################################
 def fonction():
     """ A quoi sert la fonction. Comment elle marche
@@ -34,6 +50,17 @@ def fonction():
     Sortie :
     Vérifié par :
     """
+
+def ajout(liste_depart, liste_arrivee):
+    """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
+    Entree : une liste [["nom", val], ..]
+             une liste [["nom", val], ..]
+    """
+
+    for couple_depart in liste_depart:
+        for couple_arrivee in liste_arrivee:
+            if couple_depart[0] == couple_arrivee[0]:
+                couple_arrivee[1] += couple_depart[1]
 
 ####################################################
 ###################| CLASSES |######################
@@ -127,13 +154,14 @@ class Machine(object):
 
         # Infos basiques
         self.nom = self.genNom()
+        self.utilisateur = None
 
         # Production
         self.operations_realisables = [] # TODO
-        self.commandes = [[]]
+        self.commandes = []
 
         # Stockage/Mat réservés pour la machine
-        self.materiaux = [[]]
+        # self.materiaux = [[]] #TOBE REMOVED (les materiaux sont dans les commandes)
 
     def __repr__(self):
         return "{} : {}, {}".format(
@@ -146,6 +174,106 @@ class Machine(object):
         Machine.noms_dispo.remove(nom)
 
         return nom
+
+    def genCommande(usines, usine, materiaux, operations, produit):
+        for usi in usines:
+            if usi.nom == usine:
+                usi.commandes.append(Commande(materiaux, operations, produit))
+
+class Commande(object): # Commandes faites aux machines
+
+    def __init__(self, materiaux, operations, produit):
+
+        self.materiaux = materiaux  # Liste de liste [[mat, nbr_mat], ...]
+        self.produit   = produit    # Produit final
+
+        # Process
+        self.recette          = self.produit.materiaux # Type et nbr de mat par produit
+        self.mins_par_produit = Commande.minsParProduit(operations, self.produit) # Tps en minutes pour 1 produit
+
+        # Infos
+        self.prodRestants() # Pour savoir combien on peut encore produire.
+        self.prod_totaux = self.prod_restants # Pour l'affichage
+
+        self.tps_restant = self.prod_restants * self.mins_par_produit # En minutes
+        self.tps_total   = self.tps_restant # Pour affichage
+
+    def __repr__(self):
+        return "{} -> {}".format(self.prod_restants, self.produit.nom)
+        # return "{} -> {}".format(self.prod_restants, self.tps_restant)
+
+    def minsParProduit(operations, produit):
+        """ retourne le nombre de produits qui peuvent être fabriqués
+        chaque semaine.
+        """
+        somme = 0 # Somme des durées des opérations necessaires à
+                  # la fabrication d'un produit.
+        for ope in produit.operations: # parcours la liste [["ope", nbr_ope], ...]
+            for op in operations:      # parcours la liste des operations
+                if op.nom == ope[0]:
+                    somme += op.duree * ope[1] # Ajoute la duree de l'operation
+                                               # multiplié par le nombre de
+                                               # fois qu'elle est nécéssaire
+
+        return(somme)
+
+    def prodRestants(self):
+        """ Cherche combien le nombre de mat de la machine, lui permettra de
+        faire de produits.
+        """
+        for mat in self.materiaux:
+            if mat[0] == self.recette[0][0]:
+                self.prod_restants = mat[1] / self.recette[0][1]
+
+    def updateCommandes(machines, stock):
+        for mac in machines:
+            if len(mac.commandes) > 0: # La machine a au moins une commande.
+
+                Commande.process(mac.commandes, stock)
+
+    def process(commandes, stock):
+        mins = MINS_PAR_SEMAINE
+
+        while mins > 0 and len(commandes) > 0:
+
+            if commandes[0].tps_restant == 0: # Supprime les commandes terminées
+                commandes.remove(commandes[0])
+
+            if len(commandes) > 0:
+                mins = commandes[0].update(stock, mins)
+
+    def update(self, stock, mins):
+
+        mins = self.transforme(stock, mins)
+        # new_mins = mins - self.tps_restant
+
+        self.prodRestants() # MàJ le nbr de produits restants
+        self.tps_restant = self.prod_restants * self.mins_par_produit
+
+        return(mins)
+
+    def transforme(self, stock, mins):
+        """ Met à jour les materiaux.
+        Entrée : l'objet stock où seront stockés les produits
+                 minutes disponibles
+
+        """
+        new_materiaux = []
+        temps = min(mins, self.tps_restant) # Temps réel dépensé
+        nbr_prod = int(temps / self.mins_par_produit) # Nbr réel de produits fabriqués
+
+        for mat in self.materiaux:
+            for mat_r in self.recette:
+                if mat[0] == mat_r[0]:
+                    new_materiaux.append([mat[0], mat[1] - nbr_prod * mat_r[1]])
+
+        # MàJ des materiaux de la machine
+        self.materiaux = new_materiaux
+
+        # Ajout des produits terminés au stock
+        ajout([[self.produit.nom, nbr_prod]], stock.produits)
+
+        return(mins-temps)
 
 class Transport(object):
 
@@ -176,21 +304,10 @@ class Transport(object):
 
                 for stock in stocks:
                     if stock.nom == trans.arrivee:
-                        Transport.ajout(trans.materiaux, stock.materiaux)
-                        Transport.ajout(trans.produits, stock.produits)
+                        ajout(trans.materiaux, stock.materiaux)
+                        ajout(trans.produits, stock.produits)
 
                 transports.remove(trans) # Retire le transport de la liste
-
-    def ajout(liste_depart, liste_arrivee):
-        """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
-        Entree : une liste [["nom", val], ..]
-                 une liste [["nom", val], ..]
-        """
-
-        for couple_depart in liste_depart:
-            for couple_arrivee in liste_arrivee:
-                if couple_depart[0] == couple_arrivee[0]:
-                    couple_arrivee[1] += couple_depart[1]
 
 class Stock(object):
 

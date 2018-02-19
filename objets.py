@@ -223,14 +223,15 @@ class Population(object): # de consommateurs
 class Produit(object):
 
     def __init__(self, produits, utilite, materiaux, operations, cible):
+
         self.nom = self.genNom(produits)
 
         self.utilite    = utilite    # Par population (0-100)
         self.materiaux  = materiaux  # materiaux et quantités nécessaires
-        self.operations = operations # Opérations nécessaires
+        self.operations = operations # Opérations nécessaires (et quantité = 1)
 
-        self.cible        = cible # Population ciblée
-        self.prix         = 0     # Prix fixé
+        self.cible      = cible # Population ciblée
+        self.prix       = 0     # Prix fixé
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
@@ -239,7 +240,8 @@ class Produit(object):
         self.concurence = 0 # BONUS
 
     def __repr__(self):
-        return "{} - age : {}".format(self.nom, self.age)
+        return "{} - {}, {}".format(self.nom,
+                                    self.materiaux, self.operations)
 
     def genNom(self, produits):
 
@@ -271,12 +273,12 @@ class Operation(object):
 
         self.nom = self.genNom()
 
-        self.prix = 0  # TODO
-        self.duree = 0 # TODO
+        self.consommation = 0  # TODO # Consommation énergétique? -> cout
+        self.duree = 1 # TODO # en minutes
 
     def __repr__(self):
-        return "{}".format(
-                self.nom)
+        return "{} - {} min(s)".format(
+                self.nom, self.duree)
 
     def genNom(self):
 

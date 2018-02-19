@@ -13,9 +13,39 @@ STOCK :
 PRODUCTION :
     Faire une classe Commande ?
 
+    Les commandes sont parfaites, les quantités de materiaux en entrée
+        vont toutes etre utilisées.
+
     Fonction qui prend l'ordre de commande (dans le menu Production) et génère
         une commande usine:
-            - temps/unité = somme des temps des opérations nécessaires.
+            - temps/unité = somme des temps des opérations nécessaires
+                (en semaines).
             - nombre de materiaux entrés
             - nombre de materiaux pour un produit
+            - type de produit
+            - opérations
             - ... (A completer?)
+
+    On part du principe (peut etre à étudier) que l'on travaille 8h par jour
+    pendant 5 jours. Soit 2400 mins de travail par semaine.
+
+
+
+
+    mac 1
+        com 1
+            nbr: 5000; tps: 5 1200/s
+
+        (2400 - 200*2=400)/5 = 400
+
+        com 2
+            nbr : 1000; tps: 3 480/s
+
+    mac 2
+        com 1
+            nbr: 2000; tps: 5 480/s
+
+        (2400 - 80*5=400)/2 = 1000
+
+        com 2
+            nbr: 6000; tps: 5 1200/s

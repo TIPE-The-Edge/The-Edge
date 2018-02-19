@@ -56,10 +56,11 @@ if __name__ == "__main__" :
 
     ######## INITIALISATION DES OBJETS ########
 
-    preset_prod = 0
+    preset_prod = 2
+    preset_fab = 0
 
     # individus # Pour les test uniquement
-    for i in range(1):
+    for i in range(0):
         individus.append(Individu())
 
     # populations
@@ -67,15 +68,15 @@ if __name__ == "__main__" :
     # populations.append(Population("Les Jeunes", 2000, 99))
 
     # produits
-    for i in range(0 + preset_prod):
+    for i in range(0):
         produits.append(Produit(produits, None, None, None, None))
 
     # opérations
-    for i in range(0 + preset_prod):
+    for i in range(0 + preset_prod + preset_fab):
         operations.append(Operation())
 
     # materiaux
-    for i in range(0 + preset_prod):
+    for i in range(0 + preset_prod + preset_fab):
         materiaux.append(Materiau())
 
     # formations #BONUS
@@ -87,10 +88,13 @@ if __name__ == "__main__" :
         fournisseurs.append(Fournisseur())
 
     # machines
-    for i in range(0 + preset_prod):
+    for i in range(0 + preset_prod + preset_fab):
         machines.append(Machine())
 
-    # transports
+    # commandes # Pour les test uniquement
+    # commandes.append(Commande([[materiaux[0], 10], [materiaux[1], 5]], operations, produits[0]))
+
+    # transports # Pour les test uniquement
     # transports.append(Transport("Admin", "The Edge", [[materiaux[0].nom, 10], [materiaux[1].nom, 15]], []))
 
     # stocks
@@ -98,7 +102,7 @@ if __name__ == "__main__" :
         stocks.append(Stock())
 
     # candidats
-    for i in range (5):
+    for i in range (0):
         candidats.append(Individu())
 
     # départs # Pour les test uniquement
@@ -109,9 +113,31 @@ if __name__ == "__main__" :
     lesRH = RH()
     #lesRH.update(individus, departs, 3, 3)
 
+    # Créations d'objets supplémentaires # Pour les test uniquement
+        # Tests sur le fonctionnement des Commandes et Machines.
+            # Produits
+    produits.append(Produit(produits, None, [[materiaux[0].nom, 2], [materiaux[1].nom, 1]], [[operations[0].nom, 1], [operations[1].nom, 1]], None))
+    produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5]], [[operations[0].nom, 7]], None))
+            # Commandes
+    machines[0].commandes.append(Commande([[materiaux[0].nom, 10000], [materiaux[1].nom, 5000]], operations, produits[0]))
+    machines[0].commandes.append(Commande([[materiaux[1].nom, 5000], [materiaux[0].nom, 3000]], operations, produits[1]))
+
+    machines[1].commandes.append(Commande([[materiaux[1].nom, 10000], [materiaux[0].nom, 6000]], operations, produits[1]))
+    machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
+
     ######## VARIABLES DE JEU ########
     temps = datetime.datetime(2018,1,1) # Temps en semaines
     month = 1
+
+    # init produits
+    initProduits(populations, produits)
+    initProduits(machines, produits)
+    initProduits(stocks, produits)
+
+    # init materiaux
+    initMateriaux(populations, materiaux)
+    initMateriaux(machines, materiaux)
+    initMateriaux(stocks, materiaux)
 
     on = 0
     while on != " ": # Boucle de jeu
@@ -120,32 +146,15 @@ if __name__ == "__main__" :
 
         ######## INIT/UPDATE/EVENTS DES OBJETS ########
 
-        # Tri les produits par ordre alphabétique
-        # produits     = enhancedSort(produits,     "nom", False)
-        # individus    = enhancedSort(individus,    "id",  False)
-        # operations   = enhancedSort(operations,   "nom", False)
-        # materiaux    = enhancedSort(materiaux,    "nom", False)
-        # formations   = enhancedSort(formations,   "nom", False)
-        # populations  = enhancedSort(populations,  "nom", False)
-        # fournisseurs = enhancedSort(fournisseurs, "nom", False)
-        # machines     = enhancedSort(machines,     "nom", False)
-
-        # init produits
-        initProduits(populations, produits)
-        initProduits(machines, produits)
-        initProduits(stocks, produits)
-
-        # init materiaux
-        initMateriaux(populations, materiaux)
-        initMateriaux(machines, materiaux)
-        initMateriaux(stocks, materiaux)
-
         # Individus
         Individu.updateExpStartUp(individus)
 
         # Transports
         Transport.arrivees(transports, stocks)
         Transport.updateTempsTrajet(transports)
+
+        # Commandes
+        Commande.updateCommandes(machines, stocks[0]) # test commandes
 
         # RH
         #lesRH.update(individus, departs, 3, 3)
@@ -208,6 +217,15 @@ if __name__ == "__main__" :
             print(mach)
         print()
 
+        # commandes
+        print("------ Classe : Commande ------")
+        for mac in machines:
+            if len(mac.commandes) > 0:
+                print("+ " + mac.nom)
+                for com in mac.commandes:
+                    print(com)
+        print()
+
         # transports
         print("------ Classe : Transport ------")
         for trans in transports:
@@ -244,8 +262,8 @@ if __name__ == "__main__" :
         ####################
         print("------------------------ ESPACE TESTS ------------------------\n")
 
-        lesRH.update(individus, departs, 3, 3)
-        print(lesRH)
+        # lesRH.update(individus, departs, 3, 3)
+        # print(lesRH)
 
         # idt = int(input("recruter ? "))
         # RH.recruter(individus, candidats, idt)

@@ -80,6 +80,34 @@ class RH(object):
         return "nbr employés: {} \nbonheur moy: {} \nage moy: {} \n\nexp start up moy: {} \nexp R&D moy: {} \n\nnbr arrivees: {} \ntaux arrivees: {} \nnbr departs: {} \ntaux departs: {} \ntaux rotation: {} \n\ncout formations: {} \nmoy formations: {} \n\nsalaire moy: {} \nmasse sal brute: {} \nmasse sal nette: {} \ncout emploi: {} \ncout moy emploi: {} \npart masse sal: {}".format(
                 self.nbr_employes, self.bonheur_moy, self.age_moy, self.exp_start_up_moy, self.exp_RetD_moy, self.nbr_arrivees, self.taux_arrivees, self.nbr_departs, self.taux_departs, self.taux_rotation, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
 
+    def __init__(self):
+        self.nbr_employes     = None
+        self.bonheur_moy      = None
+        self.age_moy          = None
+
+        # Experience
+        self.exp_start_up_moy = None
+        self.exp_RetD_moy     = None
+
+        # Flux
+        self.nbr_arrivees  = None
+        self.taux_arrivees = None
+        self.nbr_departs   = None
+        self.taux_departs  = None
+        self.taux_rotation = None
+
+        # Formation
+        self.cout_formations = None # BONUS
+        self.moy_formations  = None # BONUS
+
+        # Couts
+        self.salaire_moy     = None
+        self.masse_sal_brute = None
+        self.masse_sal_nette = None
+        self.cout_emploi     = None
+        self.cout_moy_emploi = None
+        self.part_masse_sal  = None
+
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
         self.nbr_employes     = RH.nbr(individus)
         self.bonheur_moy      = RH.bonheurMoyen(individus)
