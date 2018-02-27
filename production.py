@@ -17,15 +17,11 @@ from outils import *
 
 """ TO DO LIST
 
-Commande()
-    tempsRestant() & updateCommandes()
-        On pourra laisser le temps en flottant et faire en sorte que
-        les commandes dans les machines s'enchainent meme en pleine
-        semaine.
-        Actuellement si la machine peut produire 1200 prod par
-        semaine, et qu'elle a de quoi en fabriquer 1201, elle va mettre
-        2 semaines à terminer (soit une semaine ou elle va produire 1
-        et ne sera pas dispo pour une autre commande.)
+Vérifier le fonctionnement global des fonctions de production. Lier
+    l'interface à la fin de la prod. Avec les verifs des machines etc.
+
+    Vérifier ttes les fonctions de commande. certaines ne sont pas bonnes.
+    Vérifier les type des objets à mettre en paramètre.
 
 """
 
@@ -61,6 +57,17 @@ def ajout(liste_depart, liste_arrivee):
         for couple_arrivee in liste_arrivee:
             if couple_depart[0] == couple_arrivee[0]:
                 couple_arrivee[1] += couple_depart[1]
+
+def retire(liste_depart, liste_arrivee):
+    """ Retire les valeur d'une liste à la 2e, au bon endroit.
+    Entree : une liste [["nom", val], ..]
+             une liste [["nom", val], ..]
+    """
+
+    for couple_depart in liste_depart:
+        for couple_arrivee in liste_arrivee:
+            if couple_depart[0] == couple_arrivee[0]:
+                couple_arrivee[1] -= couple_depart[1]
 
 ####################################################
 ###################| CLASSES |######################
@@ -175,10 +182,85 @@ class Machine(object):
 
         return nom
 
-    def genCommande(usines, usine, materiaux, operations, produit):
-        for usi in usines:
-            if usi.nom == usine:
-                usi.commandes.append(Commande(materiaux, operations, produit))
+    def verifOperations(machines, machine, produit):
+        """ Vérifie que les opérations nécessaires sont bien dans la liste
+        des opérations réalisables par la machine.
+        """
+        for mac in machines:
+            if mac.nom == machine: # La machine qui nous interresse.
+
+                for ope in produit.operations:
+                    if ope[0] not in mac.operations_realisables:
+                        return(False)
+                return(True)
+
+    def ajusteUnMatStock(stock, materiau):
+        """ Ajuste la quantité d'un materiau en fonction de la quantité
+        dans le stock.
+        """
+        for mat_s in stock.materiaux:
+            if materiau[0] == mat_s[0]:
+                return(min(materiau[1], mat_s[1]))
+
+    def ajusteMatStock(stock, materiaux):
+        """ Ajuste les nombres de materiaux en fonction des quantités présentes
+        dans le stock.
+        """
+        new_materiaux = []
+
+        for mat in materiaux:
+            for mat_s in stock.materiaux:
+                if mat[0] == mat_s[0]:
+                    new_materiaux.append([mat[0], min(mat[1], mat_s[1])])
+
+        return(new_materiaux)
+
+    def ajusteMatProd(produit, materiaux):
+        """ Ajuste les nombres de materiaux en fonction des proportions à
+        respecter pour la fabrication d'un produit.
+        """
+        new_materiaux = []
+        coefs = []
+
+        for mat in materiaux:
+            for mat_p in produit.materiaux:
+                if mat[0] == mat_p[0]:
+                    coefs.append(int(mat[1]/mat_p[1]))
+
+        mult = min(coefs)
+        new_materiaux = [[mat_p[0], mat_p[1]*mult] for mat_p in produit.materiaux]
+
+        return(new_materiaux)
+
+    def ajusteCommande(machines, machine, stock, produit, materiaux):
+        """ Vérifie que les opérations nécessaires sont bien dans la machine
+        ajuste les materiaux en fonction du stock,
+        ajuste les materiaux donnés dans les bonnes proportions.
+        Entree: Liste de machines
+                Nom de la machine
+                Stock (objet)
+                Produit (objet)
+                Liste des materiaux entrés [["nom_mat", nbr_mat], ..]
+        Sortie: Liste de materiaux ajustée [["nom_mat", nbr_mat], ..]
+
+        """
+        if not Machine.verifOperations(machines, machine, produit):
+            # Affichage console pour les tests, sinon sur interface.
+            print("la machine ne peut pas réaliser ttes les opé nécéssaires") #TODO
+
+        new_materiaux = Machine.ajusteMatStock(stock, materiaux)
+        new_materiaux = Machine.ajusteMatProd(produit, new_materiaux)
+
+        return(new_materiaux)
+
+    def genCommande(machines, machine, stock, materiaux, operations, produit):
+        # Créé la commande.
+        for mac in machines:
+            if mac.nom == machine:
+                mac.commandes.append(Commande(materiaux, operations, produit))
+
+        # Retire les mat du stock.
+        retire(materiaux, stock.materiaux)
 
 class Commande(object): # Commandes faites aux machines
 

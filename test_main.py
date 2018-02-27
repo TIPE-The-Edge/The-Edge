@@ -60,7 +60,7 @@ if __name__ == "__main__" :
     preset_fab = 0
 
     # individus # Pour les test uniquement
-    for i in range(0):
+    for i in range(1):
         individus.append(Individu())
 
     # populations
@@ -111,7 +111,8 @@ if __name__ == "__main__" :
 
     # RH
     lesRH = RH()
-    #lesRH.update(individus, departs, 3, 3)
+    lesRH.update(individus, departs, 3, 3)
+
 
     # Créations d'objets supplémentaires # Pour les test uniquement
         # Tests sur le fonctionnement des Commandes et Machines.
@@ -119,11 +120,14 @@ if __name__ == "__main__" :
     produits.append(Produit(produits, None, [[materiaux[0].nom, 2], [materiaux[1].nom, 1]], [[operations[0].nom, 1], [operations[1].nom, 1]], None))
     produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5]], [[operations[0].nom, 7]], None))
             # Commandes
-    machines[0].commandes.append(Commande([[materiaux[0].nom, 10000], [materiaux[1].nom, 5000]], operations, produits[0]))
-    machines[0].commandes.append(Commande([[materiaux[1].nom, 5000], [materiaux[0].nom, 3000]], operations, produits[1]))
+    # machines[0].commandes.append(Commande([[materiaux[0].nom, 10000], [materiaux[1].nom, 5000]], operations, produits[0]))
+    # machines[0].commandes.append(Commande([[materiaux[1].nom, 5000], [materiaux[0].nom, 3000]], operations, produits[1]))
+    #
+    # machines[1].commandes.append(Commande([[materiaux[1].nom, 10000], [materiaux[0].nom, 6000]], operations, produits[1]))
+    # machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
+            # Machines
+    machines[0].operations_realisables = [ope[0] for ope in produits[0].operations]
 
-    machines[1].commandes.append(Commande([[materiaux[1].nom, 10000], [materiaux[0].nom, 6000]], operations, produits[1]))
-    machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
 
     ######## VARIABLES DE JEU ########
     temps = datetime.datetime(2018,1,1) # Temps en semaines
@@ -138,6 +142,18 @@ if __name__ == "__main__" :
     initMateriaux(populations, materiaux)
     initMateriaux(machines, materiaux)
     initMateriaux(stocks, materiaux)
+
+
+    # Pour tests
+    stocks[0].materiaux[0][1] = 20000
+    stocks[0].materiaux[1][1] = 20000
+    mat1 = int(input("nbr mat1? "))
+    mat2 = int(input("nbr mat2? "))
+    mat_ajustes = Machine.ajusteCommande(machines, machines[0].nom, stocks[0], produits[0], [[materiaux[0].nom, mat1], [materiaux[1].nom, mat2]])
+    print(mat_ajustes)
+    input("ok? ")
+    Machine.genCommande(machines, machines[0].nom, stocks[0], mat_ajustes, operations, produits[0])
+
 
     on = 0
     while on != " ": # Boucle de jeu
@@ -157,7 +173,7 @@ if __name__ == "__main__" :
         Commande.updateCommandes(machines, stocks[0]) # test commandes
 
         # RH
-        #lesRH.update(individus, departs, 3, 3)
+        lesRH.update(individus, departs, 3, 3)
         RH.updateDeparts(departs)
         if (temps.month != month): # Ajoute les couts de RH tous les mois
             month = temps.month
@@ -265,6 +281,7 @@ if __name__ == "__main__" :
         # lesRH.update(individus, departs, 3, 3)
         # print(lesRH)
 
+        # Recrutement
         # idt = int(input("recruter ? "))
         # RH.recruter(individus, candidats, idt)
         #
@@ -272,11 +289,15 @@ if __name__ == "__main__" :
         # RH.licencier(individus, departs, idt)
         #
         # candidats.append(Individu())
-        #
+
+        # Approvisionnement
         # mat = input("mat? ")
         # nbr = int(input("combien? "))
         # commande = [[mat, nbr]]
         # Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
+
+        # Production
+
 
         # Fin
         on = input("on? : ")
