@@ -90,14 +90,18 @@ A TESTER.
 
 #-Population
 
-pop_1 = Population("Jeunes", 300, 15)
-pop_2 = Population("Actifs", 2000, 40)
-pop_3 = Population("Seniors", 1800, 25)
+pop_1 = Population("Jeunes", 300, 15, 15, 5)
+pop_2 = Population("Actifs", 2000, 40, 25,10)
+pop_3 = Population("Seniors", 1800, 25, )
 populations = [pop_1, pop_2, pop_3]
 
 #-Chercheurs
 
 chercheurs =[ Individu() for i in range(3)]
+
+#-Produits 
+
+produits = []
 
 ####################################
 ###########| FONCTIONS |############
@@ -463,7 +467,7 @@ class Projet(object):
             # Initialisation de l'utilité
             utilite = Prototype.appr_to_uti(self.produit)
             # Transformation en produit
-            self.produit = Produit(utilite, self.produit.materiaux,
+            self.produit = Produit(produits, utilite, self.produit.materiaux,
                                    self.produit.operations, self.produit.cible)
             # Le projet est fini.
             self.phase += 1
@@ -598,3 +602,4 @@ if __name__=="__main__" :
         produit = test.produit
 
     print(produit)
+    print(produit.utilite)

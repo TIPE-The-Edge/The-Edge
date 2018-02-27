@@ -206,17 +206,18 @@ class Population(object): # de consommateurs
 
     # Cette classe sera majoritairement paramétrée à la main
 
-    def __init__(self, nom, revenu, nombre):
+    def __init__(self, nom, revenu, nombre, esp, ecart):
         self.nom = nom # (Adrien)
 
         self.revenu = revenu # (Adrien)
         self.nombre = nombre # (Adrien)
+        self.tps_adoption = [esp, ecart] 
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
     def __repr__(self):
-        return "{} - nombre: {} revenu: {}. {}".format(
-                self.nom, self.nombre, self.revenu, self.materiaux)
+        return "{} - nombre: {} revenu: {}.".format(
+                self.nom, self.nombre, self.revenu)
 
     def ajoutProduit(populations, produit):
         """ Ajoute un nouveau produit aux populations.
@@ -243,6 +244,10 @@ class Produit(object):
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
 
+    def fixePrix(self, valeur) :
+        self.prix = valeur
+        return(self)
+
     def __repr__(self):
         return "{} - age : {}".format(self.nom, self.age)
 
@@ -264,6 +269,7 @@ class Produit(object):
         for prod in produits:
             if prod.marche:
                 prod.age += 1
+
 
 class Operation(object):
 
