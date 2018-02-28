@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : VENTES
-#>>> DATE    : 27/02/2018
+#>>> DATE    : 28/02/2018
 ####################################
 
 
@@ -48,18 +48,32 @@ Seniors :
 
 tps_adoption = (35, 5)
 
+
+
+
 """
 ####################################
 
 
 #############| NOTES |##############
 """
+Actuellement le nombre d'acheteurs est
+déterminé par l'utilité qui représente 
+le pourcentage de la population qui est
+prête à acheter le produit.
+>>> le nombre d'acheteurs par mois est trop
+    élevé.
+    (Sol° : retirer les personnes n'ayant 
+    pas d'accès à internet.)
+    En effet seuls 85% de la population à 
+    accès à internet en 2017.
 
+____________________________________
 
-
-
-
-
+2,5% du budget d'un ménage est consacré à 
+l'information et à la communication.
+On déduit de ce budget 30€ qui représente
+les frais moyens d'une connexion internet.
 
 
 """
@@ -94,7 +108,7 @@ class nom_classe() :
 ###########| FONCTIONS |############
 ####################################
 
-def budget(revenus) :
+def budget(revenus, periode) :
     """
     FONCTION       :
     ENTREES        :
@@ -102,13 +116,21 @@ def budget(revenus) :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
     """
+    # Liste des revenus
     rep = []
+
+    # Pourcentage de ménage ayant accès à internet
+    acces = (5.4*int(periode)-10765.9)/100
 
     # Frais d'internet
     internet = 30
 
-    for r in revenus[0] :
-        rep.append((int(r)*(5/2400))-internet)
+    for r in range(len(revenus[0])) :
+
+        if r > int(len(revenus[0])*acces) :
+            rep.append((int(revenus[0][r])*(5/2400))-internet)
+        else :
+            rep.append(int(revenus[0][r])*(5/2400))
 
     return(rep)
 
@@ -130,8 +152,8 @@ def consommateurs(periode) :
     # Liste des différents types de consommateurs
     rep = []
 
-    # Revenus moyens des 3 types de population 
-    revenus = budget(readLineCSV("revenus.csv", "periode", periode, ["jeunes", "actifs", "seniors"]))
+    # Budget moyens des 3 types de population 
+    revenus = budget(readLineCSV("revenus.csv", "periode", periode, ["jeunes", "actifs", "seniors"]), periode)
 
     # Nombre de ménage par type de population
     demo = []
@@ -140,19 +162,22 @@ def consommateurs(periode) :
         demo.append(int(d))
     demographie = demo
 
-    #>>> Corps de la fonction <<<#
-
-    # Revenus des jeunes
+    # Budget des jeunes
     jeunes = np.random.normal(loc=revenus[0], scale=20, size=100)
     jeunes = np.array(jeunes, int)
+    # print("Budget max jeunes : ", max(jeunes))
 
-    # Revenus des actifs
+    # Budget des actifs
     actifs = np.random.normal(loc=revenus[1], scale=30, size=100)
     actifs = np.array(actifs, int)
+    # print("Budget max actifs : ", max(actifs))
 
-    # Revenus des seniors
+    # Budget des seniors
     seniors = np.random.normal(loc=revenus[2], scale=30, size=100)
     seniors = np.array(seniors, int)
+    # print("Budget max Seniors : ", max(seniors))
+
+    #>>> Corps de la fonction <<<#
 
     for i in range(100) :
         rep.append(Population("Jeunes", jeunes[i], int(demographie[0]/100), 15, 5))
@@ -182,10 +207,11 @@ def nb_acheteur(population, produit) :
         if pop[0] == population.nom :
             utilite = pop[1]
 
+    # 
     acheteurs_potentiels = int((population.nombre)*(utilite/100))
 
     #>>> Corps de la fonction <<<#
-    if population.revenu > produit.prix :
+    if population.revenu >= produit.prix :
         acheteurs = acheteurs_potentiels
     #>>> Sortie <<<#
     return(acheteurs)
@@ -200,20 +226,20 @@ def ventes(acheteurs, produit, num_tour, esp, ecart) :
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
-    nbr_ventes = 0
+    demandes = 0
     #>>> Corps de la fonction <<<#
     if abs(esp-num_tour)>=2*ecart:
-        nbr_ventes = int(acheteurs*(0.025)/(esp-2*ecart))
+        demandes = int(acheteurs*(0.025)/(esp-2*ecart))
     elif abs(esp-num_tour)>=ecart:
-        nbr_ventes = int(acheteurs*(0.135)/(ecart))
+        demandes = int(acheteurs*(0.135)/(ecart))
     else :
-        nbr_ventes=int(acheteurs*(0.34)/(ecart))
+        demandes=int(acheteurs*(0.34)/(ecart))
 
     #>>> Sortie <<<#
-    return(nbr_ventes)
+    return(demandes)
 
 
-def benefices(nbr_ventes, produit) :
+def profit(nbr_ventes, produit) :
     """
     FONCTION       :
     ENTREES        :
@@ -265,14 +291,19 @@ if __name__=="__main__" :
     produit = Produit.fixePrix(produit, int(input("Fixez un prix : ")))
 
     populations = consommateurs(input("Entrez une année : "))
+    offres = int(input("Définissez le nombre de produit en vente : "))
     num_tour = 0    
-    vendus = 0
-
+    demandes = 0
 
     for pop in populations :
         acheteurs = nb_acheteur(pop, produit)
-        vendus += ventes(acheteurs, produit, num_tour, pop.tps_adoption[0], pop.tps_adoption[1])
+        demandes += ventes(acheteurs, produit, num_tour, pop.tps_adoption[0], pop.tps_adoption[1])
 
+    # On définit le nombre de vente du produit qui est
+    #| la plus petite valeur entre l'offre et la demande.
+    nbr_ventes = min(demandes, offres)
 
-    benef = benefices(vendus, produit)
-    print("Nombre de ventes : "+ str(vendus)+ "\nBénéfices : "+str(benef))
+    # On calcule le profit des ventes
+    gain = profit(nbr_ventes, produit)
+
+    print("Nombre de ventes : "+ str(nbr_ventes)+ "\nBénéfices : "+str(gain))
