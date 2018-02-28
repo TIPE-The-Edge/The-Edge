@@ -58,9 +58,10 @@ if __name__ == "__main__" :
 
     preset_prod = 2
     preset_fab = 0
+    preset_rh = 3
 
     # individus # Pour les test uniquement
-    for i in range(1):
+    for i in range(preset_rh):
         individus.append(Individu())
 
     # populations
@@ -102,7 +103,7 @@ if __name__ == "__main__" :
         stocks.append(Stock())
 
     # candidats
-    for i in range (0):
+    for i in range (preset_rh):
         candidats.append(Individu())
 
     # départs # Pour les test uniquement
@@ -143,22 +144,12 @@ if __name__ == "__main__" :
     initMateriaux(machines, materiaux)
     initMateriaux(stocks, materiaux)
 
-
-    # Pour tests
+    # Pour les tests
     stocks[0].materiaux[0][1] = 20000
     stocks[0].materiaux[1][1] = 20000
-    mat1 = int(input("nbr mat1? "))
-    mat2 = int(input("nbr mat2? "))
-    mat_ajustes = Machine.ajusteCommande(machines, machines[0].nom, stocks[0], produits[0], [[materiaux[0].nom, mat1], [materiaux[1].nom, mat2]])
-    print(mat_ajustes)
-    input("ok? ")
-    Machine.genCommande(machines, machines[0].nom, stocks[0], mat_ajustes, operations, produits[0])
 
-
-    on = 0
-    while on != " ": # Boucle de jeu
-
-        os.system('clear') # works on Linux/Mac
+    on = 1
+    while on != 0:
 
         ######## INIT/UPDATE/EVENTS DES OBJETS ########
 
@@ -166,8 +157,8 @@ if __name__ == "__main__" :
         Individu.updateExpStartUp(individus)
 
         # Transports
-        Transport.arrivees(transports, stocks)
         Transport.updateTempsTrajet(transports)
+        Transport.arrivees(transports, stocks)
 
         # Commandes
         Commande.updateCommandes(machines, stocks[0]) # test commandes
@@ -179,128 +170,191 @@ if __name__ == "__main__" :
             month = temps.month
             RH.coutsRH(couts, lesRH)
 
-
         ######## AFFICHAGE ########
+
+        os.system('clear') # works on Linux/Mac
 
         # Temps
         print("------------------------ |{} {} {}| ------------------------\n".format(temps.day, temps.strftime("%B"), temps.year))
 
-        # individus
-        print("------ Classe : Individu ------")
-        for ind in individus:
-            print(ind)
-        print()
+        menu = 1
+        while menu != 0: # MENU PRINCIPAL
+            menu = int(input("menu? \n  0: Continue \n  1: RH\n  2: Production\n  3: TBD\n  4: TBD\n "))
 
-        # populations
-        print("------ Classe : Population ------")
-        for pop in populations:
-            print(pop)
-        print()
+            if menu == 1: # MENU RH
+                while menu != 0:
+                    os.system('clear') # works on Linux/Mac
 
-        # produits
-        print("------ Classe : Produit ------")
-        for prod in produits:
-            print(prod)
-        print()
+                    # individus
+                    print("------ Classe : Individu ------")
+                    for ind in individus:
+                        print(ind)
+                    print()
 
-        # opérations
-        print("------ Classe : Operation ------")
-        for ope in operations:
-            print(ope)
-        print()
+                    # candidats
+                    print("------ Liste : Candidats ------")
+                    for cand in candidats:
+                        print(cand)
+                        #affichage_individu(cand)
+                    print()
 
-        # materiaux
-        print("------ Classe : Materiau ------")
-        for mat in materiaux:
-            print(mat)
-        print()
+                    # départs
+                    print("------ liste : Départs ------")
+                    for dep in departs:
+                        print(dep)
+                    print()
 
-        # formations #BONUS
-        # print("------ Classe : Formation ------")
-        # for form in formations:
-        #     print(form)
-        # print()
+                    menu = int(input("menu? \n  0: Retour \n  1: Recruter\n  2: Virer\n "))
 
-        # fournisseurs
-        print("------ Classe : Fournisseur ------")
-        for four in fournisseurs:
-            print(four)
-        print()
+                    if menu == 1: # RECRUTEMENT
+                        while menu != 0:
+                            os.system('clear') # works on Linux/Mac
 
-        # machines
-        print("------ Classe : Machine ------")
-        for mach in machines:
-            print(mach)
-        print()
+                            # candidats
+                            print("------ Liste : Candidats ------")
+                            for cand in candidats:
+                                print(cand)
+                                #affichage_individu(cand)
+                            print()
 
-        # commandes
-        print("------ Classe : Commande ------")
-        for mac in machines:
-            if len(mac.commandes) > 0:
-                print("+ " + mac.nom)
-                for com in mac.commandes:
-                    print(com)
-        print()
+                            # Recrutement
+                            idt = int(input("recruter qui? "))
+                            RH.recruter(individus, candidats, idt)
 
-        # transports
-        print("------ Classe : Transport ------")
-        for trans in transports:
-            print(trans)
-        print()
+                            menu = int(input("menu? \n  0: Retour \n  1: Recruter\n "))
 
-        # stocks
-        print("------ Classe : Stock ------")
-        for stock in stocks:
-            print(stock)
-        print()
+                        menu = 1
 
-        # candidats
-        print("------ Liste : Candidats ------")
-        for cand in candidats:
-            print(cand)
-            #affichage_individu(cand)
-        print()
+                    elif menu == 2: # LICENCIEMENT
+                        while menu != 0:
+                            os.system('clear') # works on Linux/Mac
 
-        # départs
-        print("------ liste : Départs ------")
-        for dep in departs:
-            print(dep)
-        print()
+                            # individus
+                            print("------ Classe : Individu ------")
+                            for ind in individus:
+                                print(ind)
+                            print()
 
-        # couts
-        print("------ liste : Coûts ------")
-        for cou in couts:
-            print(cou)
-        print()
+                            idt = int(input("virer ? "))
+                            RH.licencier(individus, departs, idt)
 
-        ####################
-        ### espace tests ###
-        ####################
-        print("------------------------ ESPACE TESTS ------------------------\n")
+                            menu = int(input("menu? \n  0: Retour \n  1: Licencier\n "))
 
-        # lesRH.update(individus, departs, 3, 3)
-        # print(lesRH)
+                        menu = 2
 
-        # Recrutement
-        # idt = int(input("recruter ? "))
-        # RH.recruter(individus, candidats, idt)
-        #
-        # idt = int(input("virer ? "))
-        # RH.licencier(individus, departs, idt)
-        #
-        # candidats.append(Individu())
+                menu = 1
 
-        # Approvisionnement
-        # mat = input("mat? ")
-        # nbr = int(input("combien? "))
-        # commande = [[mat, nbr]]
-        # Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
+            elif menu == 2: # MENU PRODUCTION
+                while menu != 0:
+                    os.system('clear') # works on Linux/Mac
 
-        # Production
+                    # commandes
+                    print("------ Classe : Commande ------")
+                    for mac in machines:
+                        if len(mac.commandes) > 0:
+                            print("+ " + mac.nom)
+                            for com in mac.commandes:
+                                print(com)
+                    print()
+
+                    # transports
+                    print("------ Classe : Transport ------")
+                    for trans in transports:
+                        print(trans)
+                    print()
+
+                    # stocks
+                    print("------ Classe : Stock ------")
+                    for stock in stocks:
+                        print(stock)
+                    print()
+
+                    menu = int(input("menu? \n  0: Retour \n  1: Approvisionnement\n  2: Production\n "))
+
+                    if menu == 1: # Approvisionnement
+                        while menu != 0:
+                            os.system('clear') # works on Linux/Mac
+
+                            # materiaux
+                            print("------ Classe : Materiau ------")
+                            for mat in materiaux:
+                                print(mat)
+                            print()
+
+                            # fournisseurs
+                            print("------ Classe : Fournisseur ------")
+                            for four in fournisseurs:
+                                print(four)
+                            print()
+
+                            # stocks
+                            print("------ Classe : Stock ------")
+                            for stock in stocks:
+                                print(stock)
+                            print()
+
+                            mat = input("mat? ")
+                            nbr = int(input("combien? "))
+                            four = input("fournisseur? ")
+                            commande = [[mat, nbr]]
+                            Fournisseur.approvisionnement(transports, materiaux, couts, four, "The Edge", commande)
+
+                            menu = int(input("menu? \n  0: Retour \n  1: Acheter\n "))
+
+                        menu = 1
+
+                    elif menu == 2: # Production
+                        while menu != 0:
+                            os.system('clear') # works on Linux/Mac
+
+                            # produits
+                            print("------ Classe : Produit ------")
+                            for prod in produits:
+                                print(prod)
+                            print()
+
+                            # machines
+                            print("------ Classe : Machine ------")
+                            for mach in machines:
+                                print(mach)
+                            print()
+
+                            # stocks
+                            print("------ Classe : Stock ------")
+                            for stock in stocks:
+                                print(stock)
+                            print()
+
+
+                            mat1 = int(input("nbr mat1? "))
+                            mat2 = int(input("nbr mat2? "))
+                            mat_ajustes = Machine.ajusteCommande(machines, machines[0].nom, stocks[0], produits[0], [[materiaux[0].nom, mat1], [materiaux[1].nom, mat2]])
+                            print(mat_ajustes)
+                            input("ok? ")
+                            Machine.genCommande(machines, machines[0].nom, stocks[0], mat_ajustes, operations, produits[0])
+
+                            menu = int(input("menu? \n  0: Retour \n  1: Produire\n "))
+
+                        menu = 2
+
+                menu = 2
+
+            elif menu == 3: # MENU
+                while menu != 0:
+                    pass
+
+                menu = 3
+
+            elif menu == 4: # MENU
+                while menu != 0:
+                    pass
+
+                menu = 4
+
 
 
         # Fin
-        on = input("on? : ")
+        on = int(input("next week? (0/1) : "))
 
         #################################
         ### evenements de fin de tour ###

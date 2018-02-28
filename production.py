@@ -336,8 +336,8 @@ class Commande(object): # Commandes faites aux machines
 
     def transforme(self, stock, mins):
         """ Met à jour les materiaux.
-        Entrée : l'objet stock où seront stockés les produits
-                 minutes disponibles
+        Entrée : le Stock (objet) où seront stockés les produits
+                 nbr de minutes disponibles
 
         """
         new_materiaux = []
