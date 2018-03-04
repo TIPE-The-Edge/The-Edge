@@ -163,22 +163,37 @@ class Window():
 
     def draw_test(self):
         entry1 = Entry(0, 0, 300, 50, test, True)
-        entry2 = Entry(200, 200, 200, 200, test, True)
+        entry2 = Entry(0, 0, 100, 100, test, True)
+        entry3 = Entry(0, 0, 100, 100, test, True)
 
-        frame = Frame(80, 40, [entry1, entry2], test)
+        frame1 = Frame(0,0, [entry3, entry2], test)
+        frame1.set_direction('horizontal')
+        frame1.set_items_pos('auto')
+        frame1.resize('auto', 'auto')
+        frame1.set_align('left')
+        frame1.set_padding(10,10,10,10)
+        frame1.set_marge_items(10)
+        frame1.make_pos()
+
+        frame = Frame(100, 100, [entry1, frame1], test)
 
         frame.set_direction('vertical')
         frame.set_items_pos('auto')
         frame.resize('auto', 'auto')
         frame.set_padding(10,10,10,10)
-        frame.set_align('left')
+        frame.set_align('center')
         frame.set_marge_items(10)
+        frame.set_bg_color((189, 195, 199))
+
+        frame.make_pos()
+
         # frame.set_width(300)
         '''ou'''
         # frame.resize('auto', 'auto')
         # frame.set_align('right')
         # frame.set_padding(10,10,10,10)
         # frame.set_marge_items(10)
+
 
         return [frame]
 

@@ -35,7 +35,7 @@ class Frame():
         self.height = 0
 
         # Couleur du background
-        self.color = (189, 195, 199)
+        self.color = (0, 0, 0)
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.hover= pygame.Rect(self.x, self.y, self.width, self.height)
@@ -71,6 +71,13 @@ class Frame():
             self.size_h = 'fixed'
             self.height = height
 
+    """ Modifie la couleur du background
+    Entrée :
+        # self
+        # value : triple d'entier
+    """
+    def set_bg_color(self, value):
+        self.color = value
 
     """ Modifie la marge entre les items
     Entrée :
@@ -140,13 +147,11 @@ class Frame():
         self.size_h = 'fixed'
         self.height = value
 
-
-    """ Dessine les items de la frame en fonction de ses paramètres
+    """ Modifie la position des items dans la frame
     Entrée :
         # self
-        # value: 'vertical', 'horizontal', 'none'
     """
-    def draw(self, screen):
+    def make_pos(self):
         if self.items_pos == 'fixed':
             pass
 
@@ -196,6 +201,11 @@ class Frame():
                                 pass
 
                     item.rect.y = sum_size
+
+                    for sub_item in item.items:
+                        sub_item.rect.y = sub_item.rect.y + item.rect.y
+                        item.items.extend(sub_item.items)
+
                     sum_size += item.rect.height + self.marge_items
 
                 elif self.direction == 'horizontal':
@@ -214,6 +224,11 @@ class Frame():
                                 pass
 
                     item.rect.x = sum_size
+
+                    for sub_item in item.items:
+                        sub_item.rect.x = sub_item.rect.x + item.rect.x
+                        item.items.extend(sub_item.items)
+
                     sum_size += item.rect.width + self.marge_items
 
             for item in self.items:
@@ -226,6 +241,10 @@ class Frame():
                     elif self.align == 'center':
                         item.rect.x = (self.padding_left + self.width)//2 - (item.rect.width//2) + self.x
 
+                    for sub_item in item.items:
+                        sub_item.rect.x = sub_item.rect.x + item.rect.x
+                        item.items.extend(sub_item.items)
+
                 elif self.direction == 'horizontal':
                     if self.align == 'left':
                         item.rect.y = self.y + self.padding_top
@@ -234,6 +253,10 @@ class Frame():
                         item.rect.y = self.y + self.height - self.padding_bottom - item.rect.height
                     elif self.align == 'center':
                         item.rect.y = (self.padding_top + self.height)//2 - (item.rect.height//2) + self.y
+
+                    for sub_item in item.items:
+                        sub_item.rect.y = sub_item.rect.y + item.rect.y
+                        item.items.extend(sub_item.items)
 
             if self.direction == 'vertical':
                 sum_size += self.padding_bottom - self.y - self.marge_items
@@ -245,6 +268,12 @@ class Frame():
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.hover= pygame.Rect(self.x, self.y, self.width, self.height)
 
+    """ Dessine les items de la frame en fonction de ses paramètres
+    Entrée :
+        # self
+        # screen
+    """
+    def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
 
 
