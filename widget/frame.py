@@ -190,6 +190,7 @@ class Frame():
                     sum_size += item.rect.height + self.marge_items
 
                 elif self.direction == 'horizontal':
+                    print(self.size_h)
                     if self.size_h == 'auto':
                         new_height = self.padding_top + item.rect.height + self.padding_bottom
                         if new_height > self.height:
@@ -204,7 +205,7 @@ class Frame():
                                 pass
 
                     item.rect.x = sum_size
-                    item.rect.y = self.y + padding_top
+                    item.rect.y = self.y + self.padding_top
                     sum_size += item.rect.width + self.marge_items
 
                 # item.draw(screen)

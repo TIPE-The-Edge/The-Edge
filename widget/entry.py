@@ -32,6 +32,20 @@ class Entry():
         else:
             self.entry_type = 'text'
 
+    # def get_image(self):
+    #     i = 0
+    #     len_txt = len(self.entry_display)
+    #     img = (self.font.render(self.entry_display[:i], True, (0,0,0), self.color)).get_rect()
+    #     while i < len_txt:
+    #         if img.width < self.rect.width-10:
+    #             i += 1
+    #             img = (self.font.render(self.entry_display[:i], True, (0,0,0), self.color)).get_rect()
+    #         elif i != 0:
+    #             return i-2
+    #         else:
+    #             return 0
+    #     return len_txt
+
     def draw(self, screen):
         # self.rect_txt = pygame.Rect(self.rect.x+5, self.rect.y+8, self.rect.width, self.rect.height)
 
@@ -45,6 +59,8 @@ class Entry():
         self.rect_txt = self.image.get_rect()
         self.rect_txt.x = self.rect.x + 5
         self.rect_txt.y = self.rect.y + self.rect.height // 2 - self.rect_txt.height // 2
+        # self.rect_txt.width = self.rect.width - 10
+        # print(self.rect_txt.width)
         screen.blit(self.image, self.rect_txt)
 
     def do(self, window, screen):
