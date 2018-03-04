@@ -159,17 +159,13 @@ class Frame():
             for item in self.items:
 
                 if self.size_w == 'auto':
-                    print('width')
                     new_width = self.padding_left + item.rect.width + self.padding_right + item.rect.x
                     if new_width > self.width:
-                        print('new_width')
                         self.width = new_width
 
                 if self.size_h == 'auto':
-                    print('height')
                     new_height = self.padding_top + item.rect.height + self.padding_bottom + item.rect.y
                     if new_height > self.height:
-                        print('new_height')
                         self.height = new_height
 
                 item.rect.x = item.rect.x + self.x + self.padding_left
@@ -184,7 +180,6 @@ class Frame():
 
             if self.direction == 'vertical':
                 sum_size = self.padding_top + self.y
-                print(sum_size)
             elif self.direction == 'horizontal':
                 sum_size = self.padding_left + self.x
 
@@ -258,7 +253,6 @@ class Frame():
                     if self.align == 'left':
                         item.rect.y = self.y + self.padding_top
                     elif self.align == 'right':
-                        print('test')
                         item.rect.y = self.y + self.height - self.padding_bottom - item.rect.height
                     elif self.align == 'center':
                         item.rect.y = (self.padding_top + self.height)//2 - (item.rect.height//2) + self.y

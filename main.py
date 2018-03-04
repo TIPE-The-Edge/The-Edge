@@ -160,6 +160,7 @@ class Window():
 
         return items
 
+
     # def draw_test(self):
     #     items = []
     #     for i in range(10):
@@ -189,7 +190,13 @@ class Window():
         entry5 = Entry(0, 0, 200, 50, test, True)
         entry6 = Entry(0, 0, 100, 50, test, True)
 
-        frame3 = Frame(0,0, [entry6], test)
+        text = 'Salut ceci est un test pour la fonction créer un label et je peux continuer à écrire n\'importe quoi pour vraiment tester en profondeur la fonction'
+        label = create_label(text, 'arial', 30, (0,0,0), (255,255,255), 0, 0, 500)
+        label.set_padding(50,50,50,50)
+        label.set_align('right')
+        label.make_pos()
+
+        frame3 = Frame(0,0, [label], test)
         frame3.set_direction('vertical')
         frame3.set_items_pos('auto')
         frame3.resize('auto', 'auto')
@@ -203,7 +210,7 @@ class Window():
         frame2.set_direction('vertical')
         frame2.set_items_pos('auto')
         frame2.resize('auto', 'auto')
-        frame2.set_align('left')
+        frame2.set_align('center')
         frame2.set_padding(10,10,10,10)
         frame2.set_marge_items(10)
         frame2.set_bg_color((0, 0, 255))
@@ -290,6 +297,53 @@ def main():
     window.quit()
 
     pygame.quit()
+
+def create_label(text, police, fontsize, msg_color, bg_color, x, y, size):
+    if size == None:
+        label =  Label(text, police, fontsize, msg_color, bg_color, x, y)
+
+        frame = Frame(x, y, [label], test)
+
+        frame.set_direction('vertical')
+        frame.set_items_pos('auto')
+        frame.resize('auto', 'auto')
+        frame.set_align('left')
+        frame.set_bg_color(bg_color)
+        frame.make_pos()
+
+    else:
+        words = text.split(' ')
+        lines = []
+        while len(words) > 0:
+            i = 0
+            line = words[i]
+            label = Label(line, police, fontsize, msg_color, bg_color, x, y)
+
+            while label.rect.width <= size:
+                i += 1
+                if i >= len(words):
+                    old_line = line
+                    break
+                else:
+                    old_line = line
+                    line += ' ' + words[i]
+                    label = Label(line, police, fontsize, msg_color, bg_color, x, y)
+            words = words[i:]
+            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y)
+            lines.append(label)
+
+        frame = Frame(x, y, lines, test)
+
+        frame.set_direction('vertical')
+        frame.set_items_pos('auto')
+        frame.resize('auto', 'auto')
+        frame.set_align('left')
+        frame.set_bg_color(bg_color)
+        frame.make_pos()
+
+    return frame
+
+
 
 def test(x, y, z):
     print('click on the widget')
