@@ -170,11 +170,13 @@ class Window():
         frame.set_direction('vertical')
         frame.set_items_pos('auto')
         frame.resize('auto', 'auto')
-        frame.set_padding(0,0,60,0)
-        frame.set_width(300)
+        frame.set_padding(10,10,10,10)
+        frame.set_align('left')
+        frame.set_marge_items(10)
+        # frame.set_width(300)
         '''ou'''
         # frame.resize('auto', 'auto')
-        #
+        # frame.set_align('right')
         # frame.set_padding(10,10,10,10)
         # frame.set_marge_items(10)
 

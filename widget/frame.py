@@ -25,6 +25,9 @@ class Frame():
         # Si les items peuvent changer de taille
         self.resize_items = False
 
+        # Alignement
+        self.align = 'left' # left(top), right(bottom), center
+
         # Taille de la frame
         self.size_w = 'fixed' # fixed, auto
         self.width = 0
@@ -99,7 +102,16 @@ class Frame():
         self.items_pos = value
 
 
-    """ Modifie le paramètre alignement des items
+    """ Modifie le paramètre d'alignement des items
+    Entrée :
+        # self
+        # value: 'left', 'right', 'center'
+    """
+    def set_align(self, value):
+        self.align = value
+
+
+    """ Modifie le paramètre du sens d'alignement des items
     Entrée :
         # self
         # value: 'vertical', 'horizontal', 'none'
@@ -135,7 +147,10 @@ class Frame():
         # value: 'vertical', 'horizontal', 'none'
     """
     def draw(self, screen):
-        if self.items_pos == 'relative':
+        if self.items_pos == 'fixed':
+            pass
+
+        elif self.items_pos == 'relative':
             print('relative')
             for item in self.items:
 
@@ -180,7 +195,6 @@ class Frame():
                             except:
                                 pass
 
-                    item.rect.x = self.x + self.padding_left
                     item.rect.y = sum_size
                     sum_size += item.rect.height + self.marge_items
 
@@ -200,8 +214,26 @@ class Frame():
                                 pass
 
                     item.rect.x = sum_size
-                    item.rect.y = self.y + self.padding_top
                     sum_size += item.rect.width + self.marge_items
+
+            for item in self.items:
+
+                if self.direction == 'vertical':
+                    if self.align == 'left':
+                        item.rect.x = self.x + self.padding_left
+                    elif self.align == 'right':
+                        item.rect.x = self.x + self.width - self.padding_right - item.rect.width
+                    elif self.align == 'center':
+                        item.rect.x = (self.padding_left + self.width)//2 - (item.rect.width//2) + self.x
+
+                elif self.direction == 'horizontal':
+                    if self.align == 'left':
+                        item.rect.y = self.y + self.padding_top
+                    elif self.align == 'right':
+                        print('test')
+                        item.rect.y = self.y + self.height - self.padding_bottom - item.rect.height
+                    elif self.align == 'center':
+                        item.rect.y = (self.padding_top + self.height)//2 - (item.rect.height//2) + self.y
 
             if self.direction == 'vertical':
                 sum_size += self.padding_bottom - self.y - self.marge_items
