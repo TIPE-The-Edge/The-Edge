@@ -156,7 +156,6 @@ class Frame():
             pass
 
         elif self.items_pos == 'relative':
-            print('relative')
             for item in self.items:
 
                 if self.size_w == 'auto':
@@ -174,7 +173,12 @@ class Frame():
                         self.height = new_height
 
                 item.rect.x = item.rect.x + self.x + self.padding_left
-                item.rect.y = item.rect.y + self.y + self.padding_bottom
+                item.rect.y = item.rect.y + self.y + self.padding_top
+
+                for sub_item in item.items:
+                    sub_item.rect.x = sub_item.rect.x + item.rect.x
+                    sub_item.rect.y = sub_item.rect.y + item.rect.y
+                    item.items.extend(sub_item.items)
 
         elif self.items_pos == 'auto':
 
@@ -192,7 +196,7 @@ class Frame():
                         if new_width > self.width:
                             self.width = new_width
 
-                    elif self.size_w == 'fixed' and self.resize:
+                    elif self.size_w == 'fixed' and self.resize_items:
                         max_width = self.width - self.padding_left - self.padding_right
                         if item.rect.width < max_width:
                             try:
@@ -202,20 +206,21 @@ class Frame():
 
                     item.rect.y = sum_size
 
-                    for sub_item in item.items:
+                    items_tmp = []
+                    items_tmp += item.items
+                    for sub_item in items_tmp:
                         sub_item.rect.y = sub_item.rect.y + item.rect.y
-                        item.items.extend(sub_item.items)
+                        items_tmp.extend(sub_item.items)
 
                     sum_size += item.rect.height + self.marge_items
 
                 elif self.direction == 'horizontal':
-                    print(self.size_h)
                     if self.size_h == 'auto':
                         new_height = self.padding_top + item.rect.height + self.padding_bottom
                         if new_height > self.height:
                             self.height = new_height
 
-                    elif self.size_h == 'fixed' and self.resize:
+                    elif self.size_h == 'fixed' and self.resize_items:
                         max_height = self.height - self.padding_top - self.padding_bottom
                         if item.rect.height < max_height:
                             try:
@@ -225,9 +230,11 @@ class Frame():
 
                     item.rect.x = sum_size
 
-                    for sub_item in item.items:
+                    items_tmp = []
+                    items_tmp += item.items
+                    for sub_item in items_tmp:
                         sub_item.rect.x = sub_item.rect.x + item.rect.x
-                        item.items.extend(sub_item.items)
+                        items_tmp.extend(sub_item.items)
 
                     sum_size += item.rect.width + self.marge_items
 
@@ -241,9 +248,11 @@ class Frame():
                     elif self.align == 'center':
                         item.rect.x = (self.padding_left + self.width)//2 - (item.rect.width//2) + self.x
 
-                    for sub_item in item.items:
+                    items_tmp = []
+                    items_tmp += item.items
+                    for sub_item in items_tmp:
                         sub_item.rect.x = sub_item.rect.x + item.rect.x
-                        item.items.extend(sub_item.items)
+                        items_tmp.extend(sub_item.items)
 
                 elif self.direction == 'horizontal':
                     if self.align == 'left':
@@ -254,16 +263,21 @@ class Frame():
                     elif self.align == 'center':
                         item.rect.y = (self.padding_top + self.height)//2 - (item.rect.height//2) + self.y
 
-                    for sub_item in item.items:
+                    items_tmp = []
+                    items_tmp += item.items
+                    for sub_item in items_tmp:
                         sub_item.rect.y = sub_item.rect.y + item.rect.y
-                        item.items.extend(sub_item.items)
+                        items_tmp.extend(sub_item.items)
 
             if self.direction == 'vertical':
-                sum_size += self.padding_bottom - self.y - self.marge_items
-                self.height = sum_size
+                if self.size_h == 'auto':
+                    sum_size += self.padding_bottom - self.y - self.marge_items
+                    self.height = sum_size
+
             elif self.direction == 'horizontal':
-                sum_size += self.padding_right - self.x - self.marge_items
-                self.width = sum_size
+                if self.size_w == 'auto':
+                    sum_size += self.padding_right - self.x - self.marge_items
+                    self.width = sum_size
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.hover= pygame.Rect(self.x, self.y, self.width, self.height)

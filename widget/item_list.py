@@ -8,6 +8,7 @@ class Item_list():
                 ):
         self.type = 'item_list'
         self.items = items
+        self.item_move = True
 
         all_items_height = self.place_items(list_x, list_y, 2)
 
@@ -25,6 +26,7 @@ class Item_list():
         # Set thumb
         if all_items_height <= scrollbar_height:
             thumb_height = 0
+            self.item_move = False
         else:
             thumb_height = (scrollbar_height * scrollbar_height) // all_items_height - 1
 
@@ -47,6 +49,14 @@ class Item_list():
         for i in range(len(self.items)):
             self.items[i].rect.x = x
             self.items[i].rect.y = y + total_height
+
+            items_tmp = []
+            items_tmp += self.items[i].items
+            for sub_item in items_tmp:
+                sub_item.rect.x = sub_item.rect.x + x
+                sub_item.rect.y = sub_item.rect.y + total_height + y
+                items_tmp.extend(sub_item.items)
+
             total_height += self.items[i].rect.height + space_y
 
         return total_height
@@ -112,6 +122,12 @@ class Item_list():
                         for item in self.items:
                             item.rect.y -= self.item_shift * signe
 
+                            items_tmp = []
+                            items_tmp += item.items
+                            for sub_item in items_tmp:
+                                sub_item.rect.y -= self.item_shift * signe
+                                items_tmp.extend(sub_item.items)
+
                 self.coord_pressed = mouse_pos
 
                 for event in pygame.event.get():
@@ -123,33 +139,40 @@ class Item_list():
             pygame.display.update()
 
     def move(self, window, screen, shift):
-        if shift >= 0:
-            signe = 1
-        else:
-            signe = -1
+        if self.item_move:
+            if shift >= 0:
+                signe = 1
+            else:
+                signe = -1
 
-        for i in range(abs(shift)):
-            self.pressed = True
-            thumb_pos_y = self.rect.y + signe
+            for i in range(abs(shift)):
+                self.pressed = True
+                thumb_pos_y = self.rect.y + signe
 
-            if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
+                if (self.rect.y == self.min_height and shift > 0) or (self.rect.y == self.max_height and shift < 0) or (self.min_height < self.rect.y < self.max_height):
 
-                if thumb_pos_y < self.min_height:
-                    shift = thumb_pos_y - self.min_height
-                    thumb_pos_y = self.min_height
-                elif thumb_pos_y > self.max_height:
-                    shift = thumb_pos_y - self.max_height
-                    thumb_pos_y = self.max_height
+                    if thumb_pos_y < self.min_height:
+                        shift = thumb_pos_y - self.min_height
+                        thumb_pos_y = self.min_height
+                    elif thumb_pos_y > self.max_height:
+                        shift = thumb_pos_y - self.max_height
+                        thumb_pos_y = self.max_height
 
-                self.rect.y = thumb_pos_y
+                    self.rect.y = thumb_pos_y
 
-                for item in self.items:
-                    item.rect.y -= self.item_shift * signe
+                    for item in self.items:
+                        item.rect.y -= self.item_shift * signe
+                        
+                        items_tmp = []
+                        items_tmp += item.items
+                        for sub_item in items_tmp:
+                            sub_item.rect.y -= self.item_shift * signe
+                            items_tmp.extend(sub_item.items)
 
-            # if (abs(shift)%3) == 1:
-            #     window.display(screen)
-            #     pygame.display.update()
+                # if (abs(shift)%3) == 1:
+                #     window.display(screen)
+                #     pygame.display.update()
 
-        self.pressed = False
-        window.display(screen)
-        pygame.display.update()
+            self.pressed = False
+            window.display(screen)
+            pygame.display.update()

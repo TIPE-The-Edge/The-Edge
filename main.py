@@ -160,13 +160,56 @@ class Window():
 
         return items
 
+    # def draw_test(self):
+    #     items = []
+    #     for i in range(10):
+    #         entry1 = Entry(0, 0, 50, 50, test, True)
+    #         entry2 = Entry(0, 0, 50, 50, test, True)
+    #         entry3 = Entry(0, 0, 50, 50, test, True)
+    #         frame = Frame(0,0, [entry1, entry2, entry3], test)
+    #         frame.set_direction('horizontal')
+    #         frame.set_items_pos('auto')
+    #         frame.resize(930, 'auto')
+    #         frame.set_align('left')
+    #         frame.set_padding(10,10,10,10)
+    #         frame.set_marge_items(10)
+    #         frame.make_pos()
+    #         items.append(frame)
+    #
+    #     item_list = Item_list(items, 330, 40,
+    #                           1260, 40, 20, 680)
+    #
+    #     return [item_list]
 
     def draw_test(self):
-        entry1 = Entry(0, 0, 300, 50, test, True)
+        entry1 = Entry(0, 0, 400, 50, test, True)
         entry2 = Entry(0, 0, 100, 100, test, True)
         entry3 = Entry(0, 0, 100, 100, test, True)
+        entry4 = Entry(0, 0, 200, 50, test, True)
+        entry5 = Entry(0, 0, 200, 50, test, True)
+        entry6 = Entry(0, 0, 100, 50, test, True)
 
-        frame1 = Frame(0,0, [entry3, entry2], test)
+        frame3 = Frame(0,0, [entry6], test)
+        frame3.set_direction('vertical')
+        frame3.set_items_pos('auto')
+        frame3.resize('auto', 'auto')
+        frame3.set_align('left')
+        frame3.set_padding(10,10,10,10)
+        frame3.set_marge_items(10)
+        frame3.set_bg_color((0, 255, 0))
+        frame3.make_pos()
+
+        frame2 = Frame(0,0, [entry4, entry5, frame3], test)
+        frame2.set_direction('vertical')
+        frame2.set_items_pos('auto')
+        frame2.resize('auto', 'auto')
+        frame2.set_align('left')
+        frame2.set_padding(10,10,10,10)
+        frame2.set_marge_items(10)
+        frame2.set_bg_color((0, 0, 255))
+        frame2.make_pos()
+
+        frame1 = Frame(0,0, [entry3, frame2], test)
         frame1.set_direction('horizontal')
         frame1.set_items_pos('auto')
         frame1.resize('auto', 'auto')
@@ -175,15 +218,16 @@ class Window():
         frame1.set_marge_items(10)
         frame1.make_pos()
 
-        frame = Frame(100, 100, [entry1, frame1], test)
+        frame = Frame(200, 200, [entry1, frame1], test)
 
         frame.set_direction('vertical')
         frame.set_items_pos('auto')
         frame.resize('auto', 'auto')
         frame.set_padding(10,10,10,10)
-        frame.set_align('center')
+        frame.set_align('left')
         frame.set_marge_items(10)
-        frame.set_bg_color((189, 195, 199))
+        frame.set_bg_color((255, 0, 0))
+        # frame.set_bg_color((189, 195, 199))
 
         frame.make_pos()
 
@@ -193,7 +237,6 @@ class Window():
         # frame.set_align('right')
         # frame.set_padding(10,10,10,10)
         # frame.set_marge_items(10)
-
 
         return [frame]
 
