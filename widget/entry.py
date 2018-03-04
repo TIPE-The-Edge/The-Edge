@@ -72,11 +72,10 @@ class Entry():
             self.range_max = self.cursor_pos+1
 
         while self.focus:
-            # print('cursor_pos :',self.cursor_pos)
-            # print('max_cursor_pos :',self.max_cursor_pos)
-            # print('range_min :',self.range_min)
-            # print('range_max :',self.range_max)
-            # print('focus :', self.focus)
+            print('cursor_pos :',self.cursor_pos)
+            print('max_cursor_pos :',self.max_cursor_pos)
+            print('range_min :',self.range_min)
+            print('range_max :',self.range_max)
             mouse_pos = pygame.mouse.get_pos()
 
             # if self.len_display == 0 and self.rect_txt.width > self.rect.width:
@@ -95,7 +94,6 @@ class Entry():
                 elif event.type == pygame.KEYDOWN:
                     # Sortir de l'entry, du focus
                     if event.key == pygame.K_ESCAPE:
-                        print('test')
                         self.focus = False
 
                     # Se déplacer à gauche
