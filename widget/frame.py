@@ -135,11 +135,7 @@ class Frame():
         # value: 'vertical', 'horizontal', 'none'
     """
     def draw(self, screen):
-        if self.items_pos == 'fixed':
-            for item in self.items:
-                item.draw(screen)
-
-        elif self.items_pos == 'relative':
+        if self.items_pos == 'relative':
             print('relative')
             for item in self.items:
 
@@ -160,12 +156,11 @@ class Frame():
                 item.rect.x = item.rect.x + self.x + self.padding_left
                 item.rect.y = item.rect.y + self.y + self.padding_bottom
 
-                # item.draw(screen)
-
         elif self.items_pos == 'auto':
 
             if self.direction == 'vertical':
                 sum_size = self.padding_top + self.y
+                print(sum_size)
             elif self.direction == 'horizontal':
                 sum_size = self.padding_left + self.x
 
@@ -208,8 +203,6 @@ class Frame():
                     item.rect.y = self.y + self.padding_top
                     sum_size += item.rect.width + self.marge_items
 
-                # item.draw(screen)
-
             if self.direction == 'vertical':
                 sum_size += self.padding_bottom - self.y - self.marge_items
                 self.height = sum_size
@@ -221,9 +214,6 @@ class Frame():
         self.hover= pygame.Rect(self.x, self.y, self.width, self.height)
 
         pygame.draw.rect(screen, self.color, self.rect)
-
-        for item in self.items:
-            item.draw(screen)
 
 
     def do(self, window, screen):

@@ -3,6 +3,7 @@ from pygame.sprite import Sprite, Group
 
 class Entry():
     def __init__(self, x, y, width, height, action, onlynum):
+        self.items = []
         self.type = 'entry'
         self.color = (255, 255, 255)
         self.color_unfocus = (200, 200, 200)

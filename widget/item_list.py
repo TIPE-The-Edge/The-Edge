@@ -54,9 +54,6 @@ class Item_list():
     def draw(self, screen):
         pygame.draw.rect(screen, self.bg_color, self.bg_rect)
 
-        for item in self.items:
-            item.draw(screen)
-
         pygame.draw.rect(screen, self.sb_bg_color, self.sb_bg_rect)
 
         if self.pressed:

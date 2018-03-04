@@ -19,9 +19,6 @@ class Progress_bar():
 
 
     def draw(self, screen):
-        for item in self.items:
-            item.draw(screen)
-
         pygame.draw.rect(screen, self.bg_color, self.rect)
         pygame.draw.rect(screen, self.color, self.rect_bar)
 

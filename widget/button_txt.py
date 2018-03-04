@@ -15,9 +15,6 @@ class Button_txt():
         pass
 
     def draw(self, screen):
-        for item in self.items:
-            item.draw(screen)
-
         pygame.draw.rect(screen, self.color, self.rect)
 
     def do(self, window, screen):

@@ -3,6 +3,7 @@ from pygame.sprite import Sprite, Group
 
 class Button_img():
     def __init__(self, num, path, x, y, action):
+        self.items = []
         self.type = 'button_img'
         self.path = path
         self.num = num

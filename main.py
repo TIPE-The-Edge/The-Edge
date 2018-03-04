@@ -67,12 +67,11 @@ class Window():
 
     def __init__(self,screen):
 
+        self.items = []
         self.nav = self.draw_nav_button()
         self.info_bar = self.draw_info()
-        self.body = self.draw_test()
         self.button_info = []
-
-        self.items = [self.body, self.info_bar, self.nav, self.button_info]
+        self.body = self.draw_test()
 
         self.display(screen)
 
@@ -95,24 +94,27 @@ class Window():
                     mouse_pos = pygame.mouse.get_pos()
 
                     if event.button == 1:
-                        for liste_items in self.items:
-                            for item in liste_items:
-                                if item.rect.collidepoint(mouse_pos):
-                                    item.do(self,screen)
+                        for item in self.items:
+                            if item.rect.collidepoint(mouse_pos):
+                                item.do(self,screen)
 
-                                if item.type == 'item_list' or item.type == 'frame':
-                                    for sub_item in item.items:
-                                        if sub_item.rect.collidepoint(mouse_pos):
-                                            sub_item.do(self, screen)
+                        # for liste_items in self.items:
+                        #     for item in liste_items:
+                        #         if item.rect.collidepoint(mouse_pos):
+                        #             item.do(self,screen)
+                        #
+                        #         if item.type == 'item_list' or item.type == 'frame':
+                        #             for sub_item in item.items:
+                        #                 if sub_item.rect.collidepoint(mouse_pos):
+                        #                     sub_item.do(self, screen)
 
                     elif event.button == 4 or event.button == 5:
-                        for liste_items in self.items:
-                            for item in liste_items:
-                                if item.type == 'item_list' and item.hover.collidepoint(mouse_pos):
-                                    if event.button == 4:
-                                        item.move(self, screen, -40)
-                                    else:
-                                        item.move(self, screen, 40)
+                        for item in self.items:
+                            if item.type == 'item_list' and item.hover.collidepoint(mouse_pos):
+                                if event.button == 4:
+                                    item.move(self, screen, -40)
+                                else:
+                                    item.move(self, screen, 40)
 
             # update display
             pygame.display.update()
@@ -122,13 +124,28 @@ class Window():
         # Draw background
         bg_color = (236,240,241)
         screen.fill(bg_color)
+
+        for item in self.body:
+            item.draw(screen)
+            self.body.extend(item.items)
+
+        for item in self.info_bar:
+            item.draw(screen)
+            self.info_bar.extend(item.items)
+
         # Draw nav background
         nav_rect = pygame.Rect(0, 0, 80, 720)
         pygame.draw.rect(screen, (44,62,80), nav_rect)
+        for item in self.nav:
+            item.draw(screen)
+            self.nav.extend(item.items)
 
-        for liste_items in self.items:
-            for item in liste_items:
-                item.draw(screen)
+        for item in self.button_info:
+            item.draw(screen)
+            self.button_info.extend(item.items)
+
+        self.items = self.info_bar + self.nav + self.button_info + self.body
+
 
     def draw_nav_button(self):
         items = []
@@ -148,11 +165,12 @@ class Window():
         entry1 = Entry(0, 0, 300, 50, test, True)
         entry2 = Entry(200, 200, 200, 200, test, True)
 
-        frame = Frame(80, 80, [entry1, entry2], test)
+        frame = Frame(80, 40, [entry1, entry2], test)
 
-        frame.set_direction('horizontal')
+        frame.set_direction('vertical')
         frame.set_items_pos('auto')
-        frame.resize(None, 'auto')
+        frame.resize('auto', 'auto')
+        frame.set_padding(0,0,60,0)
         frame.set_width(300)
         '''ou'''
         # frame.resize('auto', 'auto')
@@ -198,6 +216,7 @@ def change_tab(button, window, screen):
         else:
             icon.remove_focus()
 
+    window.body = []
     window.display(screen)
 
 def main():

@@ -10,8 +10,7 @@ class Widget():
         self.hover= pygame.Rect(x, y, width, height)
 
     def draw(self, screen):
-        for item in self.items:
-            item.draw(screen)
+
 
     def do(self, window, screen):
         self.action(self, window, screen)

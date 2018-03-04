@@ -11,9 +11,6 @@ class Label():
         # self.action =
 
     def draw(self, screen):
-        for item in self.items:
-            item.draw(screen)
-
         screen.blit(self.image, self.rect)
 
     def do(self, window, screen):
