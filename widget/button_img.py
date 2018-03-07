@@ -12,6 +12,7 @@ class Button_img():
         self.rect.x = x
         self.rect.y = y
         self.action = action
+        self.level = 0
 
     def set_focus(self):
         self.img = pygame.image.load(self.path+'_focus.png')
@@ -24,3 +25,7 @@ class Button_img():
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

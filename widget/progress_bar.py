@@ -6,6 +6,7 @@ class Progress_bar():
     def __init__(self, x, y, width, height, action,
                  value, max_value):
         self.type = 'progress_bar'
+        self.level = 0
 
         self.bg_color = (0,0,0)
         self.rect = pygame.Rect(x, y, width, height)
@@ -24,3 +25,7 @@ class Progress_bar():
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

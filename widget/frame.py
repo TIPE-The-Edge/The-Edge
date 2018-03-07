@@ -14,6 +14,7 @@ class Frame():
     def __init__(self, x, y, items, action):
         self.type = 'frame'
         self.action = action
+        self.level = 0
 
         self.items = items
         self.items_pos = 'relative' # relative, fixed, auto
@@ -287,3 +288,7 @@ class Frame():
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

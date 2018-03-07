@@ -8,6 +8,7 @@ class Button_txt():
         self.rect = pygame.Rect(x, y, width, height)
         self.action = action
         self.items = items
+        self.level = 0
 
         self.place_items(x, y)
 
@@ -19,3 +20,7 @@ class Button_txt():
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

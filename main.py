@@ -94,9 +94,16 @@ class Window():
                     mouse_pos = pygame.mouse.get_pos()
 
                     if event.button == 1:
+                        uppest_item = None
                         for item in self.items:
                             if item.rect.collidepoint(mouse_pos):
-                                item.do(self,screen)
+                                if uppest_item == None:
+                                    uppest_item = item
+                                elif uppest_item.level <= item.level:
+                                    uppest_item = item
+
+                        if uppest_item != None:
+                            uppest_item.do(self,screen)
 
                         # for liste_items in self.items:
                         #     for item in liste_items:
@@ -127,10 +134,12 @@ class Window():
 
         for item in self.body:
             item.draw(screen)
+            item.up()
             self.body.extend(item.items)
 
         for item in self.info_bar:
             item.draw(screen)
+            item.up()
             self.info_bar.extend(item.items)
 
         # Draw nav background
@@ -138,10 +147,12 @@ class Window():
         pygame.draw.rect(screen, (44,62,80), nav_rect)
         for item in self.nav:
             item.draw(screen)
+            item.up()
             self.nav.extend(item.items)
 
         for item in self.button_info:
             item.draw(screen)
+            item.up()
             self.button_info.extend(item.items)
 
         self.items = self.info_bar + self.nav + self.button_info + self.body

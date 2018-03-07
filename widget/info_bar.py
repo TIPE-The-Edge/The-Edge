@@ -8,9 +8,14 @@ class Info_bar():
         self.color = (230,126,34)
         # self.action =
         self.items = []
+        self.level = 0
 
     def draw(self,screen):
         pygame.draw.rect(screen, self.color, self.rect)
 
     def do(self, window, screen):
         pass
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

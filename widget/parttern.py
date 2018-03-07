@@ -8,9 +8,14 @@ class Widget():
         self.items = []
         self.action = action
         self.hover= pygame.Rect(x, y, width, height)
+        self.level = 0
 
     def draw(self, screen):
 
 
     def do(self, window, screen):
         self.action(self, window, screen)
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

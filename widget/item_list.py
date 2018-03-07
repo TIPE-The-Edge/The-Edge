@@ -9,6 +9,7 @@ class Item_list():
         self.type = 'item_list'
         self.items = items
         self.item_move = True
+        self.level = 0
 
         all_items_height = self.place_items(list_x, list_y, 2)
 
@@ -162,7 +163,7 @@ class Item_list():
 
                     for item in self.items:
                         item.rect.y -= self.item_shift * signe
-                        
+
                         items_tmp = []
                         items_tmp += item.items
                         for sub_item in items_tmp:
@@ -176,3 +177,7 @@ class Item_list():
             self.pressed = False
             window.display(screen)
             pygame.display.update()
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

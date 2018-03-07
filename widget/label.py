@@ -11,6 +11,7 @@ class Label():
         self.items = []
         self.rect.x = x
         self.rect.y = y
+        self.level = 0
         # self.action =
 
     def draw(self, screen):
@@ -18,3 +19,7 @@ class Label():
 
     def do(self, window, screen):
         pass
+
+    def up(self):
+        for item in self.items:
+            item.level += 1

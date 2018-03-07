@@ -9,6 +9,7 @@ class Entry():
         self.color_unfocus = (200, 200, 200)
         self.rect = pygame.Rect(x, y, width, height)
         self.action = action
+        self.level = 0
 
         fontsize = int(5 * height / 7) - 1
         self.font = pygame.font.SysFont("calibri", fontsize)
@@ -161,3 +162,7 @@ class Entry():
             img = self.font.render(text, True, (0,0,0), self.color_unfocus)
             img_rect = img.get_rect()
         self.len_display = len(text)-2
+
+    def up(self):
+        for item in self.items:
+            item.level += 1
