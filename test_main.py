@@ -204,7 +204,7 @@ if __name__ == "__main__" :
                         print(dep)
                     print()
 
-                    menu = int(input("menu? \n  0: Retour \n  1: Recruter\n  2: Virer\n "))
+                    menu = int(input("menu? \n  0: Retour \n  1: Recruter\n  2: Virer\n  3: Infos Employés"))
 
                     if menu == 1: # RECRUTEMENT
                         while menu != 0:
@@ -241,6 +241,27 @@ if __name__ == "__main__" :
                             menu = int(input("menu? \n  0: Retour \n  1: Licencier\n "))
 
                         menu = 2
+
+                    elif menu == 3: # LISTE EMPLOYES
+
+                        os.system('clear') # works on Linux/Mac
+
+                        # individus
+                        print("------ Classe : Individu ------")
+                        for ind in individus:
+                            print(ind)
+                        print()
+
+                        idt = int(input("employe ? "))
+
+                        os.system('clear') # works on Linux/Mac
+
+                        for ind in individus:
+                            if ind.id == idt:
+                                affichage_individu(ind)
+
+                        input("ok?")
+
 
                 menu = 1
 

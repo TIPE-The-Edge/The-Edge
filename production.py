@@ -13,6 +13,7 @@ import random
 
 # IMPORTS DE FICHIERS
 from outils import *
+from lecture import *
 
 
 """ TO DO LIST
