@@ -10,11 +10,16 @@ class Item_list():
         self.items = items
         self.item_move = True
         self.level = 0
+        self.action = None
 
         all_items_height = self.place_items(list_x, list_y, 2)
 
-        item_width = items[0].rect.width
-        item_height = items[0].rect.height
+        if items == []:
+            item_width = 0
+            item_height = 0
+        else:
+            item_width = items[0].rect.width
+            item_height = items[0].rect.height
 
         # Set background behind items
         self.bg_color = (189, 195, 199)
@@ -31,7 +36,7 @@ class Item_list():
         else:
             thumb_height = (scrollbar_height * scrollbar_height) // all_items_height - 1
 
-        self.thumb_color = (189, 195, 199)
+        self.thumb_color = (255,255,255) #(189, 195, 199)
         self.thumb_color_pressed = (149, 165, 166)
         self.rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, thumb_height)
 
@@ -181,3 +186,11 @@ class Item_list():
     def up(self):
         for item in self.items:
             item.level += 1
+
+    def replace(self, x, y):
+        self.hover.x = self.hover.x + x
+        self.hover.y = self.hover.y + y
+        self.sb_bg_rect.x = self.sb_bg_rect.x + x
+        self.sb_bg_rect.y = self.sb_bg_rect.y + y
+        self.bg_rect.x = self.bg_rect.x + x
+        self.bg_rect.y = self.bg_rect.y + y

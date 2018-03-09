@@ -175,6 +175,9 @@ class Frame():
                 for sub_item in item.items:
                     sub_item.rect.x = sub_item.rect.x + item.rect.x
                     sub_item.rect.y = sub_item.rect.y + item.rect.y
+                    if sub_item.type == 'item_list':
+                        print('test')
+                        sub_item.replace(item.rect.x, item.rect.y)
                     item.items.extend(sub_item.items)
 
         elif self.items_pos == 'auto':
@@ -206,6 +209,9 @@ class Frame():
                     items_tmp += item.items
                     for sub_item in items_tmp:
                         sub_item.rect.y = sub_item.rect.y + item.rect.y
+                        if sub_item.type == 'item_list':
+                            print('test')
+                            sub_item.replace(0, item.rect.y)
                         items_tmp.extend(sub_item.items)
 
                     sum_size += item.rect.height + self.marge_items
@@ -230,6 +236,9 @@ class Frame():
                     items_tmp += item.items
                     for sub_item in items_tmp:
                         sub_item.rect.x = sub_item.rect.x + item.rect.x
+                        if sub_item.type == 'item_list':
+                            print('test')
+                            sub_item.replace(item.rect.x, 0)
                         items_tmp.extend(sub_item.items)
 
                     sum_size += item.rect.width + self.marge_items
@@ -248,6 +257,9 @@ class Frame():
                     items_tmp += item.items
                     for sub_item in items_tmp:
                         sub_item.rect.x = sub_item.rect.x + item.rect.x
+                        if sub_item.type == 'item_list':
+                            print('test')
+                            sub_item.replace(item.rect.x, 0)
                         items_tmp.extend(sub_item.items)
 
                 elif self.direction == 'horizontal':
@@ -262,6 +274,9 @@ class Frame():
                     items_tmp += item.items
                     for sub_item in items_tmp:
                         sub_item.rect.y = sub_item.rect.y + item.rect.y
+                        if sub_item.type == 'item_list':
+                            print('test')
+                            sub_item.replace(0, item.rect.y)
                         items_tmp.extend(sub_item.items)
 
             if self.direction == 'vertical':
@@ -275,7 +290,7 @@ class Frame():
                     self.width = sum_size
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.hover= pygame.Rect(self.x, self.y, self.width, self.height)
+        self.hover = pygame.Rect(self.x, self.y, self.width, self.height)
 
     """ Dessine les items de la frame en fonction de ses paramètres
     Entrée :
