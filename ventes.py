@@ -88,7 +88,8 @@ les frais moyens d'une connexion internet.
 # liste des revenus :
 
 produit = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
-
+ref = produit.nom
+produits=[produit]
 
 ####################################
 ############| CLASSES |#############
@@ -288,7 +289,7 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
-    produit = Produit.fixePrix(produit, int(input("Fixez un prix : ")))
+    Produit.fixePrix(produits, ref, int(input("Fixez un prix : ")))
 
     populations = consommateurs(input("Entrez une année : "))
     offres = int(input("Définissez le nombre de produit en vente : "))

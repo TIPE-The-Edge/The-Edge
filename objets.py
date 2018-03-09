@@ -211,7 +211,7 @@ class Population(object): # de consommateurs
 
         self.revenu = revenu # (Adrien)
         self.nombre = nombre # (Adrien)
-        self.tps_adoption = [esp, ecart] 
+        self.tps_adoption = [esp, ecart]
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
@@ -244,9 +244,10 @@ class Produit(object):
         self.nbr_ameliorations = 0
         self.concurence = 0 # BONUS
 
-    def fixePrix(self, valeur) :
-        self.prix = valeur
-        return(self)
+    def fixePrix(produits, produit, valeur) :
+        for prod in produits :
+            if prod.nom == produit :
+                prod.prix = valeur
 
     def __repr__(self):
         return "{} - age : {}".format(self.nom, self.age)
