@@ -262,6 +262,11 @@ class Produit(object):
             if prod.marche:
                 prod.age += 1
 
+    def fixePrix(produits, produit, valeur) :
+        for prod in produits:
+            if prod.nom == produit:
+                prod.prix = valeur
+
 class Operation(object):
 
     # Liste des noms existants

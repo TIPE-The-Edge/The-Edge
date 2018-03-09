@@ -408,7 +408,7 @@ class Stock(object):
         self.produits  = [[]]
 
     def __repr__(self):
-        return "{} - {}, {}".format(
+        return "{} - {}\n           {}".format(
                 self.nom, self.materiaux, self.produits)
 
     def genLocalistation(self):
