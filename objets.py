@@ -207,10 +207,10 @@ class Population(object): # de consommateurs
     # Cette classe sera majoritairement paramétrée à la main
 
     def __init__(self, nom, revenu, nombre, esp, ecart):
-        self.nom = nom # (Adrien)
+        self.nom = nom 
 
-        self.revenu = revenu # (Adrien)
-        self.nombre = nombre # (Adrien)
+        self.revenu = revenu 
+        self.nombre = nombre 
         self.tps_adoption = [esp, ecart]
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
@@ -505,7 +505,7 @@ class Stock(object):
         self.cout      = 0 # Cout par unite #TODO
 
         self.materiaux = [[]]
-        self.produits  = [[]]
+        self.produits  = []
 
     def __repr__(self):
         return "{} - {}, {}".format(

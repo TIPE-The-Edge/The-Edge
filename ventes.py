@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : VENTES
-#>>> DATE    : 28/02/2018
+#>>> DATE    : 09/03/2018
 ####################################
 
 
@@ -48,9 +48,6 @@ Seniors :
 
 tps_adoption = (35, 5)
 
-
-
-
 """
 ####################################
 
@@ -76,34 +73,13 @@ On déduit de ce budget 30€ qui représente
 les frais moyens d'une connexion internet.
 
 
+FAIRE LES COMMENTAIRES DES FONCTIONS
+
 """
 ####################################
 
 ####################################
 
-# Variables globales :
-
-#>>> Initialisation des populations_
-
-# liste des revenus :
-
-produit = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
-ref = produit.nom
-produits=[produit]
-
-####################################
-############| CLASSES |#############
-####################################
-'''
-class nom_classe() :
-    """
-    On crée une nouvelle classe.
-    """
-    def __init__(self, arg1, arg2) :
-        """
-        On initialise notre classe.
-        """
-'''
 
 ####################################
 ###########| FONCTIONS |############
@@ -218,16 +194,18 @@ def nb_acheteur(population, produit) :
     return(acheteurs)
 
 
-def ventes(acheteurs, produit, num_tour, esp, ecart) :
+def demande(acheteurs, produit, esp, ecart) :
     """
-    FONCTION       :
-    ENTREES        :
+    FONCTION       : Détermine la demande d'un produit sur
+                     le marché.
+    ENTREES        : Le nombre d'acheteurs 
     SORTIE         :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
     demandes = 0
+    num_tour = produit.age
     #>>> Corps de la fonction <<<#
     if abs(esp-num_tour)>=2*ecart:
         demandes = int(acheteurs*(0.025)/(esp-2*ecart))
@@ -257,22 +235,72 @@ def profit(nbr_ventes, produit) :
 
     return(gain)
 
-'''
-def nom_fontion() :
+
+def ventes(market, populations) :
     """
-    FONCTION       :
-    ENTREES        :
+    FONCTION       : Fonction principale que l'on exécutera tous
+                     les mois.
+    ENTREES        : 
     SORTIE         :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
+    demandes = 0
+    gain = []
 
     #>>> Corps de la fonction <<<#
+    for offre in market.produits :
+        for pop in populations :
+            acheteurs = nb_acheteur(pop, offre[0])
+            demandes += demande(acheteurs, offre[0], pop.tps_adoption[0], pop.tps_adoption[1])
+
+        # On définit le nombre de vente du produit qui est
+        #| la plus petite valeur entre l'offre et la demande.
+        nbr_ventes = min(demandes, offre[1])
+
+        offre[1]-= nbr_ventes
+
+        # On calcule le profit des ventes
+        gain.append(( "Chiffre d'affaire : "+offre[0].nom, profit(nbr_ventes, offre[0])))
 
     #>>> Sortie <<<#
-    return()
-'''
+    return(market, gain)
+
+def inMarket(market, produits, produit, quantite) :
+    """
+    FONCTION       : Mettre un produit sur le marché
+    ENTREES        : 
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
+
+    for prod in produits :
+        if prod.nom == produit :
+            if prod.marche == False :
+                prod.marche = True
+                market.produits.append([prod, quantite])
+            else :
+                ajout([prod.nom, quantite], market.produits)
+
+    return(market, produits)
+
+def outMarket(market, produits, produit) :
+    """
+    FONCTION       : Retirer un produit sur le marché
+    ENTREES        : 
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
+
+    for prod in produits :
+        if prod.nom == produit :
+            prod.marche=False
+            retireAll(produit, market.produits)
+
+    return(market, produits)
 
 ####################################
 ########| TESTS UNITAIRES |#########
@@ -295,22 +323,32 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
-    Produit.fixePrix(produits, ref, int(input("Fixez un prix : ")))
-
     populations = consommateurs(input("Entrez une année : "))
-    offres = int(input("Définissez le nombre de produit en vente : "))
-    num_tour = 0
-    demandes = 0
 
-    for pop in populations :
-        acheteurs = nb_acheteur(pop, produit)
-        demandes += ventes(acheteurs, produit, num_tour, pop.tps_adoption[0], pop.tps_adoption[1])
+    produit1 = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
+    produit2 = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
+    
+    produits=[produit1, produit2]
 
-    # On définit le nombre de vente du produit qui est
-    #| la plus petite valeur entre l'offre et la demande.
-    nbr_ventes = min(demandes, offres)
+    market=Stock()
+    print(market)
+    compteur = 1
 
-    # On calcule le profit des ventes
-    gain = profit(nbr_ventes, produit)
+    for prod in produits :
+        print(str(compteur)+" : ",prod)
+        compteur += 1
 
-    print("Nombre de ventes : "+ str(nbr_ventes)+ "\nBénéfices : "+str(gain))
+    choix = input("Choisir un produit : ")
+    quantite = input("Choisir une quantité : ")
+
+    # On fixe le prix unitaire du produit.
+    Produit.fixePrix(produits, produits[int(choix)-1].nom, int(input("Fixez un prix : ")))
+
+    # On met le produit en vente.
+    market, produits = inMarket(market, produits, produits[int(choix)-1].nom, int(quantite))
+
+    print(market)
+
+    gain = ventes(market, populations)
+
+    print(gain)
