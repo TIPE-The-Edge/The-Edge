@@ -69,13 +69,15 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
 
 
 def draw_part(item_group, screen):
+    i = 1
     for item in item_group:
         item.draw(screen)
         item.up()
         for sub_item in item.items:
             if sub_item.action == None:
                 sub_item.action = item.action
-        item_group.extend(item.items)
+        item_group[i:i] = item.items
+        i += 1
 
 
 def change_tab(button, window, screen):
@@ -102,7 +104,6 @@ def change_tab(button, window, screen):
     window.display(screen)
 
 def draw_rh():
-
     frame_left = Frame(80, 40, [], None)
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
@@ -113,27 +114,25 @@ def draw_rh():
     frame_left.make_pos()
 
     text = 'Liste des employés'
-    label = create_label(text, 'arial', 25, (255,255,255), (52,73,94), 680, 40, None, None)
+    label = create_label(text, 'arial', 30, (255,255,255), (52,73,94), 680, 40, None, None)
     label.set_direction('horizontal')
-    label.set_padding(20,10,10,10)
+    label.set_padding(30,10,10,10)
     label.resize(680, 80)
     label.set_align('center')
     label.make_pos()
 
     a = []
-    # for i in range(20):
-    #     entry1 = Entry(0, 0, 100, 50, None, True)
-    #     entry2 = Entry(0, 0, 100, 50, None, True)
-    #     entry3 = Entry(0, 0, 100, 50, None, True)
-    #     frame = Frame(0,0, [entry1, entry2, entry3], None)
-    #     frame.set_direction('horizontal')
-    #     frame.set_items_pos('auto')
-    #     frame.resize(580, 'auto')
-    #     frame.set_align('left')
-    #     frame.set_padding(10,10,10,10)
-    #     frame.set_marge_items(10)
-    #     frame.make_pos()
-    #     a.append(frame)
+    for i in range(20):
+        entry1 = Entry(0, 0, 100, 50, None, True)
+        frame = Frame(0,0, [entry1], None)
+        frame.set_direction('horizontal')
+        frame.set_items_pos('auto')
+        frame.resize(580, 'auto')
+        frame.set_align('left')
+        frame.set_padding(10,10,10,10)
+        frame.set_marge_items(10)
+        frame.make_pos()
+        a.append(frame)
 
     item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 680)
 
