@@ -23,12 +23,12 @@ from lecture import *
 
 ##########| DESCRIPTION |###########
 """
-Fichier rassemblant les différentes 
+Fichier rassemblant les différentes
 fonctions permettant de modéliser la
-vente d'un produit. 
+vente d'un produit.
 
 I/ Choix du distributeur :
-    
+
     - Imposé comme le type de contrat.
       (contrat de distribution exclusif)
 
@@ -58,19 +58,19 @@ tps_adoption = (35, 5)
 #############| NOTES |##############
 """
 Actuellement le nombre d'acheteurs est
-déterminé par l'utilité qui représente 
+déterminé par l'utilité qui représente
 le pourcentage de la population qui est
 prête à acheter le produit.
 >>> le nombre d'acheteurs par mois est trop
     élevé.
-    (Sol° : retirer les personnes n'ayant 
+    (Sol° : retirer les personnes n'ayant
     pas d'accès à internet.)
-    En effet seuls 85% de la population à 
+    En effet seuls 85% de la population à
     accès à internet en 2017.
 
 ____________________________________
 
-2,5% du budget d'un ménage est consacré à 
+2,5% du budget d'un ménage est consacré à
 l'information et à la communication.
 On déduit de ce budget 30€ qui représente
 les frais moyens d'une connexion internet.
@@ -88,7 +88,8 @@ les frais moyens d'une connexion internet.
 # liste des revenus :
 
 produit = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
-
+ref = produit.nom
+produits=[produit]
 
 ####################################
 ############| CLASSES |#############
@@ -128,9 +129,9 @@ def budget(revenus, periode) :
     for r in range(len(revenus[0])) :
 
         if r > int(len(revenus[0])*acces) :
-            rep.append((int(revenus[0][r])*(5/2400))-internet)
+            rep.append((float(revenus[0][r])*(5/2400))-internet)
         else :
-            rep.append(int(revenus[0][r])*(5/2400))
+            rep.append(float(revenus[0][r])*(5/2400))
 
     return(rep)
 
@@ -148,18 +149,18 @@ def consommateurs(periode) :
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
-    
+
     # Liste des différents types de consommateurs
     rep = []
 
-    # Budget moyens des 3 types de population 
+    # Budget moyens des 3 types de population
     revenus = budget(readLineCSV("revenus.csv", "periode", periode, ["jeunes", "actifs", "seniors"]), periode)
 
     # Nombre de ménage par type de population
     demo = []
     demographie = readLineCSV("demographie.csv", "periode", periode, ["jeunes", "actifs", "seniors"])
     for d in demographie[0] :
-        demo.append(int(d))
+        demo.append(float(d))
     demographie = demo
 
     # Budget des jeunes
@@ -181,7 +182,7 @@ def consommateurs(periode) :
 
     for i in range(100) :
         rep.append(Population("Jeunes", jeunes[i], int(demographie[0]/100), 15, 5))
-    
+
     for i in range(100) :
         rep.append(Population("Actifs", actifs[i], int(demographie[1]/100), 25, 10))
 
@@ -194,7 +195,7 @@ def consommateurs(periode) :
 
 def nb_acheteur(population, produit) :
     """
-    FONCTION       : Retourne pour une population le nombre d'acheteur 
+    FONCTION       : Retourne pour une population le nombre d'acheteur
     ENTREES        :
     SORTIE         :
     REMARQUES      :
@@ -207,7 +208,7 @@ def nb_acheteur(population, produit) :
         if pop[0] == population.nom :
             utilite = pop[1]
 
-    # 
+    #
     acheteurs_potentiels = int((population.nombre)*(utilite/100))
 
     #>>> Corps de la fonction <<<#
@@ -294,11 +295,11 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
-    produit = Produit.fixePrix(produit, int(input("Fixez un prix : ")))
+    Produit.fixePrix(produits, ref, int(input("Fixez un prix : ")))
 
     populations = consommateurs(input("Entrez une année : "))
     offres = int(input("Définissez le nombre de produit en vente : "))
-    num_tour = 0    
+    num_tour = 0
     demandes = 0
 
     for pop in populations :
