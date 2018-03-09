@@ -287,7 +287,8 @@ class Frame():
 
 
     def do(self, window, screen):
-        self.action(self, window, screen)
+        if self.action != None:
+            self.action(self, window, screen)
 
     def up(self):
         for item in self.items:

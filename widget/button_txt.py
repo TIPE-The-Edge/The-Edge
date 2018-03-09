@@ -19,7 +19,8 @@ class Button_txt():
         pygame.draw.rect(screen, self.color, self.rect)
 
     def do(self, window, screen):
-        self.action(self, window, screen)
+        if self.action != None:
+            self.action(self, window, screen)
 
     def up(self):
         for item in self.items:

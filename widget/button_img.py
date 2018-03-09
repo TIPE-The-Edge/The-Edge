@@ -24,7 +24,8 @@ class Button_img():
         screen.blit(self.img, self.rect)
 
     def do(self, window, screen):
-        self.action(self, window, screen)
+        if self.action != None:
+            self.action(self, window, screen)
 
     def up(self):
         for item in self.items:

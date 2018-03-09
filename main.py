@@ -18,6 +18,7 @@ import os
 
 # IMPORTS DE FICHIERS
 
+from function import *
 from widget.button_img import *
 from widget.button_txt import *
 from widget.entry import *
@@ -71,7 +72,7 @@ class Window():
         self.nav = self.draw_nav_button()
         self.info_bar = self.draw_info()
         self.button_info = []
-        self.body = self.draw_test()
+        self.body = []
 
         self.display(screen)
 
@@ -105,16 +106,6 @@ class Window():
                         if uppest_item != None:
                             uppest_item.do(self,screen)
 
-                        # for liste_items in self.items:
-                        #     for item in liste_items:
-                        #         if item.rect.collidepoint(mouse_pos):
-                        #             item.do(self,screen)
-                        #
-                        #         if item.type == 'item_list' or item.type == 'frame':
-                        #             for sub_item in item.items:
-                        #                 if sub_item.rect.collidepoint(mouse_pos):
-                        #                     sub_item.do(self, screen)
-
                     elif event.button == 4 or event.button == 5:
                         for item in self.items:
                             if item.type == 'item_list' and item.hover.collidepoint(mouse_pos):
@@ -132,28 +123,16 @@ class Window():
         bg_color = (236,240,241)
         screen.fill(bg_color)
 
-        for item in self.body:
-            item.draw(screen)
-            item.up()
-            self.body.extend(item.items)
+        draw_part(self.body, screen)
 
-        for item in self.info_bar:
-            item.draw(screen)
-            item.up()
-            self.info_bar.extend(item.items)
+        draw_part(self.info_bar, screen)
 
         # Draw nav background
         nav_rect = pygame.Rect(0, 0, 80, 720)
         pygame.draw.rect(screen, (44,62,80), nav_rect)
-        for item in self.nav:
-            item.draw(screen)
-            item.up()
-            self.nav.extend(item.items)
+        draw_part(self.nav, screen)
 
-        for item in self.button_info:
-            item.draw(screen)
-            item.up()
-            self.button_info.extend(item.items)
+        draw_part(self.button_info, screen)
 
         self.items = self.info_bar + self.nav + self.button_info + self.body
 
@@ -172,112 +151,11 @@ class Window():
         return items
 
 
-    # def draw_test(self):
-    #     items = []
-    #     for i in range(10):
-    #         entry1 = Entry(0, 0, 50, 50, test, True)
-    #         entry2 = Entry(0, 0, 50, 50, test, True)
-    #         entry3 = Entry(0, 0, 50, 50, test, True)
-    #         frame = Frame(0,0, [entry1, entry2, entry3], test)
-    #         frame.set_direction('horizontal')
-    #         frame.set_items_pos('auto')
-    #         frame.resize(930, 'auto')
-    #         frame.set_align('left')
-    #         frame.set_padding(10,10,10,10)
-    #         frame.set_marge_items(10)
-    #         frame.make_pos()
-    #         items.append(frame)
-    #
-    #     item_list = Item_list(items, 330, 40,
-    #                           1260, 40, 20, 680)
-    #
-    #     return [item_list]
-
-    def draw_test(self):
-        entry1 = Entry(0, 0, 400, 50, test, True)
-        entry2 = Entry(0, 0, 100, 100, test, True)
-        entry3 = Entry(0, 0, 100, 100, test, True)
-        entry4 = Entry(0, 0, 200, 50, test, True)
-        entry5 = Entry(0, 0, 200, 50, test, True)
-        entry6 = Entry(0, 0, 100, 50, test, True)
-
-        text = 'Salut ceci est un test pour la fonction créer un label et je peux continuer à écrire n\'importe quoi pour vraiment tester en profondeur la fonction'
-        label = create_label(text, 'arial', 30, (0,0,0), (255,255,255), 0, 0, 500)
-        label.set_padding(50,50,50,50)
-        label.set_align('right')
-        label.make_pos()
-
-        frame3 = Frame(0,0, [label], test)
-        frame3.set_direction('vertical')
-        frame3.set_items_pos('auto')
-        frame3.resize('auto', 'auto')
-        frame3.set_align('left')
-        frame3.set_padding(10,10,10,10)
-        frame3.set_marge_items(10)
-        frame3.set_bg_color((0, 255, 0))
-        frame3.make_pos()
-
-        frame2 = Frame(0,0, [entry4, entry5, frame3], test)
-        frame2.set_direction('vertical')
-        frame2.set_items_pos('auto')
-        frame2.resize('auto', 'auto')
-        frame2.set_align('center')
-        frame2.set_padding(10,10,10,10)
-        frame2.set_marge_items(10)
-        frame2.set_bg_color((0, 0, 255))
-        frame2.make_pos()
-
-        frame1 = Frame(0,0, [entry3, frame2], test)
-        frame1.set_direction('horizontal')
-        frame1.set_items_pos('auto')
-        frame1.resize('auto', 'auto')
-        frame1.set_align('left')
-        frame1.set_padding(10,10,10,10)
-        frame1.set_marge_items(10)
-        frame1.make_pos()
-
-        frame = Frame(200, 200, [entry1, frame1], test)
-
-        frame.set_direction('vertical')
-        frame.set_items_pos('auto')
-        frame.resize('auto', 'auto')
-        frame.set_padding(10,10,10,10)
-        frame.set_align('left')
-        frame.set_marge_items(10)
-        frame.set_bg_color((255, 0, 0))
-        # frame.set_bg_color((189, 195, 199))
-
-        frame.make_pos()
-
-        # frame.set_width(300)
-        '''ou'''
-        # frame.resize('auto', 'auto')
-        # frame.set_align('right')
-        # frame.set_padding(10,10,10,10)
-        # frame.set_marge_items(10)
-
-        return [frame]
-
-
-    # def draw_test(self):
-    #
-    #     # items, list_x, list_y, item_width, item_height,
-    #     # scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
-    #     items = []
-    #
-    #     for i in range(20):
-    #         item = Button_txt(0, 0, 930, 50, (255,255,255), [], test)
-    #         items.append(item)
-    #
-    #     item_list = Item_list(items, 330, 40,
-    #                           1260, 40, 20, 680)
-    #
-    #     return [item_list]
-
     def draw_info(self):
         info_bar = Info_bar()
 
         return [info_bar]
+
 
     def quit(self):
         pass
@@ -286,16 +164,6 @@ class Window():
 ####################################################
 ##################| FONCTIONS |#####################
 ####################################################
-
-def change_tab(button, window, screen):
-    for icon in window.nav:
-        if icon.num == button.num:
-            icon.set_focus()
-        else:
-            icon.remove_focus()
-
-    window.body = []
-    window.display(screen)
 
 def main():
     os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -308,56 +176,6 @@ def main():
     window.quit()
 
     pygame.quit()
-
-def create_label(text, police, fontsize, msg_color, bg_color, x, y, size):
-    if size == None:
-        label =  Label(text, police, fontsize, msg_color, bg_color, x, y)
-
-        frame = Frame(x, y, [label], test)
-
-        frame.set_direction('vertical')
-        frame.set_items_pos('auto')
-        frame.resize('auto', 'auto')
-        frame.set_align('left')
-        frame.set_bg_color(bg_color)
-        frame.make_pos()
-
-    else:
-        words = text.split(' ')
-        lines = []
-        while len(words) > 0:
-            i = 0
-            line = words[i]
-            label = Label(line, police, fontsize, msg_color, bg_color, x, y)
-
-            while label.rect.width <= size:
-                i += 1
-                if i >= len(words):
-                    old_line = line
-                    break
-                else:
-                    old_line = line
-                    line += ' ' + words[i]
-                    label = Label(line, police, fontsize, msg_color, bg_color, x, y)
-            words = words[i:]
-            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y)
-            lines.append(label)
-
-        frame = Frame(x, y, lines, test)
-
-        frame.set_direction('vertical')
-        frame.set_items_pos('auto')
-        frame.resize('auto', 'auto')
-        frame.set_align('left')
-        frame.set_bg_color(bg_color)
-        frame.make_pos()
-
-    return frame
-
-
-
-def test(x, y, z):
-    print('click on the widget')
 
 ####################################################
 ################| TESTS UNITAIRES |#################

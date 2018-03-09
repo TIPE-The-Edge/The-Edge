@@ -24,7 +24,8 @@ class Progress_bar():
         pygame.draw.rect(screen, self.color, self.rect_bar)
 
     def do(self, window, screen):
-        self.action(self, window, screen)
+        if self.action != None:
+            self.action(self, window, screen)
 
     def up(self):
         for item in self.items:

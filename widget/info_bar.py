@@ -9,12 +9,14 @@ class Info_bar():
         # self.action =
         self.items = []
         self.level = 0
+        self.action = None
 
     def draw(self,screen):
         pygame.draw.rect(screen, self.color, self.rect)
 
     def do(self, window, screen):
-        pass
+        if self.action != None:
+            self.action(self, window, screen)
 
     def up(self):
         for item in self.items:
