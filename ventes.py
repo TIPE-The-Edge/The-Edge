@@ -247,8 +247,14 @@ def profit(nbr_ventes, produit) :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
     """
+    # On initialise la marge faite par le distributeur.
+    marge = 21/100
 
-    return(nbr_ventes*produit.prix)
+    total = nbr_ventes*produit.prix
+
+    gain = total*(1-marge)
+
+    return(gain)
 
 '''
 def nom_fontion() :
