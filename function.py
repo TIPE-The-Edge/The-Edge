@@ -111,6 +111,7 @@ def change_tab(button, window, screen, *arg):
 
 
 def draw_rh(*arg):
+
     frame_left = Frame(80, 40, [], None, [])
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
@@ -130,7 +131,7 @@ def draw_rh(*arg):
 
     a = []
     for i in range(20):
-        employed = create_label("employé " + str(i), 'calibri', 30, (255,255,255), (0,0,0), 0, 0, None, clear_body, [draw_employed,0])
+        employed = create_label("employé " + str(i), 'calibri', 30, (255,255,255), (0,0,0), 0, 0, None, draw_employee, [i, 0])
         employed.set_direction('horizontal')
         employed.resize(580, 100)
         employed.set_padding(20,0,0,0)
@@ -143,12 +144,12 @@ def draw_rh(*arg):
     return [item_list_employe, label, frame_left]
 
 
-def draw_employed(f,i,*arg):
+def draw_employee(widget, window, screen, id_, i, *arg):
     path = 'img/icon/right_white_arrow'
     button_arrow = Button_img(0, path, 0, 0, None, [])
-    text = "employé id"
-    employed = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
-    frame_back_rh = Frame(0,0, [button_arrow, employed], clear_body, [draw_rh])
+    text = 'Employé ' + str(id_)
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back_rh = Frame(0,0, [button_arrow, name], clear_body, [draw_rh])
     frame_back_rh.set_direction('horizontal')
     frame_back_rh.set_items_pos('auto')
     frame_back_rh.resize(250, 80)
@@ -158,23 +159,23 @@ def draw_employed(f,i,*arg):
     frame_back_rh.set_bg_color((149, 165, 166))
     frame_back_rh.make_pos()
 
-    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, clear_body, [draw_employed,0])
-    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, clear_body, [draw_employed,1])
-    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, clear_body, [draw_employed,2])
-    project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, clear_body, [draw_employed,3])
-    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, clear_body, [draw_employed,4])
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_, 0])
+    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,1])
+    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,2])
+    project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,3])
+    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,4])
 
     focus_color = (41,128,185)
     if i == 0:
-        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, clear_body, [draw_employed,0])
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,0])
     elif i == 1:
-        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, clear_body, [draw_employed,1])
+        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,1])
     elif i == 2:
-        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, clear_body, [draw_employed,2])
+        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,2])
     elif i == 3:
-        project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, clear_body, [draw_employed, 3])
+        project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_, 3])
     elif i == 4:
-        fired = create_label("Licencier", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, clear_body, [draw_employed,4])
+        fired = create_label("Licencier", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,4])
 
 
     list_tmp = [attribute, role, formation, project, fired]
@@ -193,4 +194,5 @@ def draw_employed(f,i,*arg):
     frame_left.set_bg_color((189, 195, 198))
     frame_left.make_pos()
 
-    return [frame_left]
+    window.body = [frame_left]
+    window.display(screen)
