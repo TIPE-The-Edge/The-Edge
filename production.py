@@ -151,11 +151,46 @@ class Fournisseur(object):
 
         return(somme)
 
-    def coutTransport(fournisseur, destination): #TODO
+    def coutTransport(fournisseur, destination): 
+        """
+        FONCTION       : Retourne le coût de transport entre le
+                         stock d'un fournisseur et sa destination.
+        ENTREES        : Un fournisseur (string) et une destination
+                         (string).
+        SORTIE         : Le coût du trajet en ??? (float).
+        TEST UNITAIRE  : ...
+        """
+        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur, ["fournisseur","destination","cout"])
+
+        for fournisseur in fournisseurs :
+            if fournisseur[1]==destination :
+                return(float(fournisseur[2]))
+
+        # Si le trajet n'existe pas dans le fichier de données.
+        return(None)
+
+    def tpsTransport(fournisseur, destination): 
+        """
+        FONCTION       : Retourne le temps de transport entre le
+                         stock d'un fournisseur et sa destination.
+        ENTREES        : Un fournisseur (string) et une destination
+                         (string).
+        SORTIE         : Le temps du trajet en semaine (float)
+        TEST UNITAIRE  : ...
+        """
+        '''
+        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur, ["fournisseur","destination","temps"])
+
+        for fournisseur in fournisseurs :
+            if fournisseur[1]==destination :
+                return(float(fournisseur[2]))
+
+
+        # Si le trajet n'existe pas dans le fichier de données.
+        return(None)
+        '''
         return(1)
 
-    def tpsTransport(fournisseur, destination): #TODO
-        return(1)
 
 class Machine(object):
 
@@ -427,10 +462,36 @@ class Stock(object):
 
         return loc
 
+
+
+####################################
+########| TESTS UNITAIRES |#########
+####################################
+
+
+class Test(unittest.TestCase) :
+
+    
+    def test_coutTransport(self) :
+
+        #>>> Test 1 <<<#
+
+        reponse = 500
+        test = Fournisseur.coutTransport("Paris", "Amsterdam")
+        self.assertEqual(test, reponse)
+
+        #>>> Test 2 <<<#
+
+        reponse = None
+        test = Fournisseur.coutTransport("Toulouse", "Paris")
+        self.assertEqual(test, reponse)
+
+
 ####################################################
 ##################| PROGRAMME |#####################
 ####################################################
 
 if __name__ == "__main__" :
 
-    pass
+    # Tests unitaires
+    unittest.main()
