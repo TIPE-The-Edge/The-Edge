@@ -68,6 +68,7 @@ class Window():
 
     def __init__(self,screen):
 
+        self.run = True
         self.items = []
         self.nav = self.draw_nav_button()
         self.info_bar = self.draw_info()
@@ -79,7 +80,7 @@ class Window():
     def loop(self, screen):
         clock = pygame.time.Clock()
 
-        while True:
+        while self.run:
             delta_t = clock.tick( FRAME_RATE )
 
             # INPUT
@@ -158,7 +159,7 @@ class Window():
 
 
     def quit(self):
-        pass
+        self.run = False
 
 
 ####################################################
