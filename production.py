@@ -93,6 +93,8 @@ class Fournisseur(object):
         self.localisation = self.genLocalistation()
 
         self.materiaux_vendu = [] # TODO
+        self.modificateur_prix = 1 #TODO # Multiplicateur des prix du
+                                         # fournisseur.
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -120,16 +122,16 @@ class Fournisseur(object):
     def approvisionnement(transports, materiaux, couts, fournisseur, destination, commande):
         """ Créé un cout et créé un objet transport à partir des données d'une
         commande de materiaux.
-        Entrée : le nom du fournisseur
+        Entrée : le fournisseur (objet)
                  le nom de la destination
                  la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
         """
 
-        cout_mat       = Fournisseur.coutMateriaux(materiaux, commande)
+        cout_mat       = Fournisseur.coutMateriaux(fournisseur, materiaux, commande)
         cout_transport = Fournisseur.coutTransport(fournisseur, destination)
         tps_transport  = Fournisseur.tpsTransport(fournisseur, destination)
 
-        transports.append(Transport(fournisseur,
+        transports.append(Transport(fournisseur.nom,
                                     destination,
                                     commande,       # liste de materiaux (& valeur)
                                     [],             # liste de produits
@@ -138,12 +140,14 @@ class Fournisseur(object):
         couts.append(["cout materiaux", cout_mat])
         couts.append(["cout transport", cout_transport])
 
-    def coutMateriaux(materiaux, commande):
+    def coutMateriaux(fournisseur, materiaux, commande):
+        """ Calcule le cout total des materiaux de la commande.
+        """
         somme = 0
         for com in commande:
             for mat in materiaux:
                 if com[0] == mat.nom:
-                    somme += com[1] * mat.prix
+                    somme += com[1] * mat.prix * fournisseur.modificateur_prix
 
         return(somme)
 

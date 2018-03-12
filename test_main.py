@@ -134,6 +134,8 @@ if __name__ == "__main__" :
     temps = datetime.datetime(2018,1,1) # Temps en semaines
     month = 1
 
+    argent = 0 #TODO
+
     # init produits
     initProduits(populations, produits)
     initProduits(machines, produits)
@@ -202,6 +204,11 @@ if __name__ == "__main__" :
                     print("------ liste : Départs ------")
                     for dep in departs:
                         print(dep)
+                    print()
+
+                    # RH
+                    print("------ Classe : RH ------\n")
+                    print(lesRH)
                     print()
 
                     menu = int(input("menu? \n  0: Retour \n  1: Recruter\n  2: Virer\n  3: Infos Employés"))
@@ -360,15 +367,25 @@ if __name__ == "__main__" :
 
                 menu = 2
 
-            elif menu == 3: # MENU
+            elif menu == 3: # MENU FINANCE
                 while menu != 0:
-                    pass
+                    os.system('clear') # works on Linux/Mac
+
+                    # couts
+                    print("------ liste : Coûts ------")
+                    for cou in couts:
+                        print(cou)
+                    print()
+
+                    menu = int(input("menu? \n  0: Retour \n "))
 
                 menu = 3
 
             elif menu == 4: # MENU
                 while menu != 0:
-                    pass
+                    os.system('clear') # works on Linux/Mac
+
+                    menu = int(input("menu? \n  0: Retour \n "))
 
                 menu = 4
 

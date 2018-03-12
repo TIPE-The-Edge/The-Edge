@@ -110,7 +110,7 @@ class RH(object):
 
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
         self.nbr_employes     = RH.nbr(individus)
-        self.bonheur_moy      = RH.bonheurMoyen(individus)
+        # self.bonheur_moy      = RH.bonheurMoyen(individus) #BONUS
         self.age_moy          = RH.ageMoyen(individus)
 
         # Experience

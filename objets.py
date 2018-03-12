@@ -90,18 +90,16 @@ class Individu(object):
         self.age     = self.genAge()
 
         # Experiences en nombre de semaines
-        self.exp_RetD    = self.genExpRetD()
+        self.exp_RetD    = self.genExpRD()
         self.exp_startup = 0
 
         # Compétences
             # R&D
-        self.competence_groupe    = self.genCompetenceRH() # Capacité à travailler en groupe
-        self.competence_recherche = self.genCompetenceRH() # Efficacité à la recherche
-        self.competence_direction = self.genCompetenceRH() # Capacité à diriger une équipe
+        self.competence_groupe    = self.genCompetenceRD() # Capacité à travailler en groupe
+        self.competence_recherche = self.genCompetenceRD() # Efficacité à la recherche
+        self.competence_direction = self.genCompetenceRD() # Capacité à diriger une équipe
 
         # Caractéristique RH
-        self.bonheur = 5 # De 0 à 10, indicateur du bonheur de l'employé dans
-                         # l'entreprise.
         self.statut  = "CDI" # Pour l'instant, un seul statut
         self.role    = "R&D" # Pour l'instant, un seul role
         self.projet  = None  # Projet en cours
@@ -115,6 +113,8 @@ class Individu(object):
         # Autres
         # self.conges  = None
         # self.horaire = None # temps de travail
+        # self.bonheur = None # De 0 à 10, indicateur du bonheur de l'employé dans
+                         # l'entreprise.
 
     def __repr__(self):
         return "{} - {} {}, {} ans. {}".format(
@@ -149,23 +149,25 @@ class Individu(object):
         nbr = int(str(dizaine) + str(unite))
         return nbr
 
-    def genExpRetD(self):
+    def genExpRD(self):
         """ Génère l'experience de l'individu en fonction de son age.
         """
 
-        exp_max = (self.age - 23)*52# Experience max que peut avoir l'individu en nbr de semaine
+        seuil_haut = (self.age - 23)*52 # Experience max que peut avoir
+                                        # l'individu en nbr de semaine
 
-        seuil_bas  = int(exp_max/3) # pour ne pas que les "vieux" n'aient aucune exp.
-        seuil_haut = exp_max
+        seuil_bas  = int(seuil_haut/3)  # Pour ne pas que les "vieux" n'aient
+                                        # aucune exp, ils ont au moins un tier
+                                        # de leur vie active en experience.
 
         return(random.randint(seuil_bas, seuil_haut)) # de 0 à 40 ans d'exp
 
-    def genCompetenceRH(self):
-        """ Génère les valeurs des compétences de RH. # AMELIORABLE
+    def genCompetenceRD(self):
+        """ Génère les valeurs des compétences de R&D. # AMELIORABLE
         """
-        pas = 37/5 # Tous les "pas", l'individu gagne 1 d'exp.
 
         # Compétence tirée de l'experience
+        pas = 37/5 # Tous les "pas", l'individu gagne 1 d'exp.
         comp_exp = (self.exp_RetD/52) / pas
         # Compétence tirée de l'aleatoire
         comp_rand = random.randint(1, 5)
@@ -173,6 +175,8 @@ class Individu(object):
         return (int(round(comp_exp + comp_rand, 0)))
 
     def genSalaire(self):
+        """ Retourne un salaire en fonction du role et de l'experience.
+        """
 
         # R&D
         if self.role == "R&D":
@@ -237,7 +241,7 @@ class Produit(object):
         self.age    = 0     # Temps sur le marché du produit
 
         self.nbr_ameliorations = 0
-        self.concurence = 0 # BONUS
+        # self.concurence = 0 # BONUS
 
     def __repr__(self):
         return "{} - {}, {}".format(self.nom,
