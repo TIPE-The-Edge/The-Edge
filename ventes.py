@@ -35,46 +35,13 @@ I/ Choix du distributeur :
 L'objectif est de créer une fonction
 que l'on appelera à chaque tour pour
 effectuer les ventes d'un produit.
-
-Jeunes :
-
-tps_adoption = (15, 5)
-
-Actifs :
-tps_adoption = (25, 10)
-(le produit dure un an)
-
-Seniors :
-
-tps_adoption = (35, 5)
-
 """
 ####################################
 
 
 #############| NOTES |##############
 """
-Actuellement le nombre d'acheteurs est
-déterminé par l'utilité qui représente
-le pourcentage de la population qui est
-prête à acheter le produit.
->>> le nombre d'acheteurs par mois est trop
-    élevé.
-    (Sol° : retirer les personnes n'ayant
-    pas d'accès à internet.)
-    En effet seuls 85% de la population à
-    accès à internet en 2017.
-
-____________________________________
-
-2,5% du budget d'un ménage est consacré à
-l'information et à la communication.
-On déduit de ce budget 30€ qui représente
-les frais moyens d'une connexion internet.
-
-
 FAIRE LES COMMENTAIRES DES FONCTIONS
-
 """
 ####################################
 
@@ -85,21 +52,31 @@ FAIRE LES COMMENTAIRES DES FONCTIONS
 ###########| FONCTIONS |############
 ####################################
 
+
+#>>> Création des différentes populations de consommateurs
+
+
 def budget(revenus, periode) :
     """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
+    FONCTION       : Fonction calculant le budjet mensuel moyen des
+                     trois classes de population (jeunes/actifs/seniors)
+    ENTREES        : Les données du fichier.csv (string list list) sur les 
+                     revenus sous forme d'une liste contenant une seule 
+                     liste où se trouve les trois revenus des classes de 
+                     populations à la "période" indiquée (string). 
+    SORTIE         : La liste des trois budjets moyens associés aux classes
+                     de population (float list).
+    TEST UNITAIRE  : ...
     """
-    # Liste des revenus
+    # Liste des revenus (Initialisation)
     rep = []
 
     # Pourcentage de ménage ayant accès à internet
+    #| Cette fonction d'écoule d'une régression
+    #| linéaire sur les quelques données concernat
     acces = (5.4*int(periode)-10765.9)/100
 
-    # Frais d'internet
+    # Frais d'internet (donnée approximative)
     internet = 30
 
     for r in range(len(revenus[0])) :
@@ -112,8 +89,6 @@ def budget(revenus, periode) :
     return(rep)
 
 
-#>>> Création des différentes populations de consommateurs
-
 def consommateurs(periode) :
     """
     FONCTION       : Crée la liste des consommateurs pour une période
@@ -122,7 +97,7 @@ def consommateurs(periode) :
     SORTIE         : Une liste de consommateurs
     REMARQUES      : Possibilité d'augmenter le nombre de types
                      de consommateurs.
-    TEST UNITAIRE  : ("OK"/"...")
+    TEST UNITAIRE  : ...
     """
     #>>> Initialisation des variables locales <<<#
 
@@ -169,12 +144,18 @@ def consommateurs(periode) :
     return(rep)
 
 
+#>>> Système de vente
+
+
 def nb_acheteur(population, produit) :
     """
-    FONCTION       : Retourne pour une population le nombre d'acheteur
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
+    FONCTION       : Retourne pour une population le nombre d'acheteurs.
+    ENTREES        : Un population (Population) et un produit (Produit)
+    SORTIE         : Le nombre total d'acheteurs pour le produit dans 
+                     l'état actuel des choses (int).
+    REMARQUES      : On peut jouer sur le nombre d'acheteur en modifiant
+                     le nombre d'acheteurs potentiels par le biais de
+                     l'utilité.
     TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
@@ -184,29 +165,51 @@ def nb_acheteur(population, produit) :
         if pop[0] == population.nom :
             utilite = pop[1]
 
-    #
+    # Le nombre d'acheteur potentiels
+    #| L'utilité représente le pourcentage d'acheteurs potentiels
+    #| au sein d'une population. 
     acheteurs_potentiels = int((population.nombre)*(utilite/100))
 
     #>>> Corps de la fonction <<<#
+
+    # Résolution du problème du consommateur
+    #| "le budjet des clients potentiels est-il
+    #| suffisamment élevé ?"
     if population.revenu >= produit.prix :
         acheteurs = acheteurs_potentiels
+
     #>>> Sortie <<<#
+    #| Ce résultat peut être modifié si le prix du produit change.
+    #| Sinon pour un même prix chaque population aura toujours le
+    #| résultat.
     return(acheteurs)
 
 
-def demande(acheteurs, produit, esp, ecart) :
+def demande(acheteurs, produit, tps_adoption) :
     """
     FONCTION       : Détermine la demande d'un produit sur
-                     le marché.
-    ENTREES        : Le nombre d'acheteurs 
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
+                     le marché en fonction du temps de
+                     celui-ci sur le marché, du nombre d'acheteur
+                     et du temps d'adoption de la population.
+    ENTREES        : Le nombre d'acheteurs (int), produit (Produit),
+                     un couple représentant le temps d'adoption 
+                     (int list)
+    SORTIE         : Le nombre de demandes (int)
+    REMARQUES      : A MODIFIER (Mettre de la documentation pour 
+                     expliquer cette fonction)
+    TEST UNITAIRE  : ...
     """
     #>>> Initialisation des variables locales <<<#
+
+    # Nombre de demandes (Initialisation)
     demandes = 0
+    # Le temps du produit sur le marché
     num_tour = produit.age
+    # Le temps d'adoption de la population
+    [esp, ecart] = tps_adoption
+
     #>>> Corps de la fonction <<<#
+
     if abs(esp-num_tour)>=2*ecart:
         demandes = int(acheteurs*(0.025)/(esp-2*ecart))
     elif abs(esp-num_tour)>=ecart:
@@ -220,19 +223,26 @@ def demande(acheteurs, produit, esp, ecart) :
 
 def profit(nbr_ventes, produit) :
     """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
+    FONCTION       : Retourne le chiffre d'affaire en fonction
+                     d'un nombre de vente et du prix du produit.
+    ENTREES        : Nombre de ventes (int) et un produit (Produit)
+    SORTIE         : Le chiffre d'affaire (float)
+    TEST UNITAIRE  : ...
     """
-    # On initialise la marge faite par le distributeur.
-    marge = 21/100
+    # Variable représentant les frais du à la vente
+    #| que ce soit la marge des distributeurs ou
+    #| les frais liés à l'acheminement des produits
+    #| au consommateur.
+    frais = 21/100
 
+    # Calcule le chiffre d'affaire brut
     total = nbr_ventes*produit.prix
 
-    gain = total*(1-marge)
+    # Calcule les gains réalisés en tenant compte
+    #| des frais éventuels.
+    gain = total*(1-frais)
 
+    #>>> Sortie <<<#
     return(gain)
 
 
@@ -253,7 +263,7 @@ def ventes(market, populations) :
     for offre in market.produits :
         for pop in populations :
             acheteurs = nb_acheteur(pop, offre[0])
-            demandes += demande(acheteurs, offre[0], pop.tps_adoption[0], pop.tps_adoption[1])
+            demandes += demande(acheteurs, offre[0], pop.tps_adoption)
 
         # On définit le nombre de vente du produit qui est
         #| la plus petite valeur entre l'offre et la demande.

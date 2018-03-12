@@ -146,7 +146,6 @@ def retireAll(produit, liste_arrivee):
             del liste_arrivee[i]
 
                 
-
 '''
 def nom_fontion() :
     """
