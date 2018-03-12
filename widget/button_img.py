@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite, Group
 
 class Button_img():
-    def __init__(self, num, path, x, y, action):
+    def __init__(self, num, path, x, y, action, arg):
         self.items = []
         self.type = 'button_img'
         self.path = path
@@ -12,6 +12,7 @@ class Button_img():
         self.rect.x = x
         self.rect.y = y
         self.action = action
+        self.arg = arg
         self.level = 0
 
     def set_focus(self):
@@ -25,7 +26,7 @@ class Button_img():
 
     def do(self, window, screen):
         if self.action != None:
-            self.action(self, window, screen)
+            self.action(self, window, screen, *self.arg)
 
     def up(self):
         for item in self.items:

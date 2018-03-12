@@ -11,9 +11,10 @@ class Frame():
         # items
         # action
     """
-    def __init__(self, x, y, items, action):
+    def __init__(self, x, y, items, action, arg):
         self.type = 'frame'
         self.action = action
+        self.arg = arg
         self.level = 0
 
         self.items = items
@@ -303,7 +304,7 @@ class Frame():
 
     def do(self, window, screen):
         if self.action != None:
-            self.action(self, window, screen)
+            self.action(self, window, screen, *self.arg)
 
     def up(self):
         for item in self.items:

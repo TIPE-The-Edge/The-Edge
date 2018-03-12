@@ -2,13 +2,14 @@ import pygame
 from pygame.sprite import Sprite, Group
 
 class Entry():
-    def __init__(self, x, y, width, height, action, onlynum):
+    def __init__(self, x, y, width, height, onlynum):
         self.items = []
         self.type = 'entry'
         self.color = (255, 255, 255)
         self.color_unfocus = (200, 200, 200)
         self.rect = pygame.Rect(x, y, width, height)
-        self.action = action
+        self.action = None
+        self.arg = []
         self.level = 0
 
         fontsize = int(5 * height / 7) - 1

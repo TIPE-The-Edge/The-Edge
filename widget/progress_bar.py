@@ -3,7 +3,7 @@ from pygame.sprite import Sprite, Group
 
 class Progress_bar():
 
-    def __init__(self, x, y, width, height, action,
+    def __init__(self, x, y, width, height, action, arg,
                  value, max_value):
         self.type = 'progress_bar'
         self.level = 0
@@ -17,6 +17,7 @@ class Progress_bar():
 
         self.items = []
         self.action = action
+        self.arg = arg
 
 
     def draw(self, screen):
@@ -25,7 +26,7 @@ class Progress_bar():
 
     def do(self, window, screen):
         if self.action != None:
-            self.action(self, window, screen)
+            self.action(self, window, screen, *self.arg)
 
     def up(self):
         for item in self.items:

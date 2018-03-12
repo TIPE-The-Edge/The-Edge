@@ -11,6 +11,7 @@ class Item_list():
         self.item_move = True
         self.level = 0
         self.action = None
+        self.arg = []
 
         all_items_height = self.place_items(list_x, list_y, 2)
 

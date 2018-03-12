@@ -29,11 +29,11 @@ from widget.progress_bar import *
 from widget.frame import *
 
 
-def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action):
+def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, arg):
     if size == None:
-        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action)
+        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action, arg)
 
-        frame = Frame(x, y, [label], action)
+        frame = Frame(x, y, [label], action, arg)
 
     else:
         words = text.split(' ')
@@ -41,7 +41,7 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
         while len(words) > 0:
             i = 0
             line = words[i]
-            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action)
+            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
 
             while label.rect.width <= size:
                 i += 1
@@ -51,12 +51,12 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
                 else:
                     old_line = line
                     line += ' ' + words[i]
-                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action)
+                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
             words = words[i:]
-            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action)
+            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, arg)
             lines.append(label)
 
-        frame = Frame(x, y, lines, action)
+        frame = Frame(x, y, lines, action, arg)
 
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
@@ -76,11 +76,12 @@ def draw_part(item_group, screen):
         for sub_item in item.items:
             if sub_item.action == None:
                 sub_item.action = item.action
+                sub_item.arg = item.arg
         item_group[i:i] = item.items
         i += 1
 
 
-def change_tab(button, window, screen):
+def change_tab(button, window, screen, *arg):
     for icon in window.nav:
         if icon.num == button.num:
             icon.set_focus()
@@ -104,7 +105,7 @@ def change_tab(button, window, screen):
     window.display(screen)
 
 def draw_rh():
-    frame_left = Frame(80, 40, [], None)
+    frame_left = Frame(80, 40, [], None, [])
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
     frame_left.resize(600, 680)
@@ -114,7 +115,7 @@ def draw_rh():
     frame_left.make_pos()
 
     text = 'Liste des employés'
-    label = create_label(text, 'arial', 30, (255,255,255), (52,73,94), 680, 40, None, None)
+    label = create_label(text, 'arial', 30, (255,255,255), (52,73,94), 680, 40, None, None, [])
     label.set_direction('horizontal')
     label.set_padding(30,10,10,10)
     label.resize(680, 80)
@@ -123,8 +124,8 @@ def draw_rh():
 
     a = []
     for i in range(20):
-        entry1 = Entry(0, 0, 100, 50, None, True)
-        frame = Frame(0,0, [entry1], None)
+        entry1 = Entry(0, 0, 100, 50, True)
+        frame = Frame(0,0, [entry1], None, [])
         frame.set_direction('horizontal')
         frame.set_items_pos('auto')
         frame.resize(580, 'auto')

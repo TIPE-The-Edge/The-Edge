@@ -143,7 +143,7 @@ class Window():
         for i in range(0,6):
             path = 'img/icon/nav_icon_' + str(i)
             y =  i * 80 + i * 2
-            button = Button_img(i, path, 0, y, change_tab)
+            button = Button_img(i, path, 0, y, change_tab, [])
             if i == 0:
                 button.set_focus()
             items.append(button)
