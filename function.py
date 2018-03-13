@@ -38,7 +38,15 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
     else:
         words = text.split(' ')
         lines = []
-        while len(words) > 0:
+
+        check_words = True
+        for word in words:
+            label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            if label_word.rect.width > size:
+                check_words = False
+                lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, arg))
+
+        while len(words) > 0 and check_words:
             i = 0
             line = words[i]
             label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
@@ -138,7 +146,7 @@ def draw_rh(widget, window, screen, *arg):
         employed.make_pos()
         a.append(employed)
 
-    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 680)
+    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 680, 'employé')
 
     window.body = [item_list_employe, label, frame_left]
     window.display(screen)
@@ -174,18 +182,18 @@ def draw_employee(widget, window, screen, id_, i, *arg):
     elif i == 1:
         role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,1])
         roles = []
-        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680)
+        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
         items.append(item_list_role)
 
     elif i == 2:
         formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,2])
         formations = []
-        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680)
+        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
         items.append(item_list_formation)
     elif i == 3:
         project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_, 3])
         projects = []
-        item_list_project = Item_list(projects, 330, 40, 1260, 40, 20, 680)
+        item_list_project = Item_list(projects, 330, 40, 1260, 40, 20, 680, 'projet')
         items.append(item_list_project)
     elif i == 4:
         fired = create_label("Licencier", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,4])
@@ -246,7 +254,7 @@ def draw_rd(widget, window, screen, i, *arg):
 
         projects = []
 
-        item_list_project = Item_list(projects, 330, 120, 1260, 120, 20, 600)
+        item_list_project = Item_list(projects, 330, 120, 1260, 120, 20, 600, 'projet')
 
         items.append(item_list_project)
 
@@ -255,7 +263,7 @@ def draw_rd(widget, window, screen, i, *arg):
 
         products = []
 
-        item_list_product = Item_list(products, 330, 40, 1260, 40, 20, 680)
+        item_list_product = Item_list(products, 330, 40, 1260, 40, 20, 680, 'produit')
 
         items.append(item_list_product)
 

@@ -1,24 +1,28 @@
 import pygame
 from pygame.sprite import Sprite, Group
+from widget.label import *
+from widget.frame import *
 
 class Item_list():
     def __init__(self,
                  items, list_x, list_y,
-                 scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height
+                 scrollbar_x, scrollbar_y, scrollbar_width, scrollbar_height, content
                 ):
         self.type = 'item_list'
         self.items = items
         self.item_move = True
         self.level = 0
         self.action = None
+        self.content = content
         self.arg = []
-
-        all_items_height = self.place_items(list_x, list_y, 2)
 
         if items == []:
             item_width = 0
             item_height = 0
+            all_items_height = 0
+            self.create_void_panel(list_x, list_y, scrollbar_x-list_x, scrollbar_height)
         else:
+            all_items_height = self.place_items(list_x, list_y, 2)
             item_width = items[0].rect.width
             item_height = items[0].rect.height
 
@@ -195,3 +199,69 @@ class Item_list():
         self.sb_bg_rect.y = self.sb_bg_rect.y + y
         self.bg_rect.x = self.bg_rect.x + x
         self.bg_rect.y = self.bg_rect.y + y
+
+    def create_void_panel(self, x, y, width, height):
+        text = "Aucun(e) " + self.content + " disponible"
+        label_void = create_label(text, 'font/colvetica/colvetica.ttf', 40, (189, 195, 198), (236,240,241), 0, 0, width-20, None, [])
+        label_void.set_direction('horizontal')
+        label_void.resize('auto', height)
+        # label_void.set_padding(0,10,10,10)
+        label_void.set_align('center')
+        label_void.make_pos()
+
+        frame = Frame(x, y, [label_void], None, [])
+        frame.set_direction('vertical')
+        frame.set_items_pos('auto')
+        frame.resize(width, height)
+        frame.set_align('center')
+        frame.set_bg_color((236,240,241))
+        frame.make_pos()
+
+        self.items.append(frame)
+
+
+def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, arg):
+    if size == None:
+        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action, arg)
+
+        frame = Frame(x, y, [label], action, arg)
+
+    else:
+        words = text.split(' ')
+        lines = []
+
+        check_words = True
+        for word in words:
+            label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            if label_word.rect.width > size:
+                check_words = False
+                lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, arg))
+
+        while len(words) > 0 and check_words:
+            i = 0
+            line = words[i]
+            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+
+            while label.rect.width <= size:
+                i += 1
+                if i >= len(words):
+                    old_line = line
+                    break
+                else:
+                    old_line = line
+                    line += ' ' + words[i]
+                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            words = words[i:]
+            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            lines.append(label)
+
+        frame = Frame(x, y, lines, action, arg)
+
+    frame.set_direction('vertical')
+    frame.set_items_pos('auto')
+    frame.resize('auto', 'auto')
+    frame.set_align('left')
+    frame.set_bg_color(bg_color)
+    frame.make_pos()
+
+    return frame

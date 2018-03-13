@@ -4,15 +4,15 @@ from pygame.sprite import Sprite, Group
 class Progress_bar():
 
     def __init__(self, x, y, width, height, action, arg,
-                 value, max_value):
+                 value, max_value, color, color_bg):
         self.type = 'progress_bar'
         self.level = 0
 
-        self.bg_color = (0,0,0)
+        self.bg_color = bg_color
         self.rect = pygame.Rect(x, y, width, height)
 
-        self.color = (255,255,255)
-        width_bar = int(value * width / max_value)
+        self.color = color
+        width_bar = value * width // max_value
         self.rect_bar = pygame.Rect(x, y, width_bar, height)
 
         self.items = []
