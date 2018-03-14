@@ -1,0 +1,52 @@
+// DOCUMENTATION SUR LES FONCTIONS DES VENTES //
+
+
+Création des consommateurs :
+
+Jeunes :
+tps_adoption = (15, 5)
+
+Actifs :
+tps_adoption = (25, 10)
+(le produit dure un an)
+
+Seniors :
+tps_adoption = (35, 5)
+
+# acheteurs()
+
+Actuellement le nombre d'acheteurs est
+déterminé par l'utilité qui représente
+le pourcentage de la population qui est
+prête à acheter le produit.
+Ensuite le nombre d'acheteurs est déterminé
+par la résolution du problème du consommateur.
+(cf. Microéconomie)
+>>> le nombre d'acheteurs par mois est trop
+    élevé.
+    |Sol° : refaire la fonction demande()
+    | ou diminuer le pourcentage d'acheteurs 
+    | potentiels via l'utilité.
+
+____________________________________
+
+# budget()
+
+D'après les recherches effectuées 2,5% 
+du budget d'un ménage est consacré à 
+l'information et à la communication. On 
+déduit de ce budget 30€ qui représentent 
+les frais moyens d'une connexion internet.
+
+____________________________________
+
+# demande()
+
+____________________________________
+
+# profit()
+
+Les frais de ventes représente actuellement
+la marge moyenne des distributeurs dans 
+le domaine de l'information et de la 
+communication.
