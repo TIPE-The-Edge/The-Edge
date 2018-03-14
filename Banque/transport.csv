@@ -7,49 +7,49 @@ Paris,Amsterdam,600,500,10/24,"
 Paris,Berlin,800,650,13.5/24,"
 "
 
-Paris,Le_Havre,200,170,4/24,"
+Paris,Le Havre,200,170,4/24,"
 "
 
-Le_Havre,New_York,5600,1100,21,"
+Le Havre,New York,5600,1100,21,"
 "
 
-Le_Havre,Hong_Kong,10000,1600,46,"
+Le Havre,Hong Kong,10000,1600,46,"
 "
 
-Los_Angeles,Hong_Kong,13000,900,25,"
+Los Angeles,Hong Kong,13000,900,25,"
 "
 
-Los_Angeles,New_York,4400,800,7,"
+Los Angeles,New York,4400,800,7,"
 "
 
-Los_Angeles,Berlin,11000,2720,689.5/24,"
+Los Angeles,Berlin,11000,2720,689.5/24,"
 "
 
-New_York,Berlin,6600,1920,511.5/24,"
+New York,Berlin,6600,1920,511.5/24,"
 "
 
-Los_Angeles,Amsterdam,10800,2570,686/24,"
+Los Angeles,Amsterdam,10800,2570,686/24,"
 "
 
-New_York,Amsterdam,6600,1770,518/24,"
+New York,Amsterdam,6600,1770,518/24,"
 "
 
 Berlin,Amsterdam,600,500,7/24,"
 "
 
-Berlin,Hong_Kong,11000,1720,617.5/24,"
+Berlin,Hong Kong,11000,1720,617.5/24,"
 "
 
-Amsterdam,Hong_Kong,10800,1570,614/24,"
+Amsterdam,Hong Kong,10800,1570,614/24,"
 "
 
-Hong_Kong,New_York,17400,1700,32,"
+Hong Kong,New York,17400,1700,32,"
 "
 
-Paris,Los_Angeles,10200,2070,676/24,"
+Paris,Los Angeles,10200,2070,676/24,"
 "
 
-New_York,Hong_Kong,17400,1700,32,"
+New York,Hong Kong,17400,1700,32,"
 "
 
 Amsterdam,Paris,600,500,10/24,"
@@ -58,41 +58,41 @@ Amsterdam,Paris,600,500,10/24,"
 Berlin,Paris,800,650,13.5/24,"
 "
 
-Le_Havre,Paris,200,170,4/24,"
+Le Havre,Paris,200,170,4/24,"
 "
 
-New_York,Le_Havre,5600,1100,21,"
+New York,Le Havre,5600,1100,21,"
 "
 
-Hong_Kong,Le_Havre,10000,1600,46,"
+Hong Kong,Le Havre,10000,1600,46,"
 "
 
-Hong_Kong,Los_Angeles,13000,900,25,"
+Hong Kong,Los Angeles,13000,900,25,"
 "
 
-New_York,Los_Angeles,4400,800,7,"
+New York,Los Angeles,4400,800,7,"
 "
 
-Berlin,Los_Angeles,11000,2720,689.5/24,"
+Berlin,Los Angeles,11000,2720,689.5/24,"
 "
 
-Berlin,New_York,6600,1920,511.5/24,"
+Berlin,New York,6600,1920,511.5/24,"
 "
 
-Amsterdam,Los_Angeles,10800,2570,686/24,"
+Amsterdam,Los Angeles,10800,2570,686/24,"
 "
 
-Amsterdam,New_York,6600,1770,518/24,"
+Amsterdam,New York,6600,1770,518/24,"
 "
 
 Amsterdam,Berlin,600,500,7/24,"
 "
 
-Hong_Kong,Berlin,11000,1720,617.5/24,"
+Hong Kong,Berlin,11000,1720,617.5/24,"
 "
 
-Hong_Kong,Amsterdam,10800,1570,614/24,"
+Hong Kong,Amsterdam,10800,1570,614/24,"
 "
 
-Los_Angeles,Paris,10200,2070,676/24,"
+Los Angeles,Paris,10200,2070,676/24,"
 "
