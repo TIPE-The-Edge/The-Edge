@@ -181,7 +181,7 @@ if __name__ == "__main__" :
 
         menu = 1
         while menu != 0: # MENU PRINCIPAL
-            menu = int(input("menu? \n  0: Continue \n  1: RH\n  2: Production\n  3: TBD\n  4: TBD\n "))
+            menu = int(input("menu? \n  0: Continue \n  1: RH\n  2: Production\n  3: Finance\n  4: TBD\n "))
 
             if menu == 1: # MENU RH
                 while menu != 0:
@@ -325,6 +325,9 @@ if __name__ == "__main__" :
                             nbr = int(input("combien? "))
                             four = input("fournisseur? ")
                             commande = [[mat, nbr]]
+                            for fou in fournisseurs:
+                                if fou.nom == four:
+                                    four = fou
                             Fournisseur.approvisionnement(transports, materiaux, couts, four, "The Edge", commande)
 
                             menu = int(input("menu? \n  0: Retour \n  1: Acheter\n "))

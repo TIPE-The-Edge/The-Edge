@@ -84,8 +84,8 @@ class Fournisseur(object):
                     "New York",
                     "Los Angeles",
                     "Hong Kong",
-                    "Allemagne",
-                    "Pays-Bas"]
+                    "Berlin",
+                    "Amsterdam"]
 
     def __init__(self):
 
@@ -151,7 +151,7 @@ class Fournisseur(object):
 
         return(somme)
 
-    def coutTransport(fournisseur, destination): 
+    def coutTransport(fournisseur, destination):
         """
         FONCTION       : Retourne le coût de transport entre le
                          stock d'un fournisseur et sa destination.
@@ -169,7 +169,7 @@ class Fournisseur(object):
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
 
-    def tpsTransport(fournisseur, destination): 
+    def tpsTransport(fournisseur, destination):
         """
         FONCTION       : Retourne le temps de transport entre le
                          stock d'un fournisseur et sa destination.
@@ -471,7 +471,7 @@ class Stock(object):
 
 class Test(unittest.TestCase) :
 
-    
+
     def test_coutTransport(self) :
 
         #>>> Test 1 <<<#
