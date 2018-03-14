@@ -146,7 +146,7 @@ def draw_rh(widget, window, screen, *arg):
         employed.make_pos()
         a.append(employed)
 
-    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 680, 'employé')
+    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 600, 'employé')
 
     window.body = [item_list_employe, label, frame_left]
     window.display(screen)
@@ -289,14 +289,14 @@ def draw_rd(widget, window, screen, i, *arg):
     window.display(screen)
 
 def draw_option(widget, window, screen, *arg):
-    button_quit = create_label("Quitter", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, None, [])
+    button_quit = create_label("Quitter", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, quit, [])
     button_quit.set_direction('horizontal')
     button_quit.resize('auto', 'auto')
     button_quit.set_padding(50,50,20,20)
     button_quit.set_align('left')
     button_quit.make_pos()
 
-    frame = Frame(80, 40, [button_quit], quit, [])
+    frame = Frame(80, 40, [button_quit], None, [])
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
     frame.resize(1200, 680)
