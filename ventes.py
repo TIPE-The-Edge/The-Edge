@@ -60,10 +60,10 @@ def budget(revenus, periode) :
     """
     FONCTION       : Fonction calculant le budjet mensuel moyen des
                      trois classes de population (jeunes/actifs/seniors)
-    ENTREES        : Les données du fichier.csv (string list list) sur les 
-                     revenus sous forme d'une liste contenant une seule 
-                     liste où se trouve les trois revenus des classes de 
-                     populations à la "période" indiquée (string). 
+    ENTREES        : Les données du fichier.csv (string list list) sur les
+                     revenus sous forme d'une liste contenant une seule
+                     liste où se trouve les trois revenus des classes de
+                     populations à la "période" indiquée (string).
     SORTIE         : La liste des trois budjets moyens associés aux classes
                      de population (float list).
     TEST UNITAIRE  : ...
@@ -151,7 +151,7 @@ def nb_acheteur(population, produit) :
     """
     FONCTION       : Retourne pour une population le nombre d'acheteurs.
     ENTREES        : Un population (Population) et un produit (Produit)
-    SORTIE         : Le nombre total d'acheteurs pour le produit dans 
+    SORTIE         : Le nombre total d'acheteurs pour le produit dans
                      l'état actuel des choses (int).
     REMARQUES      : On peut jouer sur le nombre d'acheteur en modifiant
                      le nombre d'acheteurs potentiels par le biais de
@@ -167,8 +167,8 @@ def nb_acheteur(population, produit) :
 
     # Le nombre d'acheteur potentiels
     #| L'utilité représente le pourcentage d'acheteurs potentiels
-    #| au sein d'une population. 
-    acheteurs_potentiels = int((population.nombre)*(utilite/100))
+    #| au sein d'une population.
+    acheteurs_potentiels = int((population.nombre)*(utilite/1000))
 
     #>>> Corps de la fonction <<<#
 
@@ -192,10 +192,10 @@ def demande(acheteurs, produit, tps_adoption) :
                      celui-ci sur le marché, du nombre d'acheteur
                      et du temps d'adoption de la population.
     ENTREES        : Le nombre d'acheteurs (int), produit (Produit),
-                     un couple représentant le temps d'adoption 
+                     un couple représentant le temps d'adoption
                      (int list)
     SORTIE         : Le nombre de demandes (int)
-    REMARQUES      : A MODIFIER (Mettre de la documentation pour 
+    REMARQUES      : A MODIFIER (Mettre de la documentation pour
                      expliquer cette fonction)
     TEST UNITAIRE  : ...
     """
@@ -250,7 +250,7 @@ def ventes(market, populations) :
     """
     FONCTION       : Fonction principale que l'on exécutera tous
                      les mois.
-    ENTREES        : 
+    ENTREES        :
     SORTIE         :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
@@ -280,7 +280,7 @@ def ventes(market, populations) :
 def inMarket(market, produits, produit, quantite) :
     """
     FONCTION       : Mettre un produit sur le marché
-    ENTREES        : 
+    ENTREES        :
     SORTIE         :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
@@ -299,7 +299,7 @@ def inMarket(market, produits, produit, quantite) :
 def outMarket(market, produits, produit) :
     """
     FONCTION       : Retirer un produit sur le marché
-    ENTREES        : 
+    ENTREES        :
     SORTIE         :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
@@ -337,11 +337,10 @@ if __name__=="__main__" :
 
     produit1 = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
     produit2 = Produit([], [["Jeunes", 15.488], ["Actifs", 45.0], ["Seniors", 11.552]], ["Puce", "Metal", "Diode", "Transistor"], ["Opération_brève", "Opération_silencieuse", "Opération_avancée", "Opération_lente"], "Actifs")
-    
+
     produits=[produit1, produit2]
 
     market=Stock()
-    print(market)
     compteur = 1
 
     for prod in produits :
