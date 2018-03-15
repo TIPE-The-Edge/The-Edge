@@ -123,7 +123,7 @@ class Fournisseur(object):
         """ Créé un cout et créé un objet transport à partir des données d'une
         commande de materiaux.
         Entrée : le fournisseur (objet)
-                 le nom de la destination
+                 la destination (objet)
                  la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
         """
 
@@ -132,7 +132,7 @@ class Fournisseur(object):
         tps_transport  = Fournisseur.tpsTransport(fournisseur, destination)
 
         transports.append(Transport(fournisseur.nom,
-                                    destination,
+                                    destination.nom,
                                     commande,       # liste de materiaux (& valeur)
                                     [],             # liste de produits
                                     tps_transport))
@@ -155,16 +155,16 @@ class Fournisseur(object):
         """
         FONCTION       : Retourne le coût de transport entre le
                          stock d'un fournisseur et sa destination.
-        ENTREES        : Un fournisseur (string) et une destination
+        ENTREES        : un fournisseur (Fournisseur) et une destination
                          (string).
         SORTIE         : Le coût du trajet en ??? (float).
         TEST UNITAIRE  : ...
         """
-        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur, ["fournisseur","destination","cout"])
+        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur.localisation, ["fournisseur","destination","cout"])
 
-        for fournisseur in fournisseurs :
-            if fournisseur[1]==destination :
-                return(float(fournisseur[2]))
+        for four in fournisseurs :
+            if four[1]==destination.localisation :
+                return(float(four[2]))
 
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
@@ -190,7 +190,6 @@ class Fournisseur(object):
         return(None)
         '''
         return(1)
-
 
 class Machine(object):
 
@@ -494,4 +493,5 @@ class Test(unittest.TestCase) :
 if __name__ == "__main__" :
 
     # Tests unitaires
-    unittest.main()
+    #unittest.main()
+    pass

@@ -24,8 +24,8 @@ from production import *
 ####################################################
 
 def affichage_individu(ind):
-    print("id: {} \n\ngenre: {} \nnom: {} {} \nage: {} \n\nsalaire: {} \nbonheur: {} \nstatut: {} \nrole: {} \nprojet: {} \n\nexp_RetD: {} \nexp_startup: {} \n\ncompetence_groupe: {} \ncompetence_recherche: {}".format(
-           ind.id, ind.genre, ind.prenom, ind.nom, ind.age, ind.salaire, ind.bonheur, ind.statut, ind.role, ind.projet, ind.exp_RetD, ind.exp_startup, ind.competence_groupe, ind.competence_recherche))
+    print("id: {} \n\ngenre: {} \nnom: {} {} \nage: {} \n\nsalaire: {} \nstatut: {} \nrole: {} \nprojet: {} \n\nexp_RetD: {} \nexp_startup: {} \n\ncompetence_groupe: {} \ncompetence_recherche: {}".format(
+           ind.id, ind.genre, ind.prenom, ind.nom, ind.age, ind.salaire, ind.statut, ind.role, ind.projet, ind.exp_RetD, ind.exp_startup, ind.competence_groupe, ind.competence_recherche))
 
 ####################################################
 ##################| VARIABLES |#####################
@@ -328,7 +328,7 @@ if __name__ == "__main__" :
                             for fou in fournisseurs:
                                 if fou.nom == four:
                                     four = fou
-                            Fournisseur.approvisionnement(transports, materiaux, couts, four, "The Edge", commande)
+                            Fournisseur.approvisionnement(transports, materiaux, couts, four, stocks[0], commande)
 
                             menu = int(input("menu? \n  0: Retour \n  1: Acheter\n "))
 
