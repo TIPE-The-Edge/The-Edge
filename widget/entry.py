@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite, Group
 
 class Entry():
-    def __init__(self, x, y, width, height, onlynum):
+    def __init__(self, x, y, width, height, onlynum, id_, char_min, char_max):
         self.items = []
         self.type = 'entry'
         self.color = (255, 255, 255)
@@ -11,6 +11,9 @@ class Entry():
         self.action = None
         self.arg = []
         self.level = 0
+        self.id = id_
+        self.char_max = char_max
+        self.char_min = char_min
 
         fontsize = int(5 * height / 7) - 1
         self.font = pygame.font.SysFont("calibri", fontsize)

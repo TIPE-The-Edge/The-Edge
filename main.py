@@ -15,6 +15,7 @@ import pygame
 from pygame.sprite import Sprite, Group
 import random
 import os
+import time
 
 # IMPORTS DE FICHIERS
 
@@ -69,10 +70,20 @@ class Window():
     def __init__(self,screen):
 
         self.run = True
+        self.overbody = []
         self.items = []
-        self.nav = self.draw_nav_button()
-        self.info_bar = self.draw_info()
+
+        self.nav = []
+        self.draw_nav_button()
+
+        self.nav_name = []
+
+        self.info_bar = []
+        self.draw_info()
+
         self.button_info = []
+        self.draw_button_info('Aide', 'Il n\'y en a pas')
+
         self.body = []
 
         self.display(screen)
@@ -82,6 +93,8 @@ class Window():
 
         while self.run:
             delta_t = clock.tick( FRAME_RATE )
+
+            self.check_update_nav(screen)
 
             # INPUT
             for event in pygame.event.get():
@@ -105,7 +118,8 @@ class Window():
                                     uppest_item = item
 
                         if uppest_item != None:
-                            uppest_item.do(self,screen)
+                            if uppest_item.type == 'item_list':
+                                uppest_item.do(self,screen)
 
                     elif event.button == 4 or event.button == 5:
                         for item in self.items:
@@ -114,6 +128,21 @@ class Window():
                                     item.move(self, screen, -40)
                                 else:
                                     item.move(self, screen, 40)
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = pygame.mouse.get_pos()
+
+                    if event.button == 1:
+                        uppest_item = None
+                        for item in self.items:
+                            if item.rect.collidepoint(mouse_pos):
+                                if uppest_item == None:
+                                    uppest_item = item
+                                elif uppest_item.level <= item.level:
+                                    uppest_item = item
+
+                        if uppest_item != None:
+                            uppest_item.do(self,screen)
 
             # update display
             pygame.display.update()
@@ -133,15 +162,27 @@ class Window():
         pygame.draw.rect(screen, (44,62,80), nav_rect)
         draw_part(self.nav, screen)
 
+        draw_part(self.nav_name, screen)
+
+        if self.overbody == []:
+            self.button_info[0].remove_focus()
         draw_part(self.button_info, screen)
 
         self.items = self.info_bar + self.nav + self.button_info + self.body
+
+        if self.overbody != []:
+            s = pygame.Surface((1280,720))
+            s.set_alpha(128)
+            s.fill((0,0,0))
+            screen.blit(s, (0,0))
+            draw_part(self.overbody, screen)
+            self.items = self.overbody
 
 
     def draw_nav_button(self):
         items = []
 
-        for i in range(0,6):
+        for i in range(0,7):
             path = 'img/icon/nav_icon_' + str(i)
             y =  i * 80 + i * 2
             button = Button_img(i, path, 0, y, change_tab, [])
@@ -149,14 +190,75 @@ class Window():
                 button.set_focus()
             items.append(button)
 
-        return items
+        self.nav = items
 
+    def draw_nav_name(self):
+
+        items = []
+
+        icons_name = ['Home', 'Ressources Humaines', 'Recherche & Développement', 'Production', 'Finances', 'Ventes', 'Options']
+        for name in icons_name:
+            label = create_label(name, 'font/colvetica/colvetica.ttf', 30, (236,240,241), (52,73,94), 0, 0, None, quit, [])
+            label.set_marge_items(20)
+            label.set_bg_color((52,73,94))
+            label.set_padding(20,0,0,0)
+            label.make_pos()
+            items.append(label)
+
+        label_opt = create_label('Aide', 'font/colvetica/colvetica.ttf', 30, (236,240,241), (52,73,94), 0, 0, None, quit, [])
+        label_opt.set_marge_items(20)
+        label_opt.set_bg_color((52,73,94))
+        label_opt.set_padding(20,0,58,0)
+        label_opt.make_pos()
+        items.append(label_opt)
+
+        frame = Frame(80, 0, items, None, [])
+        frame.set_direction('vertical')
+        frame.set_items_pos('auto')
+        frame.resize('auto', 720)
+        frame.set_align('left')
+        frame.set_marge_items(62)
+        frame.set_bg_color((52,73,94))
+        frame.set_padding(0,20,30,0)
+        frame.make_pos()
+
+        frame_bg = Frame(80, 0, [], None, [])
+        frame_bg.resize(frame.rect.width+5, 720)
+        frame_bg.set_bg_color((41,128,185))
+        frame_bg.make_pos()
+
+        self.nav_name = [frame_bg ,frame]
+
+    def check_update_nav(self, screen):
+        mouse_pos = pygame.mouse.get_pos()
+        if mouse_pos[0] <= 80 and self.overbody == [] and self.nav_name == []:
+            self.draw_nav_name()
+            self.display(screen)
+            # s = pygame.Surface((1000,720))
+            # s.set_alpha(128)
+            # s.fill((0,0,0))
+            # screen.blit(s, (80+self.nav_name[0].rect.width,0))
+        elif mouse_pos[0] > 80 and self.nav_name != [] or self.overbody != []:
+            self.nav_name = []
+            self.display(screen)
+
+    def draw_button_info(self, msg_type, msg, *arg):
+        path = 'img/icon/nav_icon_info'
+        y = 720 - 80
+        button = Button_img(0, path, 0, y, draw_alert, [msg_type, msg])
+        self.button_info = [button]
 
     def draw_info(self):
         info_bar = Info_bar()
 
-        return [info_bar]
+        self.info_bar = [info_bar]
 
+    def set_body(self, items):
+        self.draw_button_info('Aide/Astuce', 'Pas d\'astuce sur cet onglet !')
+        self.body = items
+
+    def set_overbody(self, items):
+        self.overbody = items
 
     def quit(self):
         self.run = False

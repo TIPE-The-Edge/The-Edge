@@ -90,7 +90,7 @@ def draw_part(item_group, screen):
 
 
 def clear_body(widget, window, screen, *arg):
-    window.body = arg[0](*arg)
+    window.set_body(arg[0](*arg))
     window.display(screen)
 
 
@@ -100,16 +100,18 @@ def change_tab(button, window, screen, *arg):
             icon.set_focus()
 
             if icon.num == 0:
-                window.body = []
+                window.set_body([])
             elif icon.num == 1:
                 draw_rh(None, window, screen)
             elif icon.num == 2:
                 draw_rd(None, window, screen, 0)
             elif icon.num == 3:
-                window.body = []
+                window.set_body([])
             elif icon.num == 4:
-                window.body = []
+                window.set_body([])
             elif icon.num == 5:
+                window.set_body([])
+            elif icon.num == 6:
                 draw_option(None, window, screen)
         else:
             icon.remove_focus()
@@ -148,7 +150,8 @@ def draw_rh(widget, window, screen, *arg):
 
     item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 600, 'employé')
 
-    window.body = [item_list_employe, label, frame_left]
+    window.set_body([item_list_employe, label, frame_left])
+    window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
     window.display(screen)
 
 
@@ -217,7 +220,7 @@ def draw_employee(widget, window, screen, id_, i, *arg):
 
     items.append(frame_left)
 
-    window.body = items
+    window.set_body(items)
     window.display(screen)
 
 def draw_rd(widget, window, screen, i, *arg):
@@ -233,14 +236,13 @@ def draw_rd(widget, window, screen, i, *arg):
         label_add_project = create_label("Ajouter un projet", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (52,73,94), 0, 0, None, None, [])
         label_add_project.set_direction('horizontal')
         label_add_project.resize(540, 'auto')
-        label_add_project.set_padding(0,0,0,0)
         label_add_project.set_align('center')
         label_add_project.make_pos()
 
         path = 'img/icon/grey_sum'
         icon_sum = Button_img(0, path, 0, 0, None, [])
 
-        button_add_project = Frame(330, 40, [label_add_project, icon_sum], None, [])
+        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_alert, ['Erreur', 'salut, je ne marche pas donc arrête de me cliquer dessus'])
         button_add_project.set_direction('horizontal')
         button_add_project.set_items_pos('auto')
         button_add_project.resize(950, 80)
@@ -285,15 +287,13 @@ def draw_rd(widget, window, screen, i, *arg):
 
     items.append(frame_left)
 
-    window.body = items
+    window.set_body(items)
     window.display(screen)
 
 def draw_option(widget, window, screen, *arg):
     button_quit = create_label("Quitter", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, quit, [])
     button_quit.set_direction('horizontal')
-    button_quit.resize('auto', 'auto')
     button_quit.set_padding(50,50,20,20)
-    button_quit.set_align('left')
     button_quit.make_pos()
 
     frame = Frame(80, 40, [button_quit], None, [])
@@ -306,8 +306,59 @@ def draw_option(widget, window, screen, *arg):
     frame.set_bg_color((236,240,241))
     frame.make_pos()
 
-    window.body = [frame]
+    window.set_body([frame])
     window.display(screen)
 
 def quit(widget, window, screen, *arg):
     window.quit()
+
+def get_entry(widget, window, screen, *arg):
+    entry_values = []
+    for item in window.body:
+        if item.type == 'entry':
+            if item.char_min <= len(item.entry) <= item.char_max:
+                entry_values.append([item.id, item.entry])
+
+def draw_alert(widget, window, screen, msg_type, msg, *arg):
+    try:
+        widget.set_focus()
+    except:
+        pass
+
+    s = pygame.Surface((1000,750))  # the size of your rect
+    s.set_alpha(128)                # alpha level
+    s.fill((255,255,255))           # this fills the entire surface
+    screen.blit(s, (0,0))
+
+    label_type = create_label(msg_type, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236,240,241), 0, 0, 1280//3, None, [])
+    label_type.set_align('center')
+    label_type.make_pos()
+
+    label_msg = create_label(msg, 'font/colvetica/colvetica.ttf', 30, (52, 73, 95), (236,240,241), 0, 0, 1280//3, None, [])
+    label_msg.set_align('center')
+    label_msg.make_pos()
+
+    button_close = create_label("Fermer", 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230,126,34), 0, 0, None, clear_overbody, [])
+    button_close.set_direction('horizontal')
+    button_close.set_padding(30,30,10,10)
+    button_close.make_pos()
+
+    frame = Frame(0, 0, [label_type, label_msg, button_close], None, [])
+    frame.set_direction('vertical')
+    frame.set_items_pos('auto')
+    frame.resize('auto', 'auto')
+    frame.set_align('center')
+    frame.set_marge_items(50)
+    frame.set_bg_color((236,240,241))
+    frame.set_padding(50,50,30,30)
+    frame.make_pos()
+
+    frame.move(1280/2 - frame.rect.width//2, 720/2 - frame.rect.height//2)
+
+    window.set_overbody([frame])
+    window.display(screen)
+
+def clear_overbody(widget, window, screen, *arg):
+    window.set_overbody([])
+    window.items = window.info_bar + window.nav + window.button_info + window.body
+    window.display(screen)

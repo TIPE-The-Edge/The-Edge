@@ -149,6 +149,18 @@ class Frame():
         self.size_h = 'fixed'
         self.height = value
 
+
+    """ Modifie la position
+    Entrée :
+        # self
+        # x : entier
+        # y : entier
+    """
+    def set_pos(self, x, y):
+        self.x = x
+        self.y = y
+
+
     """ Modifie la position des items dans la frame
     Entrée :
         # self
@@ -252,7 +264,7 @@ class Frame():
                     elif self.align == 'right':
                         item.rect.x = self.x + self.width - self.padding_right - item.rect.width
                     elif self.align == 'center':
-                        item.rect.x = (self.padding_left + self.width)//2 - (item.rect.width//2) + self.x
+                        item.rect.x = self.width//2 - item.rect.width//2 + self.x
 
                     items_tmp = []
                     items_tmp += item.items
@@ -269,7 +281,7 @@ class Frame():
                     elif self.align == 'right':
                         item.rect.y = self.y + self.height - self.padding_bottom - item.rect.height
                     elif self.align == 'center':
-                        item.rect.y = (self.padding_top + self.height)//2 - (item.rect.height//2) + self.y
+                        item.rect.y = self.height//2 - item.rect.height//2 + self.y
 
                     items_tmp = []
                     items_tmp += item.items
@@ -309,3 +321,23 @@ class Frame():
     def up(self):
         for item in self.items:
             item.level += 1
+
+    def move(self, x, y):
+        shift_x = self.x - x
+        shift_y = self.y - y
+
+        self.x = x
+        self.y = y
+
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.hover = pygame.Rect(self.x, self.y, self.width, self.height)
+
+        items_tmp = []
+        items_tmp += self.items
+        for sub_item in items_tmp:
+            sub_item.rect.x = sub_item.rect.x - shift_x
+            sub_item.rect.y = sub_item.rect.y - shift_y
+            if sub_item.type == 'item_list':
+                print('test')
+                sub_item.replace(0, item.rect.y)
+            items_tmp.extend(sub_item.items)
