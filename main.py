@@ -254,7 +254,7 @@ class Window():
         self.info_bar = [info_bar]
 
     def set_body(self, items):
-        self.draw_button_info('Aide/Astuce', 'Pas d\'astuce sur cet onglet !')
+        self.draw_button_info('Aide', 'Pas d\'astuce sur cet onglet !')
         self.body = items
 
     def set_overbody(self, items):
