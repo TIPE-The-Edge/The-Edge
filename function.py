@@ -175,8 +175,8 @@ def draw_employee(widget, window, screen, id_, i, *arg):
     attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_, 0])
     role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,1])
     formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,2])
-    project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,3])
-    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,4])
+    # project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,3])
+    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [id_,3])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -193,16 +193,16 @@ def draw_employee(widget, window, screen, id_, i, *arg):
         formations = []
         item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
         items.append(item_list_formation)
+    # elif i == 3:
+    #     project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_, 3])
+    #     projects = []
+    #     item_list_project = Item_list(projects, 330, 40, 1260, 40, 20, 680, 'projet')
+    #     items.append(item_list_project)
     elif i == 3:
-        project = create_label("Rejoindre un projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_, 3])
-        projects = []
-        item_list_project = Item_list(projects, 330, 40, 1260, 40, 20, 680, 'projet')
-        items.append(item_list_project)
-    elif i == 4:
-        fired = create_label("Licencier", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,4])
+        fired = create_label("Licencier", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [id_,3])
 
 
-    list_tmp = [attribute, role, formation, project, fired]
+    list_tmp = [attribute, role, formation, fired]
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 80)
@@ -361,4 +361,14 @@ def draw_alert(widget, window, screen, msg_type, msg, *arg):
 def clear_overbody(widget, window, screen, *arg):
     window.set_overbody([])
     window.items = window.info_bar + window.nav + window.button_info + window.body
+    window.display(screen)
+
+def create_game(widget, window, screen, *arg):
+    window.gen_world()
+    window.set_body([])
+    window.draw_info()
+    window.draw_nav_button()
+    window.draw_button_info('Aide', 'Il n\'y en a pas')
+
+
     window.display(screen)

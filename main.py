@@ -72,21 +72,34 @@ class Window():
         self.run = True
         self.overbody = []
         self.items = []
-
         self.nav = []
-        self.draw_nav_button()
-
         self.nav_name = []
-
         self.info_bar = []
-        self.draw_info()
-
         self.button_info = []
-        self.draw_button_info('Aide', 'Il n\'y en a pas')
-
         self.body = []
 
+        # self.draw_info()
+        # self.draw_nav_button()
+        # self.draw_button_info('Aide', 'Il n\'y en a pas')
+
+        self.draw_opening()
+
         self.display(screen)
+
+        self.individus    = []
+        self.produits     = []
+        self.operations   = []
+        self.materiaux    = []
+        self.formations   = []
+        self.populations  = []
+        self.fournisseurs = []
+        self.machines     = []
+        self.transports   = []
+        self.stocks       = []
+
+        self.temps = None
+        self.argent = 0
+
 
     def loop(self, screen):
         clock = pygame.time.Clock()
@@ -147,7 +160,6 @@ class Window():
             # update display
             pygame.display.update()
 
-
     def display(self, screen):
         # Draw background
         bg_color = (236,240,241)
@@ -158,13 +170,14 @@ class Window():
         draw_part(self.info_bar, screen)
 
         # Draw nav background
-        nav_rect = pygame.Rect(0, 0, 80, 720)
-        pygame.draw.rect(screen, (44,62,80), nav_rect)
+        if self.nav != []:
+            nav_rect = pygame.Rect(0, 0, 80, 720)
+            pygame.draw.rect(screen, (44,62,80), nav_rect)
         draw_part(self.nav, screen)
 
         draw_part(self.nav_name, screen)
 
-        if self.overbody == []:
+        if self.overbody == [] and self.nav != []:
             self.button_info[0].remove_focus()
         draw_part(self.button_info, screen)
 
@@ -178,6 +191,55 @@ class Window():
             draw_part(self.overbody, screen)
             self.items = self.overbody
 
+    def draw_opening(self):
+
+        labels = []
+
+        new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, create_game, [])
+        load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, None, [])
+        leave = create_label('Quittez', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
+        labels.extend([new, load, leave])
+
+        for label in labels:
+            label.set_padding(20,0,20,20)
+            label.set_direction('horizontal')
+            label.resize(300,"auto")
+            label.set_align('center')
+            label.make_pos()
+
+        frame_v = Frame(0, 0, labels, None, [])
+        frame_v.set_direction('vertical')
+        frame_v.set_items_pos('auto')
+        frame_v.resize(400, 'auto')
+        frame_v.set_align('center')
+        frame_v.set_marge_items(20)
+        frame_v.set_bg_color((44, 62, 80))
+        frame_v.make_pos()
+
+        frame_left = Frame(0, 0, [frame_v], None, [])
+        frame_left.set_direction('horizontal')
+        frame_left.set_items_pos('auto')
+        frame_left.set_align('center')
+        frame_left.resize('auto', 720)
+        frame_left.set_bg_color((44, 62, 80))
+        frame_left.make_pos()
+
+        title = create_label('THE EDGE', 'font/colvetica/colvetica.ttf', 200, (230, 126, 34), (236,240,241), 0, 0, 500, None, [])
+
+        title.resize(1280-400,'auto')
+        title.set_direction('vertical')
+        title.set_align('center')
+        title.make_pos()
+
+        frame_right = Frame(400, 0, [title], None, [])
+        frame_right.set_direction('horizontal')
+        frame_right.set_items_pos('auto')
+        frame_right.set_align('center')
+        frame_right.resize(1280-400, 720)
+        frame_right.set_bg_color((236,240,241))
+        frame_right.make_pos()
+
+        self.body = [frame_left, frame_right]
 
     def draw_nav_button(self):
         items = []
@@ -263,6 +325,8 @@ class Window():
     def quit(self):
         self.run = False
 
+    def gen_world(self):
+        pass
 
 ####################################################
 ##################| FONCTIONS |#####################
