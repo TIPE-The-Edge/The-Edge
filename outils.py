@@ -73,20 +73,23 @@ def aleaLoiNormale(esperance, ecart_type) :
 
 
 # Fonction Compétence "Recherche"
-def compRecherche(individus) :
-    return(sum([individu.competence_recherche for individu in individus]))
+def compRecherche(chercheurs) :
+    return(sum([individu.competence_recherche for individu in chercheurs]))
 
 # Fonction Compétence "Groupe"
-def compGroupe(individus) :
+def compGroupe(chercheurs) :
     # On fait la moyenne des capacités de travail de groupe des chercheurs
-    moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
-    leader = max([individu.competence_direction for individu in individus])
+    moyenne = sum([individu.competence_groupe for individu in chercheurs])//len(chercheurs)
+    leader = max([individu.competence_direction for individu in chercheurs])
     if leader >= 8 :
         moyenne += (int(leader/8))+(leader-8)
     return(10*moyenne -50)
 
-def progres(individus) :
-    return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
+def progres(chercheurs) :
+    if len(chercheurs) == 0 :
+        return(0)
+    else :
+        return(compRecherche(chercheurs)+(compGroupe(chercheurs)/100)*compRecherche(chercheurs))
 
 
 def readNameFile(fichier):
