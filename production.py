@@ -178,18 +178,17 @@ class Fournisseur(object):
         SORTIE         : Le temps du trajet en semaine (float)
         TEST UNITAIRE  : ...
         """
-        '''
-        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur, ["fournisseur","destination","temps"])
 
-        for fournisseur in fournisseurs :
-            if fournisseur[1]==destination :
-                return(float(fournisseur[2]))
+        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur.localisation, ["fournisseur","destination","temps"])
+
+        for four in fournisseurs :
+            if four[1]==destination.localisation :
+                return(float(four[2]))
 
 
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
-        '''
-        return(1)
+
 
 class Machine(object):
 
