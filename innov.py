@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 19/01/2018
+#>>> DATE    : 14/03/2018
 ####################################
 
 
@@ -103,6 +103,10 @@ chercheurs =[ Individu() for i in range(3)]
 
 produits = []
 
+#-Projets
+
+projets= []
+
 ####################################
 ###########| FONCTIONS |############
 ####################################
@@ -130,6 +134,68 @@ def appreciation(ref) :
 
     #>>> Sortie <<<#
     return((rep,ref))
+
+
+def addProject(projets, chercheurs, nom, indicateur) :
+    """
+    FONCTION       : Ajoute un nouveau projet à la liste des projets
+                     en cours. 
+    ENTREES        : La liste de projets (Projet list), une liste de 
+                     chercheurs et un nom (string).
+    SORTIE         : La liste des projets mise à jour (Projet list).
+    TEST UNITAIRE  : ...
+    """
+    if indicateur==0 :
+        projets.append(Projet(chercheurs, nom))
+    else : 
+        projets.append(Ameliore(chercheurs, nom))
+
+def delProject(projets, identifiant) :
+    """
+    FONCTION       : Supprime un projet à la liste des projets
+                     en cours. 
+    ENTREES        : La liste de projets (Projet/Ameliore list) et un identifiant 
+                     (int).
+    SORTIE         : La liste des projets mise à jour (Projet/Ameliore list).
+    TEST UNITAIRE  : ...
+    """
+
+    for i in range(len(projets)) :
+        if projets[i].id==identifiant :
+            del projets[i]
+
+def addChercheurs(projet, chercheursFree, identifiant) :
+    """
+    FONCTION       : Ajoute un chercheur libre au Projet.
+    ENTREES        : Un projet (Projet/Ameliore), les chercheurs libres 
+                     (Individu list) et identifiant (int).
+    SORTIE         : Le projet avec un chercheur en plus et la liste
+                     des chercheurs mis à jour (Individu list)
+    TEST UNITAIRE  : ...
+    """
+
+    for i in range(len(chercheursFree)) :
+        if chercheursFree[i].id==identifiant :
+            projet.chercheurs.append(chercheursFree[i])
+            del chercheursFree[i]
+
+    return(projet, chercheursFree)
+
+def delChercheurs(projet, chercheursFree, identifiant) :
+    """
+    FONCTION       : Supprime un chercheur libre au Projet.
+    ENTREES        : Un projet (Projet), les chercheurs libres 
+                     (Individu list) et identifiant (int).
+    SORTIE         : Le projet avec un chercheur en moins et la liste
+                     des chercheurs mis à jour (Individu list)
+    TEST UNITAIRE  : ...
+    """
+    for i in range(len(projet.chercheurs)) :
+        if projet.chercheurs[i]==identifiant :
+            chercheursFree.append(projet.chercheurs[i])
+            del projet.chercheurs[i]
+
+    return(projet, chercheursFree)
 
 
 ####################################
@@ -208,10 +274,8 @@ class Concept(object) :
 
 class Prototype(object):
 
-    def __init__(self, chercheurs, appreciation, cible):
+    def __init__(self, appreciation, cible):
 
-        # La liste des chercheurs parcipant au projet
-        self.chercheurs = chercheurs
         # L'opinion des consommateurs sur le produit
         self.appreciation = appreciation
         # La population ciblée par le produit
@@ -291,8 +355,16 @@ class Prototype(object):
 
 class Projet(object):
 
-    def __init__(self, chercheurs) :
+    # Initialisation des identifiants
+    id=1
 
+    def __init__(self, chercheurs, nom) :
+        
+        # Initialise l'identifiant du Projet
+        self.id = Projet.id
+        Projet.id += 1
+        # Initialise le nom du Projet
+        self.nom = nom
         # La liste des chercheurs parcipant au projet
         self.chercheurs = chercheurs
         # Génération d'un produit à l'initialisation
@@ -551,6 +623,7 @@ class Test(unittest.TestCase) :
         test = Concept()
         test = Concept.ciblage(test, "Jeunes")
         self.assertEqual(test.cible, reponse)
+
 
 
 ####################################

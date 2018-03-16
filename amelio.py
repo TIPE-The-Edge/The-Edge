@@ -60,7 +60,16 @@ produit = Produit([["Jeunes", 50], ["Actifs", 20], ["Seniors", 10]], ["materiaux
 
 class Ameliore() :
 
-    def __init__(self, produit, chercheurs) :
+    id = -1
+
+    def __init__(self, produit, chercheurs, nom) :
+
+        # Initialise l'identifiant du Projet
+        self.id = Ameliore.id
+        Ameliore.id -= 1
+
+        # Initialise le nom de l'amélioration
+        self.nom = nom
 
         self.produit = produit
         self.chercheurs = chercheurs
