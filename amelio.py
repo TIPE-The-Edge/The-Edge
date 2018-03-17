@@ -37,22 +37,6 @@ d'améliorations déjà effectuées)
 """
 ####################################
 
-#| Provisoire |#
-
-#-Populations
-
-pop_1 = Population("Jeunes", 300, 15)
-pop_2 = Population("Actifs", 2000, 40)
-pop_3 = Population("Seniors", 1800, 25)
-populations = [pop_1, pop_2, pop_3]
-
-#-Chercheurs
-
-chercheurs =[ Individu() for i in range(3)]
-
-#-Produit
-
-produit = Produit([["Jeunes", 50], ["Actifs", 20], ["Seniors", 10]], ["materiaux_1", "materiaux_2"], ["operation_1", "operation_2"], "Jeunes")
 
 ####################################
 ############| CLASSES |#############
@@ -60,7 +44,16 @@ produit = Produit([["Jeunes", 50], ["Actifs", 20], ["Seniors", 10]], ["materiaux
 
 class Ameliore() :
 
-    def __init__(self, produit, chercheurs) :
+    id = -1
+
+    def __init__(self, produit, chercheurs, nom) :
+
+        # Initialise l'identifiant du Projet
+        self.id = Ameliore.id
+        Ameliore.id -= 1
+
+        # Initialise le nom de l'amélioration
+        self.nom = nom
 
         self.produit = produit
         self.chercheurs = chercheurs
@@ -149,7 +142,9 @@ class Ameliore() :
         ENTREES        : Une amélioration (Ameliore)
         SORTIE         : L'amélioration mise à jour.
         """
-
+        # Initialisation des coûts
+        couts = [self.nom, 0]
+        
         if self.avancement >= Ameliore.fixePalier(self).palier :
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
@@ -159,7 +154,7 @@ class Ameliore() :
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
-        return(self)
+        return(couts)
 
     def __repr__(self) :
         return("Phase {} |Cible : {} | Utilité : {} | Matériaux : {} | Opérations : {} | Avancement : {}".format(
@@ -171,7 +166,24 @@ class Ameliore() :
 
 if __name__=="__main__" :
 
-    test = Ameliore(produit, chercheurs)
+    #| Provisoire |#
+
+    #-Populations
+
+    pop_1 = Population("Jeunes", 300, 15, 15, 5)
+    pop_2 = Population("Actifs", 2000, 40, 25,10)
+    pop_3 = Population("Seniors", 1800, 25, 35, 5)
+    populations = [pop_1, pop_2, pop_3]
+
+    #-Chercheurs
+
+    chercheurs =[ Individu() for i in range(3)]
+
+    #-Produit
+
+    produit = Produit([["Jeunes", 50], ["Actifs", 20], ["Seniors", 10]], ["materiaux_1", "materiaux_2"], ["operation_1", "operation_2"], "Jeunes")
+
+    test = Ameliore(produit, chercheurs, "Amelioration 1")
     print(test)
     while test.phase == 0 :
         test=Ameliore.progression(test)

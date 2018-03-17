@@ -4,10 +4,10 @@ materiaux,pays,cout_unitaire,"
 processeur,Californie,100,"
 "
 
-écran,New_York,60,"
+ecran,New_York,60,"
 "
 
-écran,Hong_Kong,55,"
+ecran,Hong_Kong,55,"
 "
 
 diode,Pays_Bas,0.40,"
@@ -139,13 +139,13 @@ port_audio,New_York,12,"
 laser,Allemagne,30.66,"
 "
 
-circuit_imprimé,France,25,"
+circuit_imprime,France,25,"
 "
 
-circuit_imprimé,New_York,24,"
+circuit_imprime,New_York,24,"
 "
 
-mémoire_ram,Hong_Kong,90,"
+memoire_ram,Hong_Kong,90,"
 "
 
 radiateur,France,150,"

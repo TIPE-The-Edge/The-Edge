@@ -229,9 +229,15 @@ class Test(unittest.TestCase) :
         #>>> Test 3 <<<#
 
         reponse = [["diode","0.41"],["vis","5.0"],["cable","26.0"],["gros_bouton_rouge","15.0"],
-                  ["graveur_blueray","170.0"],["port_audio","12.0"],["circuit_imprimé","25.0"],
+                  ["graveur_blueray","170.0"],["port_audio","12.0"],["circuit_imprime","25.0"],
                   ["radiateur","150.0"]]
         test = readLineCSV("materiaux.csv","pays","France",["materiaux","cout_unitaire"])
+        self.assertEqual(test, reponse)
+
+        #>>> Test 4 <<<#
+
+        reponse=[["25.0"],["26.0"],["22.0"]]
+        test = readLineCSV("materiaux.csv", "materiaux", "cable", ["cout_unitaire"])
         self.assertEqual(test, reponse)
 
 ####################################

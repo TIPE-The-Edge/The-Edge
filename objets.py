@@ -205,17 +205,18 @@ class Population(object): # de consommateurs
 
     # Cette classe sera majoritairement paramétrée à la main
 
-    def __init__(self, nom, revenu, nombre):
-        self.nom = nom # (Adrien)
+    def __init__(self, nom, revenu, nombre, esp, ecart):
+        self.nom = nom 
 
-        self.revenu = revenu # (Adrien)
-        self.nombre = nombre # (Adrien)
+        self.revenu = revenu 
+        self.nombre = nombre 
+        self.tps_adoption = [esp, ecart]
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
     def __repr__(self):
-        return "{} - nombre: {} revenu: {}. {}".format(
-                self.nom, self.nombre, self.revenu, self.materiaux)
+        return "{} - nombre: {} revenu: {}.".format(
+                self.nom, self.nombre, self.revenu)
 
     def ajoutProduit(populations, produit):
         """ Ajoute un nouveau produit aux populations.

@@ -48,28 +48,6 @@ def fonction():
     Vérifié par :
     """
 
-def ajout(liste_depart, liste_arrivee):
-    """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
-    Entree : une liste [["nom", val], ..]
-             une liste [["nom", val], ..]
-    """
-
-    for couple_depart in liste_depart:
-        for couple_arrivee in liste_arrivee:
-            if couple_depart[0] == couple_arrivee[0]:
-                couple_arrivee[1] += couple_depart[1]
-
-def retire(liste_depart, liste_arrivee):
-    """ Retire les valeur d'une liste à la 2e, au bon endroit.
-    Entree : une liste [["nom", val], ..]
-             une liste [["nom", val], ..]
-    """
-
-    for couple_depart in liste_depart:
-        for couple_arrivee in liste_arrivee:
-            if couple_depart[0] == couple_arrivee[0]:
-                couple_arrivee[1] -= couple_depart[1]
-
 ####################################################
 ###################| CLASSES |######################
 ####################################################

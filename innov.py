@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 19/01/2018
+#>>> DATE    : 14/03/2018
 ####################################
 
 
@@ -16,6 +16,8 @@ import unittest
 from math import *
 
 from objets import *
+from outils import *
+from lecture import *
 ####################################
 
 
@@ -73,10 +75,6 @@ A TESTER.
     extrêmement différents en fonction des
     projets.
 
-|→ TÂCHES EFFECTUEES :
-
-    - Terminé
-
 |→ REMARQUES :
 
     - Garder en tête que les fonctions qui
@@ -86,18 +84,6 @@ A TESTER.
 """
 ####################################
 
-#| Provisoire |#
-
-#-Population
-
-pop_1 = Population("Jeunes", 300, 15)
-pop_2 = Population("Actifs", 2000, 40)
-pop_3 = Population("Seniors", 1800, 25)
-populations = [pop_1, pop_2, pop_3]
-
-#-Chercheurs
-
-chercheurs =[ Individu() for i in range(3)]
 
 ####################################
 ###########| FONCTIONS |############
@@ -128,6 +114,126 @@ def appreciation(ref) :
     return((rep,ref))
 
 
+def addProject(projets, chercheurs, nom, indicateur) :
+    """
+    FONCTION       : Ajoute un nouveau projet à la liste des projets
+                     en cours. 
+    ENTREES        : La liste de projets (Projet list), une liste de 
+                     chercheurs (Individu list), un nom (string) et
+                     un indicateur (int) Projet > 0 / Ameliore > 1).
+    SORTIE         : La liste des projets mise à jour (Projet list).
+    TEST UNITAIRE  : ...
+    """
+    if indicateur==0 :
+        projets.append(Projet(chercheurs, nom))
+    elif indicateur == 1 : 
+        projets.append(Ameliore(chercheurs, nom))
+
+def delProject(projets, identifiant) :
+    """
+    FONCTION       : Supprime un projet à la liste des projets
+                     en cours. 
+    ENTREES        : La liste de projets (Projet/Ameliore list) et un identifiant 
+                     (int).
+    SORTIE         : La liste des projets mise à jour (Projet/Ameliore list).
+    TEST UNITAIRE  : ...
+    """
+
+    for i in range(len(projets)) :
+        if projets[i].id==identifiant :
+            del projets[i]
+
+def addChercheurs(projet, chercheursFree, identifiant) :
+    """
+    FONCTION       : Ajoute un chercheur libre au Projet.
+    ENTREES        : Un projet (Projet/Ameliore), les chercheurs libres 
+                     (Individu list) et identifiant (int).
+    SORTIE         : Le projet avec un chercheur en plus et la liste
+                     des chercheurs mis à jour (Individu list)
+    TEST UNITAIRE  : ...
+    """
+
+    for i in range(len(chercheursFree)) :
+        if chercheursFree[i].id==identifiant :
+            projet.chercheurs.append(chercheursFree[i])
+            del chercheursFree[i]
+
+    return(projet, chercheursFree)
+
+def delChercheurs(projet, chercheursFree, identifiant) :
+    """
+    FONCTION       : Supprime un chercheur libre au Projet.
+    ENTREES        : Un projet (Projet), les chercheurs libres 
+                     (Individu list) et identifiant (int).
+    SORTIE         : Le projet avec un chercheur en moins et la liste
+                     des chercheurs mis à jour (Individu list)
+    TEST UNITAIRE  : ...
+    """
+    for i in range(len(projet.chercheurs)) :
+        if projet.chercheurs[i]==identifiant :
+            chercheursFree.append(projet.chercheurs[i])
+            del projet.chercheurs[i]
+
+    return(projet, chercheursFree)
+
+def allProgression(projets, produits) :
+    """
+    FONCTION       : Fait progresser tous les projets de la liste de projets.
+    ENTREES        : Une liste de projets (Projet/Ameliore list).
+    SORTIE         : La liste des projets mise à jour (Projet/Ameliore list).
+    TEST UNITAIRE  : ...
+    """
+    # Initialisation des différents paliers
+    paliers = [80, 100, 100, 100]
+    # Initialisation de la liste des dépenses
+    depenses = []
+
+    for proj in projets :
+        if proj.id < 0 :
+            couts = Ameliore.progression(proj)
+        else :
+            if proj.phase == 1 :
+                if proj.avancement<paliers[0] or proj.produit.appreciation==[] :
+                    couts = Projet.progression(proj,paliers,"")
+                else  :
+                    print(proj.produit.appreciation)
+                    choix = input("Phase 1 : ")
+                    couts = Projet.progression(proj,paliers,choix)
+
+            elif proj.phase == 2 :
+                if proj.avancement<paliers[1] :
+                    couts=Projet.progression(proj,paliers,False)
+                else :
+                    choix = bool(int(input("Phase 2 : Création du prototype (mettre 0 ou 1) : ")))
+                    couts = Projet.progression(proj, paliers, choix)
+
+            elif proj.phase == 3 :
+                couts = Projet.progression(proj,paliers,None)
+
+            elif proj.phase == 4 :
+                if proj.avancement<paliers[3] :
+                    if proj.essai==False :
+                        choix = bool(int(input("Phase 4 : Mise à l'essai (mettre 0 ou 1) : ")))
+                        couts = Projet.progression(proj, paliers, choix)
+                    else :
+                        couts = Projet.progression(proj, paliers, None)
+
+                else :
+                    choix = bool(int(input("Phase 4 : Brevet (mettre 0 ou 1) : ")))
+                    couts = Projet.progression(proj, paliers, choix)
+
+        # On ajoute les frais à notre liste de dépense
+        depenses.append(couts)
+        # On ajoute les produits finis à notre liste de produit
+        if proj.phase == 5 :
+            produits.append(proj.produit)
+    # On supprime les projets finis
+    projets = [proj for proj in projets if proj.phase!=5]
+
+    return(projets,produits,depenses)
+
+
+
 ####################################
 ############| CLASSES |#############
 ####################################
@@ -151,9 +257,10 @@ class Concept(object) :
         REMARQUES      : Utilisation de la loi normale pour la
                          génération de l'appréciation.
         """
-        for pop in populations :
+        for pop in ["Jeunes","Actifs","Seniors"] :
             reference = aleaLoiNormale(esperance=50, ecart_type=16.6)
-            self.appreciation.append([appreciation(reference),pop.nom])
+            self.appreciation.append([appreciation(reference),pop])
+
         return(self)
 
     def ciblage(self, population) :
@@ -192,7 +299,7 @@ class Concept(object) :
         SORTIE         : Le booléen indiquant si la population cible
                          est à définir.
         """
-        if self.cible in [pop.nom for pop in populations] :
+        if self.cible in ["Jeunes","Actifs","Seniors"] :
             return(False)
         else :
             return(True)
@@ -204,10 +311,8 @@ class Concept(object) :
 
 class Prototype(object):
 
-    def __init__(self, chercheurs, appreciation, cible):
+    def __init__(self, appreciation, cible):
 
-        # La liste des chercheurs parcipant au projet
-        self.chercheurs = chercheurs
         # L'opinion des consommateurs sur le produit
         self.appreciation = appreciation
         # La population ciblée par le produit
@@ -226,13 +331,11 @@ class Prototype(object):
         ENTREES        : Un prototype sans materiaux
         SORTIE         : Le prototype avec des materiaux
                          associes.
-        REMARQUES      :
+        REMARQUES      : nb matéiaux entre 3 et 7.
         TEST UNITAIRE  : ...
         """
         for i in range(random.randint(3, 7)):
             self.materiaux.append(Materiau())
-
-        return(self)
 
     def creaOpera(self) :
         """
@@ -241,14 +344,34 @@ class Prototype(object):
         ENTREES        : Un prototype sans operations
         SORTIE         : Le prototype avec des operations
                          associees.
-        REMARQUES      :
+        REMARQUES      : nb opérations entre 2 et 5.
         TEST UNITAIRE  : ...
         """
 
         for i in range(random.randint(2, 5)):
             self.operations.append(Operation())
 
-        return(self)
+    def creaCout(self) :
+        """
+        FONCTION       : Defini les coûts générés pour la
+                         création d'un prototype.
+        ENTREES        : Un prototype (Prototype)
+        SORTIE         : Le prototype avec un cout de production
+        TEST UNITAIRE  : ...
+        """
+
+        for mat in self.materiaux :
+            # Initialise le cout moyen du matériaux
+            couts=0
+            # On récupère les données concernant les prix 
+            recup = readLineCSV("materiaux.csv", "materiaux", mat.nom, ["cout_unitaire"])
+            # On fait une moyenne de ces prix
+            for prix in recup :
+                couts += float(prix[0])
+            couts = couts/(len(recup))
+            # On ajoute le cout moyen du matériaux au cout total
+            #| du prototype.
+            self.cout += couts
 
     def develop(self) :
         """
@@ -259,7 +382,7 @@ class Prototype(object):
         """
         Prototype.creaMater(self)
         Prototype.creaOpera(self)
-        return(self)
+        Prototype.creaCout(self)
 
     def appr_to_uti(self) :
         """
@@ -287,8 +410,16 @@ class Prototype(object):
 
 class Projet(object):
 
-    def __init__(self, chercheurs) :
+    # Initialisation des identifiants
+    id=1
 
+    def __init__(self, chercheurs, nom) :
+        
+        # Initialise l'identifiant du Projet
+        self.id = Projet.id
+        Projet.id += 1
+        # Initialise le nom du Projet
+        self.nom = nom
         # La liste des chercheurs parcipant au projet
         self.chercheurs = chercheurs
         # Génération d'un produit à l'initialisation
@@ -328,8 +459,6 @@ class Projet(object):
             # On passe à la phase suivante du projet
             self.phase += 1
 
-        return(self)
-
     def phase1(self, palier, utilisateur) :
         """
         FONCTION       : Modélise le développement du projet à
@@ -342,14 +471,16 @@ class Projet(object):
                          cible quand l'avancement du projet est
                          supérieur au palier.
         """
+        # Initialisation des coûts
+        couts = [self.nom, 0]
+
         if self.avancement >= palier and self.attente==False :
             # On initialise l'appétence des consommateurs
             #| vis à vis du concept.
             Concept.sondage(self.produit)
 
-            # // WARNING : Afficher les résultats du sondage sur l'interface //
-            print(self.produit)
-            # // WARNING //
+            # Prix moyen d'un sondage.
+            couts=[self.nom+" | Sondages", 50]
 
             Projet.verifPhase1(self, palier, utilisateur)
 
@@ -361,7 +492,7 @@ class Projet(object):
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
-        return(self)
+        return(couts)
 
     def verifPhase2(self, utilisateur) :
         """
@@ -374,10 +505,14 @@ class Projet(object):
                          le projet initialisé pour la phase suivante.
                          Sinon met le projet en attente.
         """
+        # Initialisation des coûts
+        couts = [self.nom, 0]
 
         if utilisateur==True :
 
-            # // Warning  : déduire le coût de création du prototype au budjet de l'utilisateur //
+            # Coût de création du prototype
+            couts=[self.nom+" | Création prototype" , self.produit.cout]
+
             self.attente = False
             # On réinitialise l'avancement
             self.avancement = 0
@@ -387,7 +522,7 @@ class Projet(object):
         else :
             self.attente = True
 
-        return(self)
+        return(couts)
 
     def phase2(self, palier, utilisateur) :
         """
@@ -401,28 +536,29 @@ class Projet(object):
                          pour le lancement de la construction
                          du prototype.
         """
+        couts = [self.nom, 0]
 
         if self.avancement >= palier and self.attente==False :
 
             # On change le concept en prototype
-            self.produit = Prototype(self.chercheurs, (self.produit.appreciation),
-                                    (self.produit.cible))
+            self.produit = Prototype(self.produit.appreciation,
+                                     self.produit.cible)
 
             Prototype.develop(self.produit)
 
-            Projet.verifPhase2(self, utilisateur)
+            couts = Projet.verifPhase2(self, utilisateur)
 
         elif self.avancement >= palier and self.attente==True :
 
-            Projet.verifPhase2(self, utilisateur)
+            couts = Projet.verifPhase2(self, utilisateur)
 
         else :
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
-        return(self)
+        return(couts)
 
-    def phase3(self, palier, utilisateur) :
+    def phase3(self, palier) :
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 3.
@@ -433,7 +569,11 @@ class Projet(object):
                          de construction du prototype.
         """
 
+        # Initialisation des couts
+        couts = [self.nom, 0]
+
         if self.avancement >= palier :
+
             # On réinitialise l'avancement
             self.avancement = self.avancement-palier
             # On passe à la phase suivante du projet
@@ -443,7 +583,7 @@ class Projet(object):
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
-        return(self)
+        return(couts)
 
     def verifPhase4(self, utilisateur) :
         """
@@ -457,17 +597,21 @@ class Projet(object):
                          du projet.
         """
 
+        # Initialisation des couts
+        couts = [self.nom, 0]
+
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
-
+            couts = [self.nom+" | Brevet",50]
             # Initialisation de l'utilité
             utilite = Prototype.appr_to_uti(self.produit)
             # Transformation en produit
-            self.produit = Produit(utilite, self.produit.materiaux,
+            self.produit = Produit(produits, utilite, self.produit.materiaux,
                                    self.produit.operations, self.produit.cible)
             # Le projet est fini.
             self.phase += 1
-        return(self)
+        
+        return(couts)
 
     def phase4(self, palier, utilisateur) :
         """
@@ -478,14 +622,14 @@ class Projet(object):
                          et une entrée utilisateur
         SORTIE         : Le projet mis à jour
         """
-
+        couts = [self.nom, 0]
         if self.avancement >= palier :
-            Projet.verifPhase4(self, utilisateur)
+            couts = Projet.verifPhase4(self, utilisateur)
 
         elif utilisateur==True and self.essai == False :
 
             # // Warning : diminuer le capital d'une certaine somme //
-
+            couts = [self.nom+" | Test de qualité", 50] 
             # On met le prototype à l'essai
             self.essai = True
             # On fait avancer le projet avec le bonus de la mise
@@ -496,6 +640,8 @@ class Projet(object):
             # On fait avancer le projet.
             self.avancement += progres(chercheurs)
 
+        return(couts)
+
     def progression(self, liste, utilisateur) :
         """
         FONCTION       : Modélise la progression du projet et
@@ -505,24 +651,26 @@ class Projet(object):
                          paliers (int list) et une entrée utilisateur.
         SORTIE         : Le projet mis à jour.
         """
+        # Initialisation des couts
+        couts = [self.nom, 0]
 
         if self.phase == 1 :
-            Projet.phase1(self, liste[0], utilisateur)
+            couts = Projet.phase1(self, liste[0], utilisateur)
 
         elif self.phase == 2 :
-            Projet.phase2(self, liste[1], utilisateur)
+            couts = Projet.phase2(self, liste[1], utilisateur)
 
         elif self.phase == 3 :
-            Projet.phase3(self, liste[2], utilisateur)
+            couts = Projet.phase3(self, liste[2])
 
         elif self.phase == 4 :
-            Projet.phase4(self, liste[3], utilisateur)
+            couts = Projet.phase4(self, liste[3], utilisateur)
 
-        return(self)
+        return(couts)
 
     def __repr__(self) :
 
-        return("Phase : {} | Progression : {}".format(self.phase, self.avancement))
+        return("{} // Phase : {} | Progression : {}".format(self.nom,self.phase, self.avancement))
 
 
 ####################################
@@ -549,6 +697,7 @@ class Test(unittest.TestCase) :
         self.assertEqual(test.cible, reponse)
 
 
+
 ####################################
 ###########| PROGRAMME |############
 ####################################
@@ -557,44 +706,33 @@ if __name__=="__main__" :
     # On effectue les tests unitaires.
     # unittest.main()
 
+    #| Provisoire |#
+
+    #-Chercheurs
+
+    chercheurs =[ Individu() for i in range(3)]
+
+    #-Produits 
+
+    produits = []
+
+    #-Projets
+
+    projets= [Projet(chercheurs, "Projet 1")]
+
     for cherch in chercheurs :
         print(cherch)
 
     print(compRecherche(chercheurs))
 
-    test = Projet(chercheurs)
+    i = 0
+    frais = []
+    while len(projets)!=0 :
 
-    paliers = [80, 100, 100, 100]
+        projets, produits, depenses = allProgression(projets, produits)
+        if depenses[0][1]!=0 :
+            frais.append(depenses[0])
+        
+        i+=1
 
-    # PHASE 1
-    while test.phase == 1 :
-        print(test)
-        test = Projet.progression(test, paliers, input("Phase 1 : "))
-
-    print(test.produit)
-
-    # PHASE 2
-    while test.phase == 2 :
-        print(test)
-        test = Projet.progression(test, paliers, True)
-
-    print(test.produit)
-
-    # PHASE 3
-    while test.phase == 3 :
-        print(test)
-        test = Projet.progression(test, paliers, True)
-
-    print(test.produit)
-
-    # PHASE 4
-    while test.phase == 4 :
-        print(test)
-        test = Projet.progression(test, paliers, True)
-
-    produit = 0
-
-    if test.phase == 5 :
-        produit = test.produit
-
-    print(produit)
+    print(frais)
