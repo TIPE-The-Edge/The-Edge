@@ -27,6 +27,9 @@ from widget.item_list import *
 from widget.label import *
 from widget.progress_bar import *
 from widget.frame import *
+from world.function import *
+from world.objets import *
+from world.outils import *
 
 
 def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, arg):
@@ -75,24 +78,24 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
 
     return frame
 
-
-def draw_part(item_group, screen):
+def draw_part(window, item_group, screen):
+    item_group_tmp = []
+    item_group_tmp += item_group
     i = 1
-    for item in item_group:
+    for item in item_group_tmp:
         item.draw(screen)
         item.up()
         for sub_item in item.items:
             if sub_item.action == None:
                 sub_item.action = item.action
                 sub_item.arg = item.arg
-        item_group[i:i] = item.items
+        item_group_tmp[i:i] = item.items
         i += 1
-
+    window.items += item_group_tmp
 
 def clear_body(widget, window, screen, *arg):
     window.set_body(arg[0](*arg))
     window.display(screen)
-
 
 def change_tab(button, window, screen, *arg):
     for icon in window.nav:
@@ -118,14 +121,57 @@ def change_tab(button, window, screen, *arg):
 
     window.display(screen)
 
-
 def draw_rh(widget, window, screen, *arg):
+    rh = window.lesRH
+    labels = []
+    labels.append(create_label( 'Nombre d\'employé : '+str(rh.nbr_employes), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Bonheur moyen : '+str(rh.bonheur_moy), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Âge moyen : '+str(rh.age_moy), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( ' ', 'font/colvetica/colvetica.ttf', 10, (255,255,255), (189,195,198), 0, 0, None, None, []))
 
-    frame_left = Frame(80, 40, [], None, [])
+    labels.append(create_label( 'Expérience moyenne de la start-up : '+str(rh.exp_start_up_moy), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.exp_RetD_moy), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( ' ', 'font/colvetica/colvetica.ttf', 10, (255,255,255), (189,195,198), 0, 0, None, None, []))
+
+    labels.append(create_label( 'what : '+str(rh.nbr_arrivees), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Taux d\'arrivées : '+str(rh.taux_arrivees), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.nbr_departs), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Taux de départ : '+str(rh.taux_departs), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.taux_rotation), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( ' ', 'font/colvetica/colvetica.ttf', 10, (255,255,255), (189,195,198), 0, 0, None, None, []))
+
+    labels.append(create_label( 'Coût de formations : '+str(rh.cout_formations), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Moyenne formations : '+str(rh.moy_formations), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( ' ', 'font/colvetica/colvetica.ttf', 10, (255,255,255), (189,195,198), 0, 0, None, None, []))
+
+    labels.append(create_label( 'Salaire moyen : '+str(rh.salaire_moy), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.masse_sal_brute), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.masse_sal_nette), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Coût d\'emploi : '+str(rh.cout_emploi), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'Coût moyen d\'emploi : '+str(rh.cout_moy_emploi), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+    labels.append(create_label( 'what : '+str(rh.part_masse_sal), 'font/colvetica/colvetica.ttf', 25, (255,255,255), (189,195,198), 0, 0, None, None, []))
+
+    button_hired = create_label( 'Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_recruit, [])
+    button_hired.set_padding(0,0,15,15)
+    button_hired.set_direction('vertical')
+    button_hired.resize(300,"auto")
+    button_hired.set_align('center')
+    button_hired.make_pos()
+
+    frame_v = Frame(0, 0, [button_hired], None, [])
+    frame_v.set_direction('vertical')
+    frame_v.set_items_pos('auto')
+    frame_v.resize(560, 'auto')
+    frame_v.set_align('center')
+    frame_v.set_padding(0,0,20,0)
+    frame_v.set_bg_color((189, 195, 198))
+    frame_v.make_pos()
+
+    frame_left = Frame(80, 40, labels + [frame_v], None, [])
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
     frame_left.resize(600, 680)
-    frame_left.set_padding(10,10,10,10)
+    frame_left.set_padding(20,20,20,20)
     frame_left.set_marge_items(10)
     frame_left.set_bg_color((189, 195, 198))
     frame_left.make_pos()
@@ -139,21 +185,29 @@ def draw_rh(widget, window, screen, *arg):
     label.make_pos()
 
     a = []
-    for i in range(20):
-        employed = create_label("employé " + str(i), 'calibri', 30, (255,255,255), (0,0,0), 0, 0, None, draw_employee, [i, 0])
-        employed.set_direction('horizontal')
-        employed.resize(580, 100)
-        employed.set_padding(20,0,0,0)
-        employed.set_align('center')
-        employed.make_pos()
-        a.append(employed)
+    for ind in window.individus:
+        employee_info = []
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_employee, [ind.id, 0])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
 
     item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 600, 'employé')
 
     window.set_body([item_list_employe, label, frame_left])
     window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
     window.display(screen)
-
 
 def draw_employee(widget, window, screen, id_, i, *arg):
     items = []
@@ -242,7 +296,7 @@ def draw_rd(widget, window, screen, i, *arg):
         path = 'img/icon/grey_sum'
         icon_sum = Button_img(0, path, 0, 0, None, [])
 
-        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_alert, ['Erreur', 'salut, je ne marche pas donc arrête de me cliquer dessus'])
+        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_alert, ['Erreur', 'salut, je ne marche pas donc arrête de me cliquer dessus', clear_overbody, []])
         button_add_project.set_direction('horizontal')
         button_add_project.set_items_pos('auto')
         button_add_project.resize(950, 80)
@@ -291,7 +345,7 @@ def draw_rd(widget, window, screen, i, *arg):
     window.display(screen)
 
 def draw_option(widget, window, screen, *arg):
-    button_quit = create_label("Quitter", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, quit, [])
+    button_quit = create_label("RETOURNER AU MENU PRINCIPAL", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, reset_game, [])
     button_quit.set_direction('horizontal')
     button_quit.set_padding(50,50,20,20)
     button_quit.make_pos()
@@ -360,7 +414,7 @@ def draw_alert(widget, window, screen, msg_type, msg, *arg):
 
 def clear_overbody(widget, window, screen, *arg):
     window.set_overbody([])
-    window.items = window.info_bar + window.nav + window.button_info + window.body
+    window.items = window.info_bar + window.nav + window.button_info + window.body + window.body_tmp
     window.display(screen)
 
 def create_game(widget, window, screen, *arg):
@@ -370,5 +424,118 @@ def create_game(widget, window, screen, *arg):
     window.draw_nav_button()
     window.draw_button_info('Aide', 'Il n\'y en a pas')
 
-
     window.display(screen)
+
+def reset_game(widget, window, screen, *arg):
+    window.empty_window()
+    window.unload_world()
+    window.draw_opening()
+    window.display(screen)
+
+def draw_recruit(widget, window, screen, *arg):
+    text = 'Liste des candidats'
+    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, draw_rh, [])
+    label.set_direction('horizontal')
+    label.set_padding(20,10,10,10)
+    label.resize(600, 80)
+    label.set_align('center')
+    label.make_pos()
+
+    a = []
+    for ind in window.candidats:
+        employee_info = []
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_individu, [ind.id])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'candidats')
+
+    text = 'Candidat'
+    label_cand = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (149,165,166), 680, 40, None, None, [])
+    label_cand.set_direction('horizontal')
+    label_cand.set_padding(20,10,10,10)
+    label_cand.resize(600, 80)
+    label_cand.set_align('center')
+    label_cand.make_pos()
+
+    text = "Sélectionner un candidat"
+    label_void = create_label(text, 'font/colvetica/colvetica.ttf', 40, (189, 195, 198), (236,240,241), 0, 0, 660, None, [])
+    label_void.set_direction('horizontal')
+    label_void.resize('auto', 600)
+    # label_void.set_padding(0,10,10,10)
+    label_void.set_align('center')
+    label_void.make_pos()
+
+    frame_right = Frame(680, 120, [label_void], None, [])
+    frame_right.set_direction('vertical')
+    frame_right.set_items_pos('auto')
+    frame_right.resize(600, 600)
+    frame_right.set_align('center')
+    frame_right.set_bg_color((236,240,241))
+    frame_right.make_pos()
+
+    window.set_body([item_list_employe, label, label_cand, frame_right])
+    window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
+    window.display(screen)
+
+def get_individu(group, ind_id):
+    for ind in group:
+        if ind.id == ind_id:
+            return ind
+    return None
+
+def draw_individu(widget, window, screen, ind_id, *arg):
+    ind = get_individu(window.candidats, ind_id)
+
+    employee_info = []
+    employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+    employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+    button_hired = create_label('Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 700, 650, None, recruit, [ind_id])
+    button_hired.set_padding(20,20,15,15)
+    button_hired.set_direction('vertical')
+    button_hired.resize("auto","auto")
+    button_hired.set_align('center')
+    button_hired.make_pos()
+
+    # frame_v = Frame(0, 0, [button_hired], None, [])
+    # frame_v.set_direction('vertical')
+    # frame_v.set_items_pos('auto')
+    # frame_v.resize(600, 'auto')
+    # frame_v.set_align('center')
+    # frame_v.set_padding(0,0,20,0)
+    # frame_v.set_bg_color((236, 240, 241))
+    # frame_v.make_pos()
+
+    frame_employee = Frame(680, 120, employee_info, None, [])
+    frame_employee.set_direction('vertical')
+    frame_employee.set_items_pos('auto')
+    frame_employee.resize(600, 600)
+    frame_employee.set_padding(20,0,20,20)
+    frame_employee.set_bg_color((236, 240, 241))
+    frame_employee.make_pos()
+
+    window.set_body_tmp([frame_employee, button_hired])
+    window.display(screen)
+
+def recruit(widget, window, screen, ind_id, *arg):
+    RH.recruter(window.individus, window.candidats, ind_id)
+    ind = get_individu(window.individus, ind_id)
+    title_msg = 'Bravo !'
+    msg = 'Vous avez recruté ' + ind.prenom + ' ' + ind.nom
+    draw_recruit(widget, window, screen)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])

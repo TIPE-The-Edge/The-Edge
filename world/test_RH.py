@@ -14,9 +14,10 @@ import os
 import datetime
 
 # IMPORTS DE FICHIERS
-from outils import *
-from objets import *
-from RH import *
+from world.function import *
+from world.objets import *
+from world.outils import *
+from world.RH import *
 
 ####################################################
 ##################| FONCTIONS |#####################

@@ -11,10 +11,7 @@
 # IMPORTS
 
 # IMPORTS DE FICHIERS
-from world.function import *
-from world.objets import *
-from world.outils import *
-from world.RH import *
+
 
 """ TO DO LIST
 

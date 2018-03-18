@@ -12,7 +12,10 @@
 import random
 
 # IMPORTS DE FICHIERS
-from outils import *
+from world.function import *
+from world.objets import *
+from world.outils import *
+from world.RH import *
 
 
 """ TO DO LIST ✔✘
@@ -125,11 +128,11 @@ class Individu(object):
         """
 
         if   genre == "femme":
-            return random.choice(readNameFile("./Name_Files/girl_names.txt"))
+            return random.choice(readNameFile("./world/Name_Files/girl_names.txt"))
         elif genre == "homme":
-            return random.choice(readNameFile("./Name_Files/boy_names.txt"))
+            return random.choice(readNameFile("./world/Name_Files/boy_names.txt"))
         else:
-            return random.choice(readNameFile("./Name_Files/family_names.txt"))
+            return random.choice(readNameFile("./world/Name_Files/family_names.txt"))
 
     def genAge(self):
         """ Génère un age. # AMELIORABLE
@@ -249,12 +252,12 @@ class Produit(object):
 
     def genNom(self, produits):
 
-        prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
-        sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+        prefixe = random.choice(readNameFile("./world/Name_Files/product_prefixes.txt"))
+        sufixe  = random.choice(readNameFile("./world/Name_Files/product_sufixes.txt"))
 
         while prefixe + " " + sufixe in [prod.nom for prod in produits]:
-            prefixe = random.choice(readNameFile("./Name_Files/product_prefixes.txt"))
-            sufixe  = random.choice(readNameFile("./Name_Files/product_sufixes.txt"))
+            prefixe = random.choice(readNameFile("./world/Name_Files/product_prefixes.txt"))
+            sufixe  = random.choice(readNameFile("./world/Name_Files/product_sufixes.txt"))
 
         return prefixe + " " + sufixe
 
@@ -274,7 +277,7 @@ class Produit(object):
 class Operation(object):
 
     # Liste des noms existants
-    noms_dispo = readNameFile("./Name_Files/operations.txt")
+    noms_dispo = readNameFile("./world/Name_Files/operations.txt")
     # Indice pour les noms générés automatiquement
     indice_nom = 0
 
@@ -308,7 +311,7 @@ class Operation(object):
 class Materiau(object):
 
     # Liste des noms existants
-    noms_dispo = readNameFile("./Name_Files/materiaux.txt")
+    noms_dispo = readNameFile("./world/Name_Files/materiaux.txt")
     # Indice pour les noms générés automatiquement
     indice_nom = 0
 
@@ -355,12 +358,12 @@ class Formation(object): # BONUS
 
     def genNom(self):
 
-        prefixe = random.choice(readNameFile("./Name_Files/formations_prefixes.txt"))
-        sufixe  = random.choice(readNameFile("./Name_Files/formations_sufixes.txt"))
+        prefixe = random.choice(readNameFile("./world/Name_Files/formations_prefixes.txt"))
+        sufixe  = random.choice(readNameFile("./world/Name_Files/formations_sufixes.txt"))
 
         while prefixe + " " + sufixe in [form.nom for form in formations]:
-            prefixe = random.choice(readNameFile("./Name_Files/formations_prefixes.txt"))
-            sufixe  = random.choice(readNameFile("./Name_Files/formations_sufixes.txt"))
+            prefixe = random.choice(readNameFile("./world/Name_Files/formations_prefixes.txt"))
+            sufixe  = random.choice(readNameFile("./world/Name_Files/formations_sufixes.txt"))
 
         return prefixe + " " + sufixe
 

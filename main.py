@@ -16,6 +16,8 @@ from pygame.sprite import Sprite, Group
 import random
 import os
 import time
+import datetime
+import uuid
 
 # IMPORTS DE FICHIERS
 
@@ -28,6 +30,10 @@ from widget.item_list import *
 from widget.label import *
 from widget.progress_bar import *
 from widget.frame import *
+from world.function import *
+from world.objets import *
+from world.outils import *
+from world.RH import *
 
 
 """ TO DO LIST ✔✘
@@ -77,6 +83,7 @@ class Window():
         self.info_bar = []
         self.button_info = []
         self.body = []
+        self.body_tmp = []
 
         # self.draw_info()
         # self.draw_nav_button()
@@ -96,10 +103,18 @@ class Window():
         self.machines     = []
         self.transports   = []
         self.stocks       = []
+        self.candidats    = []
+        self.departs      = []
+        self.couts        = []
 
         self.temps = None
+        self.lesRH = None
+        self.month = 0
         self.argent = 0
 
+        self.sha = ''
+        self.user_first_name = ''
+        self.user_surname = ''
 
     def loop(self, screen):
         clock = pygame.time.Clock()
@@ -107,7 +122,8 @@ class Window():
         while self.run:
             delta_t = clock.tick( FRAME_RATE )
 
-            self.check_update_nav(screen)
+            if self.nav != []:
+                self.check_update_nav(screen)
 
             # INPUT
             for event in pygame.event.get():
@@ -161,35 +177,36 @@ class Window():
             pygame.display.update()
 
     def display(self, screen):
+        self.items = []
         # Draw background
         bg_color = (236,240,241)
         screen.fill(bg_color)
 
-        draw_part(self.body, screen)
+        draw_part(self, self.body, screen)
 
-        draw_part(self.info_bar, screen)
+        draw_part(self, self.body_tmp, screen)
 
-        # Draw nav background
+        draw_part(self, self.info_bar, screen)
+
         if self.nav != []:
+            # Draw nav background
             nav_rect = pygame.Rect(0, 0, 80, 720)
             pygame.draw.rect(screen, (44,62,80), nav_rect)
-        draw_part(self.nav, screen)
+        draw_part(self, self.nav, screen)
 
-        draw_part(self.nav_name, screen)
+        draw_part(self, self.nav_name, screen)
 
         if self.overbody == [] and self.nav != []:
             self.button_info[0].remove_focus()
-        draw_part(self.button_info, screen)
-
-        self.items = self.info_bar + self.nav + self.button_info + self.body
+        draw_part(self, self.button_info, screen)
 
         if self.overbody != []:
+            self.items = []
             s = pygame.Surface((1280,720))
             s.set_alpha(128)
             s.fill((0,0,0))
             screen.blit(s, (0,0))
-            draw_part(self.overbody, screen)
-            self.items = self.overbody
+            draw_part(self, self.overbody, screen)
 
     def draw_opening(self):
 
@@ -224,18 +241,13 @@ class Window():
         frame_left.set_bg_color((44, 62, 80))
         frame_left.make_pos()
 
-        title = create_label('THE EDGE', 'font/colvetica/colvetica.ttf', 200, (230, 126, 34), (236,240,241), 0, 0, 500, None, [])
-
-        title.resize(1280-400,'auto')
-        title.set_direction('vertical')
-        title.set_align('center')
-        title.make_pos()
+        title = Button_img(None, 'img/title', 0, 0, None, [])
 
         frame_right = Frame(400, 0, [title], None, [])
         frame_right.set_direction('horizontal')
         frame_right.set_items_pos('auto')
         frame_right.set_align('center')
-        frame_right.resize(1280-400, 720)
+        frame_right.resize('auto', 720)
         frame_right.set_bg_color((236,240,241))
         frame_right.make_pos()
 
@@ -307,7 +319,7 @@ class Window():
     def draw_button_info(self, msg_type, msg, *arg):
         path = 'img/icon/nav_icon_info'
         y = 720 - 80
-        button = Button_img(0, path, 0, y, draw_alert, [msg_type, msg])
+        button = Button_img(0, path, 0, y, draw_alert, [msg_type, msg, clear_overbody, []])
         self.button_info = [button]
 
     def draw_info(self):
@@ -318,6 +330,10 @@ class Window():
     def set_body(self, items):
         self.draw_button_info('Aide', 'Pas d\'astuce sur cet onglet !')
         self.body = items
+        self.body_tmp = []
+
+    def set_body_tmp(self, items):
+        self.body_tmp = items
 
     def set_overbody(self, items):
         self.overbody = items
@@ -326,7 +342,44 @@ class Window():
         self.run = False
 
     def gen_world(self):
-        pass
+        self.sha = uuid.uuid4().hex
+        for i in range (10):
+            self.candidats.append(Individu())
+        self.lesRH = RH()
+        self.temps = datetime.datetime(2018,1,1) # Temps en semaines
+        self.month = 1
+        print(self.sha)
+
+    def unload_world(self):
+        self.individus    = []
+        self.produits     = []
+        self.operations   = []
+        self.materiaux    = []
+        self.formations   = []
+        self.populations  = []
+        self.fournisseurs = []
+        self.machines     = []
+        self.transports   = []
+        self.stocks       = []
+        self.candidats    = []
+        self.departs      = []
+        self.couts        = []
+
+        self.temps = None
+        self.lesRH = None
+        self.month = 0
+        self.argent = 0
+
+    def empty_window(self):
+        self.overbody = []
+        self.items = []
+        self.nav = []
+        self.nav_name = []
+        self.info_bar = []
+        self.button_info = []
+        self.body = []
+        self.body_tmp = []
+
 
 ####################################################
 ##################| FONCTIONS |#####################
