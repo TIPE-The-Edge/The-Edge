@@ -26,3 +26,6 @@ class Button_txt():
     def up(self):
         for item in self.items:
             item.level += 1
+
+    def set_type(self, type):
+        self.type = type

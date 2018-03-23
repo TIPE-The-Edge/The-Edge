@@ -265,3 +265,6 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
     frame.make_pos()
 
     return frame
+
+    def set_type(self, type):
+        self.type = type

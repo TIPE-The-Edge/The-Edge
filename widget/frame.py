@@ -350,3 +350,6 @@ class Frame():
                 print('test')
                 sub_item.replace(0, item.rect.y)
             items_tmp.extend(sub_item.items)
+
+    def set_type(self, type):
+        self.type = type

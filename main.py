@@ -124,28 +124,21 @@ class Window():
 
             # INPUT
             for event in pygame.event.get():
+                mouse_pos = pygame.mouse.get_pos()
+                uppest_item = get_uppest_item(self.items, mouse_pos)
 
                 if event.type == pygame.QUIT:
                     return
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    if self.nav == []:
-                        return
-                    else:
-                        change_tab(self.nav[6], self, screen)
+                    if self.overbody == []:
+                        if self.nav == []:
+                            return
+                        else:
+                            change_tab(self.nav[6], self, screen)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-
                     if event.button == 1:
-                        uppest_item = None
-                        for item in self.items:
-                            if item.rect.collidepoint(mouse_pos):
-                                if uppest_item == None:
-                                    uppest_item = item
-                                elif uppest_item.level <= item.level:
-                                    uppest_item = item
-
                         if uppest_item != None:
                             if uppest_item.type == 'item_list':
                                 uppest_item.do(self,screen)
@@ -159,19 +152,17 @@ class Window():
                                     item.move(self, screen, 40)
 
                 if event.type == pygame.MOUSEBUTTONUP:
-                    mouse_pos = pygame.mouse.get_pos()
-
                     if event.button == 1:
-                        uppest_item = None
-                        for item in self.items:
-                            if item.rect.collidepoint(mouse_pos):
-                                if uppest_item == None:
-                                    uppest_item = item
-                                elif uppest_item.level <= item.level:
-                                    uppest_item = item
-
                         if uppest_item != None:
                             uppest_item.do(self,screen)
+
+                # if uppest_item != None:
+                #     if uppest_item.type == "button_img":
+                #         draw_shadow(self, screen, uppest_item)
+                #     elif len(self.overbody) == 1:
+                #         self.set_overbody([])
+                #         self.display(screen)
+
 
             # update display
             pygame.display.update()

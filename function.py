@@ -227,7 +227,10 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
     attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id, 0])
     role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,1])
     formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,2])
-    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, fired_ind, [ind_id])
+
+    f1 = ["Oui", fired_ind, [ind_id]]
+    f2 = ["Non", clear_overbody, []]
+    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment licencier ' + ind.prenom + ' ' + ind.nom + ' ?',f1, f2])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -434,6 +437,59 @@ def draw_alert(widget, window, screen, msg_type, msg, *arg):
     window.set_overbody([frame])
     window.display(screen)
 
+def draw_alert_option(widget, window, screen, msg_type, msg, *arg):
+    items = []
+    try:
+        widget.set_focus()
+    except:
+        pass
+
+    s = pygame.Surface((1000,750))  # the size of your rect
+    s.set_alpha(128)                # alpha level
+    s.fill((255,255,255))           # this fills the entire surface
+    screen.blit(s, (0,0))
+
+    if msg_type != '':
+        label_type = create_label(msg_type, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236,240,241), 0, 0, 1280//3, None, [])
+        label_type.set_align('center')
+        label_type.make_pos()
+        items.append(label_type)
+
+    label_msg = create_label(msg, 'font/colvetica/colvetica.ttf', 30, (52, 73, 95), (236,240,241), 0, 0, 1280//3, None, [])
+    label_msg.set_align('center')
+    label_msg.make_pos()
+    items.append(label_msg)
+
+    buttons = []
+    for element in arg:
+        button = create_label(element[0], 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230,126,34), 0, 0, None, element[1], element[2])
+        button.set_padding(30,30,10,10)
+        button.make_pos()
+        buttons.append(button)
+    frame_button = Frame(0, 0, buttons, None, [])
+    frame_button.set_direction('horizontal')
+    frame_button.set_items_pos('auto')
+    frame_button.resize('auto', 'auto')
+    frame_button.set_bg_color((236,240,241))
+    frame_button.set_marge_items(50)
+    frame_button.make_pos()
+    items.append(frame_button)
+
+    frame = Frame(0, 0, items, None, [])
+    frame.set_direction('vertical')
+    frame.set_items_pos('auto')
+    frame.resize('auto', 'auto')
+    frame.set_align('center')
+    frame.set_marge_items(50)
+    frame.set_bg_color((236,240,241))
+    frame.set_padding(50,50,30,30)
+    frame.make_pos()
+
+    frame.move(1280/2 - frame.rect.width//2, 720/2 - frame.rect.height//2)
+
+    window.set_overbody([frame])
+    window.display(screen)
+
 def clear_overbody(widget, window, screen, *arg):
     window.set_overbody([])
     window.items = window.info_bar + window.nav + window.button_info + window.body + window.body_tmp
@@ -509,7 +565,7 @@ def draw_recruit(widget, window, screen, *arg):
     frame_right.make_pos()
 
     window.set_body([item_list_employe, label, label_cand, frame_right])
-    window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
+    window.draw_button_info('Aide', 'Clique sur un candidat pour voir ses caractéristiques et engage le si ce dernier t\'intéresse !')
     window.display(screen)
 
 def get_individu(group, ind_id):
@@ -584,7 +640,23 @@ def recruit(widget, window, screen, ind_id, *arg):
 def fired_ind(widget, window, screen, ind_id, *arg):
     ind = get_individu(window.individus, ind_id)
     title_msg = ''
-    msg = 'Vous avez renvoyé ' + ind.prenom + ' ' + ind.nom
+    msg = 'Vous avez licencié ' + ind.prenom + ' ' + ind.nom
     RH.licencier(window.individus, window.departs, ind_id)
     draw_rh(widget, window, screen)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def get_uppest_item(items, mouse_pos):
+    uppest_item = None
+    for item in items:
+        if item.rect.collidepoint(mouse_pos):
+            if uppest_item == None:
+                uppest_item = item
+            elif uppest_item.level <= item.level:
+                uppest_item = item
+
+    return uppest_item
+
+# def draw_shadow(window, screen, item):
+#     rectangle = Rectangle(item.rect.x, item.rect.y, item.rect.width, item.rect.height, (0,0,0), 128, None, [])
+#     window.set_overbody([rectangle])
+#     window.display(screen)
