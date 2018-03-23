@@ -30,6 +30,7 @@ from widget.item_list import *
 from widget.label import *
 from widget.progress_bar import *
 from widget.frame import *
+from widget.rectangle import *
 from world.function import *
 from world.objets import *
 from world.outils import *
@@ -76,18 +77,14 @@ class Window():
     def __init__(self,screen):
 
         self.run = True
-        self.overbody = []
-        self.items = []
+        self.info_bar = []
         self.nav = []
         self.nav_name = []
-        self.info_bar = []
         self.button_info = []
         self.body = []
         self.body_tmp = []
-
-        # self.draw_info()
-        # self.draw_nav_button()
-        # self.draw_button_info('Aide', 'Il n\'y en a pas')
+        self.overbody = []
+        self.items = []
 
         self.draw_opening()
 
@@ -132,7 +129,10 @@ class Window():
                     return
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    return
+                    if self.nav == []:
+                        return
+                    else:
+                        change_tab(self.nav[6], self, screen)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()

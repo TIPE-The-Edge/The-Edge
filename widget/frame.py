@@ -160,6 +160,15 @@ class Frame():
         self.x = x
         self.y = y
 
+    """ Modifie les items
+    Entrée :
+        # self
+        # items : list
+    """
+    def set_items(self, items):
+        self.items = items
+
+
 
     """ Modifie la position des items dans la frame
     Entrée :
