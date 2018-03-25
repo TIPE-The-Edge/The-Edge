@@ -18,6 +18,7 @@ import os
 import time
 import datetime
 import uuid
+import math
 
 # IMPORTS DE FICHIERS
 

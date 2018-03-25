@@ -15,6 +15,7 @@ import pygame
 from pygame.sprite import Sprite, Group
 import random
 import os
+import math
 
 # IMPORTS DE FICHIERS
 
@@ -315,8 +316,8 @@ def draw_rd(widget, window, screen, i, *arg):
 
         path = 'img/icon/grey_sum'
         icon_sum = Button_img(0, path, 0, 0, None, [])
-
-        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_alert, ['Erreur', 'salut, je ne marche pas donc arrête de me cliquer dessus', clear_overbody, []])
+        individus = window.individus
+        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_add_project, [individus, []])
         button_add_project.set_direction('horizontal')
         button_add_project.set_items_pos('auto')
         button_add_project.resize(950, 80)
@@ -660,3 +661,96 @@ def get_uppest_item(items, mouse_pos):
 #     rectangle = Rectangle(item.rect.x, item.rect.y, item.rect.width, item.rect.height, (0,0,0), 128, None, [])
 #     window.set_overbody([rectangle])
 #     window.display(screen)
+
+def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
+    items = []
+
+    text = 'Liste des employés'
+    label_employe = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
+    label_employe.set_direction('horizontal')
+    label_employe.set_padding(20,10,10,10)
+    label_employe.resize(600, 80)
+    label_employe.set_align('center')
+    label_employe.make_pos()
+
+    a = []
+    for i in range(0,len(lst_ind)):
+        employee_info = []
+        ind = lst_ind[i]
+        lst_ind_tmp = []
+        lst_ind_tmp += lst_ind
+        lst_ind_tmp.pop(i)
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind]])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'employés')
+    items.append(item_list_employe)
+    items.append(label_employe)
+
+    text = 'Liste des employés ajoutés'
+    label_ajout = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (44,62,80), 680, 40, None, None, [])
+    label_ajout.set_direction('horizontal')
+    label_ajout.set_padding(20,10,10,10)
+    label_ajout.resize(600, 80)
+    label_ajout.set_align('center')
+    label_ajout.make_pos()
+
+    lst_tmp = []
+    for i in range(0,len(lst_ajout)):
+        employee_info = []
+
+        ind = lst_ajout[i]
+        lst_ajout_tmp = []
+        lst_ajout_tmp += lst_ajout
+        lst_ajout_tmp.pop(i)
+
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
+        employe_name.set_items_pos('auto')
+        employe_name.resize(580, 'auto')
+        employe_name.set_padding(20,0,20,20)
+        employe_name.make_pos()
+
+        lst_tmp.append(employe_name)
+
+    item_ajoute = Item_list(lst_tmp, 680, 120, 1260, 120, 20, 400, 'employés')
+    items.append(item_ajoute)
+    items.append(label_ajout)
+
+    entry_name_project = create_label('Nom du projet', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    entry = Entry(0, 0, 400, 40, False, 'name_project', 0, 5)
+    frame_tmp_entry = Frame(0, 0, [entry_name_project, entry], None, [])
+    frame_tmp_entry.set_direction('vertical')
+    frame_tmp_entry.set_items_pos('auto')
+    frame_tmp_entry.set_marge_items(10)
+    frame_tmp_entry.set_bg_color((236, 240, 241))
+    frame_tmp_entry.make_pos()
+
+    button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_submit.set_padding(20,20,15,15)
+    button_submit.set_direction('vertical')
+    button_submit.make_pos()
+
+    frame_tmp = Frame(680, 520, [frame_tmp_entry, button_submit], None, [])
+    frame_tmp.set_direction('vertical')
+    frame_tmp.set_items_pos('auto')
+    frame_tmp.set_padding(20,0,30,0)
+    frame_tmp.set_marge_items(30)
+    frame_tmp.set_bg_color((236, 240, 241))
+    frame_tmp.make_pos()
+    items.append(frame_tmp)
+
+    window.set_body(items)
+    window.display(screen)

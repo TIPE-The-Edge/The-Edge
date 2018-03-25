@@ -12,7 +12,7 @@ class Entry():
         self.arg = []
         self.level = 0
         self.id = id_
-        self.char_max = char_max
+        self.char_max = char_max if type(char_max) == int else 10000
         self.char_min = char_min
 
         fontsize = int(5 * height / 7) - 1
@@ -129,23 +129,24 @@ class Entry():
 
                     # Ajouter un caractère
                     elif event.key not in [pygame.K_RETURN, pygame.K_BACKSPACE, pygame.K_LEFT, pygame.K_RIGHT]:
-                        char = event.unicode
-                        if self.entry_type == 'num':
-                            try:
-                                int(char)
-                            except:
-                                char = ''
+                        if self.char_max >= self.range_max:
+                            char = event.unicode
+                            if self.entry_type == 'num':
+                                try:
+                                    int(char)
+                                except:
+                                    char = ''
 
-                        if char != '':
-                            if self.range_max - self.range_min > self.len_display:
-                                self.range_max += 1
-                                self.range_min += 1
-                            else:
-                                self.range_max += 1
+                            if char != '':
+                                if self.range_max - self.range_min > self.len_display:
+                                    self.range_max += 1
+                                    self.range_min += 1
+                                else:
+                                    self.range_max += 1
 
-                            self.entry = self.entry[:self.cursor_pos] + char + self.entry[self.cursor_pos:]
-                            self.cursor_pos += 1
-                            self.max_cursor_pos += 1
+                                self.entry = self.entry[:self.cursor_pos] + char + self.entry[self.cursor_pos:]
+                                self.cursor_pos += 1
+                                self.max_cursor_pos += 1
 
             self.entry_display = self.entry[:self.cursor_pos] + '|' + self.entry[self.cursor_pos:]
             self.entry_display = self.entry_display[self.range_min:self.range_max]
