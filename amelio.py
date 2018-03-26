@@ -16,6 +16,7 @@ import unittest
 from math import *
 
 from objets import *
+from outils import *
 ####################################
 
 
@@ -58,8 +59,9 @@ class Ameliore() :
         self.produit = produit
         self.chercheurs = chercheurs
         self.avancement = 0
-        self.palier = 0
-        self.phase = 0
+        self.palier = Ameliore.fixePalier(self)
+        self.phase = 1
+        self.attente = False
 
     def changeMateriaux(self) :
         """
@@ -132,8 +134,7 @@ class Ameliore() :
         SORTIE         : Une amélioration dont le palier est fixé.
         """
 
-        self.palier = 80
-        return(self)
+        return(80)
 
     def progression(self) :
         """
@@ -145,20 +146,20 @@ class Ameliore() :
         # Initialisation des coûts
         couts = [self.nom, 0]
         
-        if self.avancement >= Ameliore.fixePalier(self).palier :
+        if self.avancement >= self.palier :
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
-            self.phase += 1
-
-        else :
-            # On fait avancer le projet.
-            self.avancement += progres(chercheurs)
+            if self.produit.nbr_ameliorations > 1 :
+                self.produit.nom = self.produit.nom[:-1] + str(self.produit.nbr_ameliorations+1)
+            else :
+                self.produit.nom = self.produit.nom+" v"+str(self.produit.nbr_ameliorations+1)
+            self.phase = 5
+            self.produit.develop = False
 
         return(couts)
 
     def __repr__(self) :
-        return("Phase {} |Cible : {} | Utilité : {} | Matériaux : {} | Opérations : {} | Avancement : {}".format(
-               self.phase,self.produit.cible, self.produit.utilite, self.produit.materiaux, self.produit.operations, self.avancement))
+        return("{}. {} // Produit en développement : {} | Progression : {}".format(self.id, self.nom, self.produit.nom, self.avancement))
 
 ####################################
 ###########| PROGRAMME |############
@@ -166,35 +167,4 @@ class Ameliore() :
 
 if __name__=="__main__" :
 
-    #| Provisoire |#
-
-    #-Populations
-
-    pop_1 = Population("Jeunes", 300, 15, 15, 5)
-    pop_2 = Population("Actifs", 2000, 40, 25,10)
-    pop_3 = Population("Seniors", 1800, 25, 35, 5)
-    populations = [pop_1, pop_2, pop_3]
-
-    #-Chercheurs
-
-    chercheurs =[ Individu() for i in range(3)]
-
-    #-Produit
-
-    produit = Produit([["Jeunes", 50], ["Actifs", 20], ["Seniors", 10]], ["materiaux_1", "materiaux_2"], ["operation_1", "operation_2"], "Jeunes")
-
-    test = Ameliore(produit, chercheurs, "Amelioration 1")
-    print(test)
-    while test.phase == 0 :
-        test=Ameliore.progression(test)
-        print(test)
-
-    print(test.produit)
-
-    test = Ameliore(test.produit, chercheurs)
-    print(test)
-    while test.phase == 0 :
-        test=Ameliore.progression(test)
-        print(test)
-
-    print(test.produit)
+    pass

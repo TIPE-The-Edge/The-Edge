@@ -18,6 +18,7 @@ from math import *
 from objets import *
 from outils import *
 from lecture import *
+from amelio import *
 ####################################
 
 
@@ -112,24 +113,8 @@ def appreciation(ref) :
 
     #>>> Sortie <<<#
     return((rep,ref))
-
-
-def addProject(projets, chercheurs, nom, indicateur) :
-    """
-    FONCTION       : Ajoute un nouveau projet à la liste des projets
-                     en cours. 
-    ENTREES        : La liste de projets (Projet list), une liste de 
-                     chercheurs (Individu list), un nom (string) et
-                     un indicateur (int) Projet > 0 / Ameliore > 1).
-    SORTIE         : La liste des projets mise à jour (Projet list).
-    TEST UNITAIRE  : ...
-    """
-    if indicateur==0 :
-        projets.append(Projet(chercheurs, nom))
-    elif indicateur == 1 : 
-        projets.append(Ameliore(chercheurs, nom))
-
-def delProject(projets, identifiant) :
+   
+def delProject(projets, chercheurs_free, identifiant) :
     """
     FONCTION       : Supprime un projet à la liste des projets
                      en cours. 
@@ -141,9 +126,13 @@ def delProject(projets, identifiant) :
 
     for i in range(len(projets)) :
         if projets[i].id==identifiant :
-            del projets[i]
+            index = i
 
-def addChercheurs(projet, chercheursFree, identifiant) :
+    for cherch in projets[index].chercheurs :
+        chercheurs_free.append(cherch)
+    del projets[index]
+
+def addChercheurs(projet, chercheurs_free, identifiant) :
     """
     FONCTION       : Ajoute un chercheur libre au Projet.
     ENTREES        : Un projet (Projet/Ameliore), les chercheurs libres 
@@ -153,14 +142,15 @@ def addChercheurs(projet, chercheursFree, identifiant) :
     TEST UNITAIRE  : ...
     """
 
-    for i in range(len(chercheursFree)) :
-        if chercheursFree[i].id==identifiant :
-            projet.chercheurs.append(chercheursFree[i])
-            del chercheursFree[i]
+    for i in range(len(chercheurs_free)) :
+        if chercheurs_free[i].id==identifiant :
+            projet.chercheurs.append(chercheurs_free[i])
+            index=i
 
-    return(projet, chercheursFree)
+    del chercheurs_free[index]
+    return(projet, chercheurs_free)
 
-def delChercheurs(projet, chercheursFree, identifiant) :
+def delChercheurs(projet, chercheurs_free, identifiant) :
     """
     FONCTION       : Supprime un chercheur libre au Projet.
     ENTREES        : Un projet (Projet), les chercheurs libres 
@@ -170,21 +160,20 @@ def delChercheurs(projet, chercheursFree, identifiant) :
     TEST UNITAIRE  : ...
     """
     for i in range(len(projet.chercheurs)) :
-        if projet.chercheurs[i]==identifiant :
-            chercheursFree.append(projet.chercheurs[i])
-            del projet.chercheurs[i]
+        if projet.chercheurs[i].id==identifiant :
+            chercheurs_free.append(projet.chercheurs[i])
+            index = i
+    
+    del projet.chercheurs[index]
+    return(projet, chercheurs_free)
 
-    return(projet, chercheursFree)
-
-def allProgression(projets, produits) :
+def allProgression(projets, paliers) :
     """
     FONCTION       : Fait progresser tous les projets de la liste de projets.
     ENTREES        : Une liste de projets (Projet/Ameliore list).
     SORTIE         : La liste des projets mise à jour (Projet/Ameliore list).
     TEST UNITAIRE  : ...
     """
-    # Initialisation des différents paliers
-    paliers = [80, 100, 100, 100]
     # Initialisation de la liste des dépenses
     depenses = []
 
@@ -193,22 +182,27 @@ def allProgression(projets, produits) :
             couts = Ameliore.progression(proj)
         else :
             if proj.phase == 1 :
-                if proj.avancement<paliers[0] or proj.produit.appreciation==[] :
-                    couts = Projet.progression(proj,paliers,"")
+                if proj.avancement<paliers[0] :
+                    couts = Projet.progression(proj,paliers, "")
+
                 else  :
+                    if proj.produit.appreciation==[] :
+                        couts = Projet.progression(proj, paliers, "")
+                        depenses.append(couts)
+
                     print(proj.produit.appreciation)
                     choix = input("Phase 1 : ")
-                    couts = Projet.progression(proj,paliers,choix)
+                    couts = Projet.progression(proj, paliers, choix)
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
-                    couts=Projet.progression(proj,paliers,False)
+                    couts=Projet.progression(proj, paliers, False)
                 else :
                     choix = bool(int(input("Phase 2 : Création du prototype (mettre 0 ou 1) : ")))
                     couts = Projet.progression(proj, paliers, choix)
 
             elif proj.phase == 3 :
-                couts = Projet.progression(proj,paliers,None)
+                couts = Projet.progression(proj, paliers, None)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
@@ -223,14 +217,111 @@ def allProgression(projets, produits) :
                     couts = Projet.progression(proj, paliers, choix)
 
         # On ajoute les frais à notre liste de dépense
-        depenses.append(couts)
+        if couts[1]!=0 :
+            depenses.append(couts)
+
+    return(projets, depenses)
+
+def selectProject(projets, identifiant) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+    for proj in projets :
+        if proj.id == identifiant :
+            return(proj)
+    return(None)
+
+def avance(projets, paliers) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+    for proj in projets :
+
+        # On fait avancer le projet.
+        proj.avancement += progres(proj.chercheurs)
+        if proj.avancement > paliers[proj.phase -1] :
+            proj.avancement = paliers[proj.phase -1]
+
+    return(projets)
+
+def status(projet, paliers) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+
+    if projet.phase==1 and projet.attente==True:
+        print(projet.produit.appreciation)
+        print("Veuillez sélectionner une population cible :\n")
+        count = 1
+        for pop in ["Jeunes", "Actifs", "Seniors"] :
+            print(str(count)+". "+pop)
+            count += 1
+
+        choix = input()
+        projet = Projet.progression(projet, paliers, choix)
+
+    elif projet.phase==2 and projet.attente==True:
+        print("Vos chercheurs sont près à passer à la phase expérimentale.")
+        print("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(projet.produit.cout)+" euros.")
+        print("1. Oui \n2. Non \n")
+        choix = int(input())
+        if choix == 1 :
+            choix = True
+        else :
+            choix = False
+        projet = Projet.progression(projet, paliers, choix)
+
+    elif projet.phase==4 :
+        if projet.attente==False :
+            print("Vos chercheurs pensent qu'il serait bénéfique de faire tester le prototype par des consommateurs, cela permettrait d'accélérer la création du produit final")
+            print("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
+            print("1. Oui \n2. Non \n")
+            choix = int(input())
+            if choix == 1 :
+                choix = True
+            else :
+                choix = False
+            projet = Projet.progression(projet, paliers, choix)
+
+        else :
+            print("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
+            print("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
+            print("1. Oui \n2. Non \n")
+            choix = int(input())
+            if choix == 1 :
+                choix = True
+            else :
+                choix = False
+            projet = Projet.progression(projet, paliers, choix)
+
+    else :
+        print("En cours")
+
+    return(projet)
+
+def completedProject(projets, produits, chercheurs_free) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+    for proj in projets :
         # On ajoute les produits finis à notre liste de produit
         if proj.phase == 5 :
-            produits.append(proj.produit)
-    # On supprime les projets finis
-    projets = [proj for proj in projets if proj.phase!=5]
+            if proj.id > 0 :
+                produits.append(proj.produit)
+            delProject(projets, chercheurs_free, proj.id)
 
-    return(projets,produits,depenses)
 
 
 
@@ -455,7 +546,7 @@ class Projet(object):
             #| des consommateurs vis à vis du concept.
             Concept.effetMarketing(self.produit)
             # On réinitialise l'avancement
-            self.avancement = self.avancement-palier
+            self.avancement = 0
             # On passe à la phase suivante du projet
             self.phase += 1
 
@@ -474,7 +565,7 @@ class Projet(object):
         # Initialisation des coûts
         couts = [self.nom, 0]
 
-        if self.avancement >= palier and self.attente==False :
+        if self.avancement == palier and self.attente==False :
             # On initialise l'appétence des consommateurs
             #| vis à vis du concept.
             Concept.sondage(self.produit)
@@ -484,13 +575,9 @@ class Projet(object):
 
             Projet.verifPhase1(self, palier, utilisateur)
 
-        elif self.avancement >= palier and self.attente==True :
+        elif self.avancement == palier and self.attente==True :
 
             Projet.verifPhase1(self, palier, utilisateur)
-
-        else :
-            # On fait avancer le projet.
-            self.avancement += progres(chercheurs)
 
         return(couts)
 
@@ -538,7 +625,7 @@ class Projet(object):
         """
         couts = [self.nom, 0]
 
-        if self.avancement >= palier and self.attente==False :
+        if self.avancement == palier and self.attente==False :
 
             # On change le concept en prototype
             self.produit = Prototype(self.produit.appreciation,
@@ -548,13 +635,9 @@ class Projet(object):
 
             couts = Projet.verifPhase2(self, utilisateur)
 
-        elif self.avancement >= palier and self.attente==True :
+        elif self.avancement == palier and self.attente==True :
 
             couts = Projet.verifPhase2(self, utilisateur)
-
-        else :
-            # On fait avancer le projet.
-            self.avancement += progres(chercheurs)
 
         return(couts)
 
@@ -572,16 +655,12 @@ class Projet(object):
         # Initialisation des couts
         couts = [self.nom, 0]
 
-        if self.avancement >= palier :
+        if self.avancement == palier :
 
             # On réinitialise l'avancement
             self.avancement = self.avancement-palier
             # On passe à la phase suivante du projet
             self.phase += 1
-
-        else :
-            # On fait avancer le projet.
-            self.avancement += progres(chercheurs)
 
         return(couts)
 
@@ -623,26 +702,25 @@ class Projet(object):
         SORTIE         : Le projet mis à jour
         """
         couts = [self.nom, 0]
-        if self.avancement >= palier :
+        if self.avancement == palier :
             couts = Projet.verifPhase4(self, utilisateur)
 
         elif utilisateur==True and self.essai == False :
 
             # // Warning : diminuer le capital d'une certaine somme //
-            couts = [self.nom+" | Test de qualité", 50] 
+            couts = [self.nom+" | Mise à l'essai", 50] 
             # On met le prototype à l'essai
             self.essai = True
             # On fait avancer le projet avec le bonus de la mise
             #| à l'essai du produit.
-            self.avancement += progres(chercheurs) + 0.5*progres(chercheurs)
-
-        else :
-            # On fait avancer le projet.
-            self.avancement += progres(chercheurs)
+            self.avancement += progres(self.chercheurs) + 0.5*progres(self.chercheurs)
+            # A COMMENTER
+            if self.avancement > palier :
+                self.avancement = palier
 
         return(couts)
 
-    def progression(self, liste, utilisateur) :
+    def progression(self, paliers, utilisateur) :
         """
         FONCTION       : Modélise la progression du projet et
                          selon la phase de développement, appelle
@@ -655,22 +733,22 @@ class Projet(object):
         couts = [self.nom, 0]
 
         if self.phase == 1 :
-            couts = Projet.phase1(self, liste[0], utilisateur)
+            couts = Projet.phase1(self, paliers[0], utilisateur)
 
         elif self.phase == 2 :
-            couts = Projet.phase2(self, liste[1], utilisateur)
+            couts = Projet.phase2(self, paliers[1], utilisateur)
 
         elif self.phase == 3 :
-            couts = Projet.phase3(self, liste[2])
+            couts = Projet.phase3(self, paliers[2])
 
         elif self.phase == 4 :
-            couts = Projet.phase4(self, liste[3], utilisateur)
+            couts = Projet.phase4(self, paliers[3], utilisateur)
 
         return(couts)
 
     def __repr__(self) :
 
-        return("{} // Phase : {} | Progression : {}".format(self.nom,self.phase, self.avancement))
+        return("{}.{} // Phase : {} | Progression : {}".format(self.id,self.nom,self.phase, self.avancement))
 
 
 ####################################
@@ -708,31 +786,186 @@ if __name__=="__main__" :
 
     #| Provisoire |#
 
-    #-Chercheurs
-
-    chercheurs =[ Individu() for i in range(3)]
-
-    #-Produits 
-
+    depenses = []
+    projets = []
     produits = []
+    produits.append(Produit(produits, [], [], [], ""))
+    chercheurs_free = [Individu() for i in range(10)]
 
-    #-Projets
+    # Initialisation des différents paliers
+    paliers = [80, 100, 100, 100]
 
-    projets= [Projet(chercheurs, "Projet 1")]
+    # Affichage console
 
-    for cherch in chercheurs :
-        print(cherch)
+    end = False
 
-    print(compRecherche(chercheurs))
+    while end == False :
+        os.system("cls")
+        menu = int(input("menu? \n 0: Continue \n 1: R&D \n 2: Exit \n"))
 
-    i = 0
-    frais = []
-    while len(projets)!=0 :
+        if menu == 0 : # Fin de tour
+            projets = avance(projets, paliers)
+            projets, frais_RD = allProgression(projets, paliers)
+            for i in range(len(frais_RD)) :
+                depenses.append(frais_RD[i])
 
-        projets, produits, depenses = allProgression(projets, produits)
-        if depenses[0][1]!=0 :
-            frais.append(depenses[0])
-        
-        i+=1
+            completedProject(projets, produits, chercheurs_free)
+        elif menu == 1 : # MENU R&D
+            while menu != 0:
+                os.system('cls')
 
-    print(frais)
+                print("------ Liste : Projets en cours ------")
+                for proj in projets :
+                    print(proj)
+                print()
+
+                menu = int(input("menu? \n 0: Retour \n 1: Ajouter un projet \n 2: Choisir un projet \n 3: Produits \n"))
+                    
+                if menu == 1 : # Ajouter un projet
+                    # Nom du nouveau projet
+                    nom = str(input("Donner un nom au nouveau projet : "))
+                    projets.append(Projet([], nom))
+                    while menu != 0 :
+                        os.system("cls")
+
+                        # Chercheurs disponibles
+                        for cher_free in chercheurs_free :
+                            print(cher_free)
+                        print()
+
+                        # Affectation des chercheurs :
+                        idt = int(input("affecter qui?"))
+                        addChercheurs(projets[-1], chercheurs_free, idt)
+
+                        menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
+
+                    menu = 1
+
+                elif menu == 2 : # Projets en cours
+                    idt = int(input("quel projet?"))
+                    projet = selectProject(projets, idt)
+                    while menu != 0 :
+                        os.system("cls")
+                        print("------ Caractéristiques du projet -------")
+                        print()
+                        print(projet.nom+"\n")
+                        print("__________")
+                        print("Actuellement à la phase : "+str(projet.phase)+"\n")
+                        print("Progression : "+str(projet.avancement)+"/"+str(paliers[projet.phase-1])+"\n")
+                        print()
+                        if projet.id<0 :
+                            print("Produit en développement : "+projet.produit.nom+"\n")
+                        print("__________")
+                        print("------ Liste : Chercheurs participant ------")
+                        for cherch in projet.chercheurs :
+                            print(cherch)
+                        print()
+
+                        # Statut du projet
+                        projet = status(projet, paliers)
+
+                        menu = int(input("menu? \n 0: Retour \n 1: Supprimer \n 2: Ajouter des chercheurs \n 3: Retirer des chercheurs \n"))
+
+                        if menu == 1 :
+                            confirm = input("Etes-vous sûr de vouloir supprimer ce projet ? (O/N)")
+                            if confirm == "O" :
+                                delProject(projets, chercheurs_free, projet.id)
+
+                            menu=0
+
+                        elif menu == 2 :
+                            while menu != 0 :
+                                os.system("cls")
+                                # Chercheurs disponibles
+                                for cher_free in chercheurs_free :
+                                    print(cher_free)
+                                print()
+
+                                # Affectation des chercheurs :
+                                idt = int(input("affecter qui?"))
+                                addChercheurs(projet, chercheurs_free, idt)
+
+                                menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
+
+                            menu = 2
+
+                        elif menu == 3 :
+                            while menu != 0 :
+                                os.system("cls")
+                                # Chercheurs participants
+                                for cherch in projet.chercheurs :
+                                    print(cherch)
+                                print()
+
+                                # Retirer un chercheur
+                                idt = int(input("retirer qui?"))
+                                delChercheurs(projet, chercheurs_free, idt)
+
+                                menu = int(input("menu? \n 0: Retour \n 1: Retirer un autre chercheur \n"))
+                            menu = 3
+
+                    menu = 2
+
+                elif menu==3 :
+                    while menu!=0 :
+                        os.system("cls")
+                        print("------ Liste : Produit ------")
+                        for prod in produits :
+                            print(prod)
+                        print()
+
+                        menu = int(input("menu? \n 0: Retour \n 1: Choisir un produit\n"))
+
+                        if menu == 1 :
+                            idt = int(input("quel produit?"))
+                            produit = selectProduit(produits, idt)
+                            while menu!=0 :
+                                os.system("cls")
+                                print("------ Caractéristiques du produit -------")
+                                print()
+                                print(produit.nom+"\n")
+                                print("------ Matériaux ------")
+                                for mat in produit.materiaux :
+                                    print(mat)
+                                print()
+                                print("------ Opérations ------")
+                                for oper in produit.operations :
+                                    print(oper)
+                                print()
+                                print("__________")
+                                print("Nombre d'améliorations déjà effectuées: "+str(produit.nbr_ameliorations)+"\n")
+                                print("__________")
+                                print("Temps sur le marché : "+str(produit.age))
+
+                                if prod.develop==False :
+                                    menu = int(input("menu? \n 0: Retour \n 1: Améliorer\n"))
+                                else :
+                                    menu = int(input("menu? \n 0: Retour\n"))
+
+                                if menu==1 :
+                                    # Nom du nouveau projet
+                                    nom = str(input("Donner un nom au nouveau projet : "))
+                                    projets.append(Ameliore(produit, [], nom))
+                                    produit.develop = True
+                                    while menu != 0 :
+                                        os.system("cls")
+
+                                        # Chercheurs disponibles
+                                        for cher_free in chercheurs_free :
+                                            print(cher_free)
+                                        print()
+
+                                        # Affectation des chercheurs :
+                                        idt = int(input("affecter qui?"))
+                                        addChercheurs(projets[-1], chercheurs_free, idt)
+
+                                        menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
+
+                                    menu = 1
+                            menu = 1
+                    menu = 3
+            menu = 1
+
+        elif menu == 2 :
+            end = True
+

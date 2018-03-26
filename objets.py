@@ -226,11 +226,14 @@ class Population(object): # de consommateurs
             pop.produits.append([produit.nom, 0])
 
 class Produit(object):
+    id = 1
 
     def __init__(self, produits, utilite, materiaux, operations, cible):
 
-        self.nom = self.genNom(produits)
+        self.id = Produit.id
+        Produit.id += 1
 
+        self.nom = self.genNom(produits)
         self.utilite    = utilite    # Par population (0-100)
         self.materiaux  = materiaux  # materiaux et quantités nécessaires
         self.operations = operations # Opérations nécessaires (et quantité = 1)
@@ -241,11 +244,13 @@ class Produit(object):
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
 
+        self.develop = False # Défini que le produit n'est pas en développement
+
         self.nbr_ameliorations = 0
         # self.concurence = 0 # BONUS
 
     def __repr__(self):
-        return "{} - {}, {}".format(self.nom,
+        return "{}. {} - {}, {}".format(self.id, self.nom,
                                     self.materiaux, self.operations)
 
     def genNom(self, produits):

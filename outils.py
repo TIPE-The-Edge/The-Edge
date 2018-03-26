@@ -156,6 +156,20 @@ def retireAll(produit, liste_arrivee):
         if produit == liste_arrivee[i][0]:
             del liste_arrivee[i]
 
+
+def selectProduit(produits, identifiant) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+    for prod in produits :
+        if prod.id == identifiant :
+            return(prod)
+    return(None)
+
+
 '''
 def nom_fontion() :
     """
