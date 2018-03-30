@@ -35,12 +35,17 @@ Machine :
 """ PROBLEMS
 """
 
+
 """ NOTES
 
 Pour LC :
     Couts générés :
         "cout materiaux"
         "cout transport"
+"""
+
+
+""" BONUS
 
 Formation : # BONUS
     competences (Besoin d'une fonction pour rendre cohérent)
@@ -101,7 +106,7 @@ class Individu(object):
 
         # Caractéristique RH
         self.statut  = "CDI" # Pour l'instant, un seul statut
-        self.role    = "R&D" # Pour l'instant, un seul role
+        self.role    = None  # Roles disponibles : R&D, MACHINE
         self.projet  = None  # Projet en cours
         self.salaire = self.genSalaire() # Salaire brut
 
@@ -206,10 +211,10 @@ class Population(object): # de consommateurs
     # Cette classe sera majoritairement paramétrée à la main
 
     def __init__(self, nom, revenu, nombre, esp, ecart):
-        self.nom = nom 
+        self.nom = nom
 
-        self.revenu = revenu 
-        self.nombre = nombre 
+        self.revenu = revenu
+        self.nombre = nombre
         self.tps_adoption = [esp, ecart]
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
