@@ -105,6 +105,7 @@ class Window():
         self.departs      = []
         self.couts        = []
 
+
         self.temps = None
         self.lesRH = None
         self.month = 0
@@ -206,7 +207,7 @@ class Window():
 
         new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, create_game, [])
         load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, None, [])
-        leave = create_label('Quittez', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
+        leave = create_label('Quitter', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
         labels.extend([new, load, leave])
 
         for label in labels:
