@@ -126,27 +126,38 @@ def change_tab(button, window, screen, *arg):
 def draw_rh(widget, window, screen, *arg):
     rh = window.lesRH
 
-    info = []
-    info.append(['Nombre d\'employés', rh.nbr_employes])
+    info1, info2, info3, info4 = [], [], [], []
+    info1.append(['Nombre d\'employés', rh.nbr_employes])
     # info.append(['Bonheur moyen', rh.bonheur_moy])
-    info.append(['Âge moyen', rh.age_moy])
-    info.append(['Temps moyen passé dans la start-up', rh.exp_start_up_moy])
-    info.append(['Expérience moyenne en R&D', rh.exp_RetD_moy])
-    info.append(['Nombre d\'arrivées durant le dernier mois', rh.nbr_arrivees])
+    info1.append(['Âge moyen', rh.age_moy])
+    info2.append(['Temps moyen passé dans la start-up', rh.exp_start_up_moy])
+    info2.append(['Expérience moyenne en R&D', rh.exp_RetD_moy])
+    info3.append(['Nombre d\'arrivées durant le dernier mois', rh.nbr_arrivees])
     # info.append(['Taux d\'arrivées', rh.taux_arrivees])
-    info.append(['Nombre de départs durant le dernier mois', rh.nbr_departs])
+    info3.append(['Nombre de départs durant le dernier mois', rh.nbr_departs])
     # info.append(['Taux de départ', rh.taux_departs])
     # info.append(['what', rh.taux_rotation])
     # info.append(['Coût de formations', rh.cout_formations])
     # info.append(['Moyenne formations', rh.moy_formations])
-    info.append(['Salaire moyen', rh.salaire_moy])
-    info.append(['Masse salariale brute', rh.masse_sal_brute])
-    info.append(['Masse salariale nette', rh.masse_sal_nette])
-    info.append(['Coût de l\'emploi', rh.cout_emploi])
-    info.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
-    info.append(['Part de la masse salariale dans le budget de l\'entreprise', rh.part_masse_sal])
+    info4.append(['Salaire moyen', rh.salaire_moy])
+    info4.append(['Masse salariale brute', rh.masse_sal_brute])
+    info4.append(['Masse salariale nette', rh.masse_sal_nette])
+    info4.append(['Coût de l\'emploi', rh.cout_emploi])
+    info4.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
+    info4.append(['Part de la masse salariale dans le budget de l\'entreprise', rh.part_masse_sal])
 
-    labels = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (255,255,255), (255,255,255), (189,195,198), (189,195,198), 400, 'auto')
+    infos = [info1, info2, info3, info4]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (255,255,255), (255,255,255), (189,195,198), (189,195,198), 400, 'auto')
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((189,195,198))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
 
     button_hired = create_label( 'Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_recruit, [])
     button_hired.set_padding(0,0,15,15)
@@ -164,12 +175,12 @@ def draw_rh(widget, window, screen, *arg):
     frame_v.set_bg_color((189, 195, 198))
     frame_v.make_pos()
 
-    frame_left = Frame(80, 40, labels + [frame_v], None, [])
+    frame_left = Frame(80, 40, frame_labels + [frame_v] , None, [])
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
     frame_left.resize(600, 680)
     frame_left.set_padding(20,20,20,20)
-    frame_left.set_marge_items(10)
+    frame_left.set_marge_items(50)
     frame_left.set_bg_color((189, 195, 198))
     frame_left.make_pos()
 
@@ -238,27 +249,39 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
         attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,0])
 
         title = create_label(ind.prenom + ' ' + ind.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
-        title.set_padding(0,0,0,50)
+        title.set_padding(0,0,0,30)
         title.make_pos()
 
-        info = []
-        info.append(['Genre', ind.genre])
-        info.append(['Âge', ind.age])
-        info.append(['Expérience en R&D', ind.exp_RetD])
-        info.append(['Expérience start-up', ind.exp_startup])
-        info.append(['Compétence de coopération', ind.competence_groupe])
-        info.append(['Compétence en recherche', ind.competence_recherche])
-        info.append(['Compétence en management', ind.competence_direction])
-        info.append(['Statut', ind.statut])
-        info.append(['Rôle', ind.role])
-        info.append(['Salaire', ind.salaire])
+        info1, info2, info3, info4, info5 = [], [], [], [], []
+        info1.append(['Genre', ind.genre])
+        info1.append(['Âge', ind.age])
+        info2.append(['Expérience en R&D', ind.exp_RetD])
+        info2.append(['Expérience start-up', ind.exp_startup])
+        info3.append(['Compétence de coopération', ind.competence_groupe])
+        info3.append(['Compétence en recherche', ind.competence_recherche])
+        info3.append(['Compétence en management', ind.competence_direction])
+        info4.append(['Statut', ind.statut])
+        info4.append(['Rôle', ind.role])
+        info5.append(['Salaire', ind.salaire])
 
-        labels =  create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (44,62,80), (44,62,80), (236,240,241), (236,240,241), 400, 'auto')
-        frame_right = Frame(330, 40, [title] + labels, None, [])
+        infos = [info1, info2, info3, info4, info5]
+        frame_labels = []
+        for info in infos:
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 'auto')
+            frame_tmp = Frame(0, 0, label_tmp, None, [])
+            frame_tmp.set_items_pos('auto')
+            frame_tmp.set_marge_items(10)
+            frame_tmp.set_direction('vertical')
+            frame_tmp.resize('auto', 'auto')
+            frame_tmp.set_bg_color((236, 240, 241))
+            frame_tmp.make_pos()
+            frame_labels.append(frame_tmp)
+
+        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
         frame_right.set_direction('vertical')
         frame_right.set_items_pos('auto')
         frame_right.set_padding(50,0,50,0)
-        frame_right.set_marge_items(10)
+        frame_right.set_marge_items(30)
         frame_right.set_bg_color((236,240,241))
         frame_right.make_pos()
 
@@ -578,7 +601,7 @@ def get_individu(group, ind_id):
 def create_label_value(labels, font1, font2, size1, size2, color1, color2, color_bg1, color_bg2, width1, width):
     items = []
     for element in labels:
-        label = create_label(element[0] + ' : ', font1, size1, color1, color_bg1, 0, 0, None, None, [])
+        label = create_label(element[0] + ' : ', font1, size1, color1, color_bg1, 0, 0, 400, None, [])
         label.resize(width1, 'auto')
         label.make_pos()
         value = create_label(str(element[1]), font2, size2, color2, color_bg2, 0, 0, None, None, [])
@@ -587,6 +610,7 @@ def create_label_value(labels, font1, font2, size1, size2, color1, color2, color
         frame_tmp.set_direction('horizontal')
         frame_tmp.set_items_pos('auto')
         frame_tmp.set_bg_color(color_bg2)
+        frame_tmp.set_marge_items(50)
         frame_tmp.resize(width, 'auto')
         frame_tmp.make_pos()
 
@@ -600,31 +624,43 @@ def draw_individu(widget, window, screen, ind_id, *arg):
     title = create_label(ind.prenom+' '+ind.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
     title.set_padding(0,0,0,20)
     title.make_pos()
-    info = []
-    info.append(['Genre', ind.genre])
-    info.append(['Âge', ind.age])
-    info.append(['Expérience en R&D', ind.exp_RetD])
-    info.append(['Expérience start-up', ind.exp_startup])
-    info.append(['Compétence de coopération', ind.competence_groupe])
-    info.append(['Compétence en recherche', ind.competence_recherche])
-    info.append(['Compétence en management', ind.competence_direction])
-    info.append(['Statut', ind.statut])
-    info.append(['Rôle', ind.role])
-    info.append(['Salaire', ind.salaire])
 
-    employee_info = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300 , 520)
+    info1, info2, info3, info4, info5 = [], [], [], [], []
+    info1.append(['Genre', ind.genre])
+    info1.append(['Âge', ind.age])
+    info2.append(['Expérience en R&D', ind.exp_RetD])
+    info2.append(['Expérience start-up', ind.exp_startup])
+    info3.append(['Compétence de coopération', ind.competence_groupe])
+    info3.append(['Compétence en recherche', ind.competence_recherche])
+    info3.append(['Compétence en management', ind.competence_direction])
+    info4.append(['Statut', ind.statut])
+    info4.append(['Rôle', ind.role])
+    info5.append(['Salaire', ind.salaire])
+
+    infos = [info1, info2, info3, info4, info5]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 520)
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((236, 240, 241))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
 
     button_hired = create_label('Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 700, 650, None, recruit, [ind_id])
     button_hired.set_padding(20,20,15,15)
     button_hired.make_pos()
 
-    frame_employee = Frame(680, 120, [title] + employee_info, None, [])
+    frame_employee = Frame(680, 120, [title] + frame_labels, None, [])
     frame_employee.set_direction('vertical')
     frame_employee.set_items_pos('auto')
     frame_employee.resize(600, 600)
     frame_employee.set_padding(30,0,30,0)
     frame_employee.set_bg_color((236, 240, 241))
-    frame_employee.set_marge_items(10)
+    frame_employee.set_marge_items(30)
     frame_employee.make_pos()
 
     window.set_body_tmp([frame_employee, button_hired])
