@@ -47,7 +47,7 @@ class Ameliore() :
 
     id = -1
 
-    def __init__(self, produit, chercheurs, nom) :
+    def __init__(self, produit, nom) :
 
         # Initialise l'identifiant du Projet
         self.id = Ameliore.id
@@ -57,7 +57,6 @@ class Ameliore() :
         self.nom = nom
 
         self.produit = produit
-        self.chercheurs = chercheurs
         self.avancement = 0
         self.palier = Ameliore.fixePalier(self)
         self.phase = 1
@@ -145,7 +144,7 @@ class Ameliore() :
         """
         # Initialisation des coûts
         couts = [self.nom, 0]
-        
+
         if self.avancement >= self.palier :
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)

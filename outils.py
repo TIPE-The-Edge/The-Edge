@@ -83,8 +83,13 @@ def compGroupe(individus) :
         moyenne += (int(leader/8))+(leader-8)
     return(10*moyenne -50)
 
-def progres(individus) :
-    return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
+def progres(individus, nom_projet) :
+    chercheurs = []
+    for ind in individus :
+        if ind.projet==nom_projet :
+            chercheurs.append(ind)
+            
+    return(compRecherche(chercheurs)+(compGroupe(chercheurs)/100)*compRecherche(chercheurs))
 
 
 def readNameFile(fichier):
@@ -159,9 +164,9 @@ def retireAll(produit, liste_arrivee):
 
 def selectProduit(produits, identifiant) :
     """
-    FONCTION       : 
-    ENTREES        : 
-    SORTIE         : 
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
     TEST UNITAIRE  : ...
     """
     for prod in produits :
