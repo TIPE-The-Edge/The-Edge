@@ -35,7 +35,7 @@ Vérifier le fonctionnement global des fonctions de production. Lier
 ###################| CONSTANTES |###################
 ####################################################
 
-MINS_PAR_SEMAINE = 2400
+MINS_PAR_SEMAINE = 2400 # 60 mins * 8 h * 5 jours
 
 ####################################################
 ###################| FONCTIONS |####################
@@ -138,7 +138,10 @@ class Fournisseur(object):
         SORTIE         : Le coût du trajet en ??? (float).
         TEST UNITAIRE  : ...
         """
-        fournisseurs = readLineCSV("transport.csv", "fournisseur", fournisseur.localisation, ["fournisseur","destination","cout"])
+        fournisseurs = readLineCSV("transport.csv",
+                                   "fournisseur",
+                                   fournisseur.localisation,
+                                   ["fournisseur","destination","cout"])
 
         for four in fournisseurs :
             if four[1]==destination.localisation :
@@ -167,7 +170,6 @@ class Fournisseur(object):
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
 
-
 class Machine(object):
 
     # Liste des noms existants
@@ -182,9 +184,6 @@ class Machine(object):
         # Production
         self.operations_realisables = [] # TODO
         self.commandes = []
-
-        # Stockage/Mat réservés pour la machine
-        # self.materiaux = [[]] #TOBE REMOVED (les materiaux sont dans les commandes)
 
     def __repr__(self):
         return "{} : {}, {}".format(
@@ -209,6 +208,15 @@ class Machine(object):
                     if ope[0] not in mac.operations_realisables:
                         return(False)
                 return(True)
+
+    def verifUtilisateur(machines, machine):
+        for mac in machines:
+            if mac.nom == machine: # La machine qui nous interresse.
+
+                if mac.utilisateur == None:
+                    return(False)
+                else:
+                    return(True)
 
     def ajusteUnMatStock(stock, materiau):
         """ Ajuste la quantité d'un materiau en fonction de la quantité
@@ -262,7 +270,11 @@ class Machine(object):
         """
         if not Machine.verifOperations(machines, machine, produit):
             # Affichage console pour les tests, sinon sur interface.
-            print("la machine ne peut pas réaliser ttes les opé nécéssaires") #TODO
+            print("la machine ne peut pas réaliser ttes les opé nécéssaires") #TODO Dorian
+
+        if not Machine.verifUtilisateur(machines, machine):
+            # Affichage console pour les tests, sinon sur interface.
+            print("la machine n'a pas d'utilisateur'") #TODO Dorian
 
         new_materiaux = Machine.ajusteMatStock(stock, materiaux)
         new_materiaux = Machine.ajusteMatProd(produit, new_materiaux)
@@ -327,10 +339,14 @@ class Commande(object): # Commandes faites aux machines
         for mac in machines:
             if len(mac.commandes) > 0: # La machine a au moins une commande.
 
-                Commande.process(mac.commandes, stock)
+                Commande.process(mac.commandes, stock, mac.utilisateur)
 
-    def process(commandes, stock):
-        mins = MINS_PAR_SEMAINE
+    def process(commandes, stock, utilisateur):
+
+        x = utilisateur.competence_production
+
+        # mins est l'équivalent en minute de travail que peut fournir
+        mins = int((300/9)*(x**2) - (300/9)*x + 2400) # Polynome du second degré
 
         while mins > 0 and len(commandes) > 0:
 
@@ -437,7 +453,6 @@ class Stock(object):
         Stock.localisations.remove(loc)
 
         return loc
-
 
 
 ####################################

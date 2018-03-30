@@ -52,7 +52,7 @@ Cout de l'emploi :
         Primes
         Part des primes dans la rémunération
 
-    Riques :
+    Risques :
         Maladie professionnelle
         Fréquence et de gravité
         Coûts financiers des accidents
@@ -82,7 +82,7 @@ class RH(object):
 
     def __init__(self):
         self.nbr_employes     = None
-        self.bonheur_moy      = None
+        # self.bonheur_moy      = None
         self.age_moy          = None
 
         # Experience
@@ -91,10 +91,10 @@ class RH(object):
 
         # Flux
         self.nbr_arrivees  = None
-        self.taux_arrivees = None
+        # self.taux_arrivees = None
         self.nbr_departs   = None
-        self.taux_departs  = None
-        self.taux_rotation = None
+        # self.taux_departs  = None
+        # self.taux_rotation = None
 
         # Formation
         self.cout_formations = None # BONUS
@@ -119,14 +119,14 @@ class RH(object):
 
         # Flux
         self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
-        self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
+        # self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
         self.nbr_departs   = RH.departs(departs, seuil_departs)
-        self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
-        self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
+        # self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
+        # self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
 
-        # Formation
-        self.cout_formations = None # Fonds investis dans la formation # BONUS
-        self.moy_formations  = None # Moyenne de formations par employé # BONUS
+        # Formation #BONUS
+        # self.cout_formations = None # Fonds investis dans la formation
+        # self.moy_formations  = None # Moyenne de formations par employé
 
         # Couts
         self.salaire_moy     = RH.salaireMoyen(individus)

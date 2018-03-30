@@ -97,16 +97,19 @@ class Individu(object):
         # Experiences en nombre de semaines
         self.exp_RetD    = self.genExpRD()
         self.exp_startup = 0
+        self.exp_prod    = 0
 
         # Compétences
             # R&D
         self.competence_groupe    = self.genCompetenceRD() # Capacité à travailler en groupe
         self.competence_recherche = self.genCompetenceRD() # Efficacité à la recherche
         self.competence_direction = self.genCompetenceRD() # Capacité à diriger une équipe
+            # Production
+        self.competence_production = 0 #TODO
 
         # Caractéristique RH
         self.statut  = "CDI" # Pour l'instant, un seul statut
-        self.role    = None  # Roles disponibles : R&D, MACHINE
+        self.role    = None  # Roles disponibles : R&D, prod
         self.projet  = None  # Projet en cours
         self.salaire = self.genSalaire() # Salaire brut
 
