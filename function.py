@@ -115,7 +115,7 @@ def change_tab(button, window, screen, *arg):
             elif icon.num == 4:
                 window.set_body([])
             elif icon.num == 5:
-                window.set_body([])
+                draw_sales_product(None, window,screen, 0,0)
             elif icon.num == 6:
                 draw_option(None, window, screen)
         else:
@@ -787,6 +787,60 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     frame_tmp.set_bg_color((236, 240, 241))
     frame_tmp.make_pos()
     items.append(frame_tmp)
+
+    window.set_body(items)
+    window.display(screen)
+
+def draw_sales(widget, window, screen, *arg):
+    pass
+
+def draw_sales_product(widget, window, screen, prod_id, i, *arg):
+    # ind = get_individu(window.individus, ind_id)
+
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Produit #'
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back = Frame(0,0, [button_arrow, name], draw_sales, [])
+    frame_back.set_direction('horizontal')
+    frame_back.set_items_pos('auto')
+    frame_back.resize(250, 80)
+    frame_back.set_align('center')
+    frame_back.set_padding(10,0,0,0)
+    frame_back.set_marge_items(10)
+    frame_back.set_bg_color((149, 165, 166))
+    frame_back.make_pos()
+
+    info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id, 0])
+    text_product_kill = "Mettre en vente" #"Arrêter la distribution"
+    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id,1])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,0])
+
+    elif i == 1:
+        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,1])
+
+    list_tmp = [info_market, make_sale]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 'auto')
+        element.set_padding(10,0,20,20)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
 
     window.set_body(items)
     window.display(screen)
