@@ -99,6 +99,7 @@ def clear_body(widget, window, screen, *arg):
     window.set_body(arg[0](*arg))
     window.display(screen)
 
+'''INCOMPLET'''
 def change_tab(button, window, screen, *arg):
     for icon in window.nav:
         if icon.num == button.num:
@@ -113,9 +114,9 @@ def change_tab(button, window, screen, *arg):
             elif icon.num == 3:
                 window.set_body([])
             elif icon.num == 4:
-                window.set_body([])
+                draw_finance(None, window, screen, 0)
             elif icon.num == 5:
-                draw_sales_product(None, window,screen, 0,0)
+                draw_sales_product(None, window, screen, 0, 0)
             elif icon.num == 6:
                 draw_option(None, window, screen)
         else:
@@ -384,6 +385,141 @@ def draw_rd(widget, window, screen, i, *arg):
     frame_left.make_pos()
 
     items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+'''INCOMPLET'''
+def draw_product(widget, window, screen, prod_id, i, *arg):
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Produit #'
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
+    frame_back.set_direction('horizontal')
+    frame_back.set_items_pos('auto')
+    frame_back.resize(250, 80)
+    frame_back.set_align('center')
+    frame_back.set_padding(10,0,0,0)
+    frame_back.set_marge_items(10)
+    frame_back.set_bg_color((149, 165, 166))
+    frame_back.make_pos()
+
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id, 0])
+    update = create_label("Améliorer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id,1])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,0])
+
+    elif i == 1:
+        update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,1])
+
+    list_tmp = [attribute, upgrade]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 'auto')
+        element.set_padding(10,0,20,20)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+'''INCOMPLET'''
+def draw_upgrade_product(widget, window, screen, lst_ind, lst_ajout, *arg):
+    items = []
+
+    text = 'Liste des employés'
+    label_employe = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
+    label_employe.set_direction('horizontal')
+    label_employe.set_padding(20,10,10,10)
+    label_employe.resize(600, 80)
+    label_employe.set_align('center')
+    label_employe.make_pos()
+
+    a = []
+    for i in range(0,len(lst_ind)):
+        employee_info = []
+        ind = lst_ind[i]
+        lst_ind_tmp = []
+        lst_ind_tmp += lst_ind
+        lst_ind_tmp.pop(i)
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind]])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'employé')
+    items.append(item_list_employe)
+    items.append(label_employe)
+
+    text = 'Liste des employés ajoutés'
+    label_ajout = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (44,62,80), 680, 40, None, None, [])
+    label_ajout.set_direction('horizontal')
+    label_ajout.set_padding(20,10,10,10)
+    label_ajout.resize(600, 80)
+    label_ajout.set_align('center')
+    label_ajout.make_pos()
+
+    lst_tmp = []
+    for i in range(0,len(lst_ajout)):
+        employee_info = []
+
+        ind = lst_ajout[i]
+        lst_ajout_tmp = []
+        lst_ajout_tmp += lst_ajout
+        lst_ajout_tmp.pop(i)
+
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
+        employe_name.set_items_pos('auto')
+        employe_name.resize(580, 'auto')
+        employe_name.set_padding(20,0,20,20)
+        employe_name.make_pos()
+
+        lst_tmp.append(employe_name)
+
+    item_ajoute = Item_list(lst_tmp, 680, 120, 1260, 120, 20, 500, 'employé')
+    items.append(item_ajoute)
+    items.append(label_ajout)
+
+    button_submit = create_label('Améliorer le produit', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_submit.set_padding(20,20,15,15)
+    button_submit.set_direction('vertical')
+    button_submit.make_pos()
+
+    frame_tmp = Frame(680, 620, [button_submit], None, [])
+    frame_tmp.set_direction('vertical')
+    frame_tmp.resize(1260-680,'auto')
+    frame_tmp.set_items_pos('auto')
+    frame_tmp.set_align('right')
+    frame_tmp.set_padding(20,0,30,0)
+    frame_tmp.set_bg_color((236, 240, 241))
+    frame_tmp.make_pos()
+    items.append(frame_tmp)
 
     window.set_body(items)
     window.display(screen)
@@ -698,6 +834,7 @@ def get_uppest_item(items, mouse_pos):
 #     window.set_overbody([rectangle])
 #     window.display(screen)
 
+'''INCOMPLET'''
 def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     items = []
 
@@ -791,9 +928,11 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     window.set_body(items)
     window.display(screen)
 
+'''INCOMPLET'''
 def draw_sales(widget, window, screen, *arg):
     pass
 
+'''INCOMPLET'''
 def draw_sales_product(widget, window, screen, prod_id, i, *arg):
     # ind = get_individu(window.individus, ind_id)
 
@@ -833,6 +972,46 @@ def draw_sales_product(widget, window, screen, prod_id, i, *arg):
         element.make_pos()
 
     frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+def draw_finance(widget, window, screen, i, *arg):
+    items = []
+
+    button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [0])
+    button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [1])
+    button_compte = create_label("Compte de resultat", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [2])
+    button_macro = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [3])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [0])
+    elif i == 1:
+        button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
+    elif i == 2:
+        button_compte = create_label("Compte de resultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
+    elif i == 3:
+        button_macro = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [3])
+
+
+    list_tmp = [button_pret, button_bilan, button_compte, button_macro]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 80)
+        element.set_padding(10,0,0,0)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, list_tmp, None, [])
     frame_left.set_direction('vertical')
     frame_left.set_items_pos('auto')
     frame_left.resize(250, 680)
