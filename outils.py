@@ -72,10 +72,24 @@ def aleaLoiNormale(esperance, ecart_type) :
 
 # Fonction Compétence "Recherche"
 def compRecherche(individus) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
     return(sum([individu.competence_recherche for individu in individus]))
 
 # Fonction Compétence "Groupe"
 def compGroupe(individus) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
     # On fait la moyenne des capacités de travail de groupe des chercheurs
     moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
     leader = max([individu.competence_direction for individu in individus])
@@ -84,6 +98,13 @@ def compGroupe(individus) :
     return(10*moyenne -50)
 
 def progres(individus, nom_projet) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ...
+    """
     chercheurs = []
     for ind in individus :
         if ind.projet==nom_projet :
@@ -174,6 +195,22 @@ def selectProduit(produits, identifiant) :
             return(prod)
     return(None)
 
+
+def existProjet(projets, nom) :
+    """
+    FONCTION       : Vérifie que le nom existe déjà dans la liste
+                     des projets.
+    ENTREES        : La liste des projets (Projet list) et un nom
+                     (string).
+    SORTIE         : Un booléen indiquant si le nom a déjà été utilisé
+                     (bool).
+    """
+    
+    for proj in projets :
+        if proj.nom == nom :
+            return(True)
+
+    return(False)
 
 '''
 def nom_fontion() :

@@ -7,23 +7,23 @@ vis
 transistor
 batterie
 micro
-port_usb
+port usb
 souris
-carte_mere
+carte mere
 interrupteur
-clef_usb
-disque_dur
+clef usb
+disque dur
 ventilateur
 cable
 boitier
 verre
-couteau_suisse
-gros_bouton_rouge
-carte_graphique
-graveur_blueray
-objectif_photo
-port_audio
+couteau suisse
+gros bouton rouge
+carte graphique
+graveur blueray
+objectif photo
+port audio
 laser
-circuit_imprime
-memoire_ram
+circuit imprime
+memoire ram
 radiateur

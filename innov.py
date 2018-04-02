@@ -191,31 +191,30 @@ def allProgression(projets, employes, paliers) :
                         couts = Projet.progression(proj, employes, paliers, "")
                         depenses.append(couts)
 
-                    print(proj.produit.appreciation)
-                    choix = input("Phase 1 : ")
-                    couts = Projet.progression(proj, employes, paliers, choix)
+                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    couts = Projet.progression(proj, employes, paliers, "")
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
-                    couts=Projet.progression(proj, paliers, False)
+                    couts=Projet.progression(proj, employes, paliers, False)
                 else :
-                    choix = bool(int(input("Phase 2 : Création du prototype (mettre 0 ou 1) : ")))
-                    couts = Projet.progression(proj, paliers, choix)
+                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    couts = Projet.progression(proj, employes, paliers, False)
 
             elif proj.phase == 3 :
-                couts = Projet.progression(proj, paliers, None)
+                couts = Projet.progression(proj, employes, paliers, None)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
-                        choix = bool(int(input("Phase 4 : Mise à l'essai (mettre 0 ou 1) : ")))
-                        couts = Projet.progression(proj, paliers, choix)
+                        print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                        couts = Projet.progression(proj, employes, paliers, False)
                     else :
-                        couts = Projet.progression(proj, paliers, None)
+                        couts = Projet.progression(proj, employes, paliers, None)
 
                 else :
-                    choix = bool(int(input("Phase 4 : Brevet (mettre 0 ou 1) : ")))
-                    couts = Projet.progression(proj, paliers, choix)
+                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    couts = Projet.progression(proj, employes, paliers, False)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
@@ -251,7 +250,7 @@ def avance(projets, paliers, employes) :
 
     return(projets)
 
-def status(projet, paliers) :
+def status(projet, paliers, depenses) :
     """
     FONCTION       :
     ENTREES        :
@@ -268,7 +267,8 @@ def status(projet, paliers) :
             count += 1
 
         choix = input()
-        projet = Projet.progression(projet, paliers, choix)
+        if choix in ["Jeunes", "Actifs", "Seniors"] :
+            depenses.append(Projet.progression(projet, employes, paliers, choix))
 
     elif projet.phase==2 and projet.attente==True:
         print("Vos chercheurs sont près à passer à la phase expérimentale.")
@@ -276,10 +276,8 @@ def status(projet, paliers) :
         print("1. Oui \n2. Non \n")
         choix = int(input())
         if choix == 1 :
-            choix = True
-        else :
-            choix = False
-        projet = Projet.progression(projet, paliers, choix)
+            depenses.append(Projet.progression(projet, employes, paliers, True))
+        
 
     elif projet.phase==4 :
         if projet.attente==False :
@@ -288,10 +286,8 @@ def status(projet, paliers) :
             print("1. Oui \n2. Non \n")
             choix = int(input())
             if choix == 1 :
-                choix = True
-            else :
-                choix = False
-            projet = Projet.progression(projet, paliers, choix)
+                depenses.append(Projet.progression(projet, employes, paliers, True))
+            
 
         else :
             print("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
@@ -299,15 +295,10 @@ def status(projet, paliers) :
             print("1. Oui \n2. Non \n")
             choix = int(input())
             if choix == 1 :
-                choix = True
-            else :
-                choix = False
-            projet = Projet.progression(projet, paliers, choix)
+                depenses.append(Projet.progression(projet, employes, paliers, True))
 
     else :
         print("En cours")
-
-    return(projet)
 
 def completedProject(projets, produits, employes) :
     """
@@ -322,7 +313,6 @@ def completedProject(projets, produits, employes) :
             if proj.id > 0 :
                 produits.append(proj.produit)
             delProject(projets, employes, proj.id)
-
 
 ####################################
 ############| CLASSES |#############
@@ -797,19 +787,20 @@ if __name__=="__main__" :
     end = False
 
     while end == False :
-        os.system("clear")
+        os.system("cls")
         menu = int(input("menu? \n 0: Continue \n 1: R&D \n 2: Exit \n"))
 
         if menu == 0 : # Fin de tour
             projets = avance(projets, paliers, employes)
-            projets, frais_RD = allProgression(projets, paliers)
+            projets, frais_RD = allProgression(projets, employes, paliers)
             for i in range(len(frais_RD)) :
                 depenses.append(frais_RD[i])
 
             completedProject(projets, produits, employes)
+            input()
         elif menu == 1 : # MENU R&D
             while menu != 0:
-                os.system('clear')
+                os.system('cls')
 
                 print("------ Liste : Projets en cours ------")
                 for proj in projets :
@@ -823,7 +814,7 @@ if __name__=="__main__" :
                     nom = str(input("Donner un nom au nouveau projet : "))
                     projets.append(Projet(nom))
                     while menu != 0 :
-                        os.system("clear")
+                        os.system("cls")
 
                         # Chercheurs disponibles
                         for emp in employes :
@@ -843,7 +834,7 @@ if __name__=="__main__" :
                     idt = int(input("quel projet?"))
                     projet = selectProject(projets, idt)
                     while menu != 0 :
-                        os.system("clear")
+                        os.system("cls")
                         print("------ Caractéristiques du projet -------")
                         print()
                         print(projet.nom+"\n")
@@ -861,7 +852,7 @@ if __name__=="__main__" :
                         print()
 
                         # Statut du projet
-                        projet = status(projet, paliers)
+                        status(projet, paliers, depenses)
 
                         menu = int(input("menu? \n 0: Retour \n 1: Supprimer \n 2: Ajouter des chercheurs \n 3: Retirer des chercheurs \n"))
 
@@ -874,7 +865,7 @@ if __name__=="__main__" :
 
                         elif menu == 2 :
                             while menu != 0 :
-                                os.system("clear")
+                                os.system("cls")
                                 # Chercheurs disponibles
                                 for emp in employes :
                                     if emp.projet == None :
@@ -891,7 +882,7 @@ if __name__=="__main__" :
 
                         elif menu == 3 :
                             while menu != 0 :
-                                os.system("clear")
+                                os.system("cls")
                                 # Chercheurs participants
                                 for emp in projet.chercheurs :
                                     if emp.projet == projet.nom :
@@ -909,7 +900,7 @@ if __name__=="__main__" :
 
                 elif menu==3 :
                     while menu!=0 :
-                        os.system("clear")
+                        os.system("cls")
                         print("------ Liste : Produit ------")
                         for prod in produits :
                             print(prod)
@@ -921,7 +912,7 @@ if __name__=="__main__" :
                             idt = int(input("quel produit?"))
                             produit = selectProduit(produits, idt)
                             while menu!=0 :
-                                os.system("clear")
+                                os.system("cls")
                                 print("------ Caractéristiques du produit -------")
                                 print()
                                 print(produit.nom+"\n")
@@ -949,7 +940,7 @@ if __name__=="__main__" :
                                     projets.append(Ameliore(produit, nom))
                                     produit.develop = True
                                     while menu != 0 :
-                                        os.system("clear")
+                                        os.system("cls")
 
                                         # Chercheurs disponibles
                                         for emp in employes :

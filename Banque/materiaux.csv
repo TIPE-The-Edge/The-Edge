@@ -1,153 +1,153 @@
-materiaux,pays,cout_unitaire,"
+materiaux,pays,cout unitaire,"
 "
 
-processeur,Californie,100,"
+processeur,Los Angeles,100,"
 "
 
-ecran,New_York,60,"
+ecran,New York,60,"
 "
 
-ecran,Hong_Kong,55,"
+ecran,Hong Kong,55,"
 "
 
-diode,Pays_Bas,0.40,"
+diode,Amsterdam,0.40,"
 "
 
-diode,Californie,0.38,"
+diode,Los Angeles,0.38,"
 "
 
-diode,France,0.41,"
+diode,Paris,0.41,"
 "
 
-resistance,Allemagne,0.04,"
+resistance,Berlin,0.04,"
 "
 
-resistance,Hong_Kong,0.03,"
+resistance,Hong Kong,0.03,"
 "
 
-clavier,Allemagne,10,"
+clavier,Berlin,10,"
 "
 
-vis,France,5,"
+vis,Paris,5,"
 "
 
-vis,Allemagne,6,"
+vis,Berlin,6,"
 "
 
-vis,Pays_Bas,5,"
+vis,Amsterdam,5,"
 "
 
-vis,New_York,7,"
+vis,New York,7,"
 "
 
-vis,Hong_Kong,4,"
+vis,Hong Kong,4,"
 "
 
-transistor,Pays_Bas,1,"
+transistor,Amsterdam,1,"
 "
 
-batterie,Hong_Kong,35,"
+batterie,Hong Kong,35,"
 "
 
-batterie,californie,40,"
+batterie,Los Angeles,40,"
 "
 
-micro,New_York,8,"
+micro,New York,8,"
 "
 
-micro,Hong_Kong,7,"
+micro,Hong Kong,7,"
 "
 
-port_usb,Hong_Kong,2,"
+port usb,Hong Kong,2,"
 "
 
-port_usb,Pays_Bas,3,"
+port usb,Amsterdam,3,"
 "
 
-souris,Allemagne,5,"
+souris,Berlin,5,"
 "
 
-carte_mere,Hong_Kong,80,"
+carte mere,Hong Kong,80,"
 "
 
-carte_mere,Californie,75,"
+carte mere,Los Angeles,75,"
 "
 
-interrupteur,Pays_Bas,4,"
+interrupteur,Amsterdam,4,"
 "
 
-clef_usb,New_York,25,"
+clef usb,New York,25,"
 "
 
-clef_usb,Hong_Kong,23,"
+clef usb,Hong Kong,23,"
 "
 
-clef_usb,Allemagne,26,"
+clef usb,Berlin,26,"
 "
 
-disque_dur,Hong_Kong,55,"
+disque dur,Hong Kong,55,"
 "
 
-ventilateur,Californie,10.55,"
+ventilateur,Los Angeles,10.55,"
 "
 
-cable,Hong_Kong,25,"
+cable,Hong Kong,25,"
 "
 
-cable,France,26,"
+cable,Paris,26,"
 "
 
-cable,New_York,22,"
+cable,New York,22,"
 "
 
-boitier,Allemagne,45,"
+boitier,Berlin,45,"
 "
 
-boitier,Pays_Bas,45,"
+boitier,Amsterdam,45,"
 "
 
-verre,Allemagne,33,"
+verre,Berlin,33,"
 "
 
-couteau_suisse,Pays_Bas,110,"
+couteau suisse,Amsterdam,110,"
 "
 
-gros_bouton_rouge,Hong_Kong,13,"
+gros bouton rouge,Hong Kong,13,"
 "
 
-gros_bouton_rouge,France,15,"
+gros bouton rouge,Paris,15,"
 "
 
-carte_graphique,Californie,250,"
+carte graphique,Los Angeles,250,"
 "
 
-graveur_blueray,Hong_Kong,150,"
+graveur blueray,Hong Kong,150,"
 "
 
-graveur_blueray,France,170,"
+graveur blueray,Paris,170,"
 "
 
-objectif_photo,Hong_Kong,160,"
+objectif photo,Hong Kong,160,"
 "
 
-port_audio,France,12,"
+port audio,Paris,12,"
 "
 
-port_audio,New_York,12,"
+port audio,New York,12,"
 "
 
-laser,Allemagne,30.66,"
+laser,Berlin,30.66,"
 "
 
-circuit_imprime,France,25,"
+circuit imprime,Paris,25,"
 "
 
-circuit_imprime,New_York,24,"
+circuit imprime,New York,24,"
 "
 
-memoire_ram,Hong_Kong,90,"
+memoire ram,Hong Kong,90,"
 "
 
-radiateur,France,150,"
+radiateur,Paris,150,"
 "
 

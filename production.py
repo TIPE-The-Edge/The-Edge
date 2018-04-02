@@ -69,8 +69,8 @@ class Fournisseur(object):
 
         self.nom = self.genNom()
         self.localisation = self.genLocalistation()
-
-        self.materiaux_vendu = [] # TODO
+        
+        self.materiaux_vendu = [mat[0] for mat in readLineCSV("materiaux.csv","pays",self.localisation,["materiaux"])]
         self.modificateur_prix = 1 #TODO # Multiplicateur des prix du
                                          # fournisseur.
 
