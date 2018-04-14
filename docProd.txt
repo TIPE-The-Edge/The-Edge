@@ -1,0 +1,37 @@
+
+
+##################
+###### TODO ######
+##################
+
+APPROVISIONNEMENT :
+
+TRANSPORT :
+
+STOCK :
+
+PRODUCTION :
+    Faire une classe Commande ?
+
+    Les commandes sont parfaites, les quantités de materiaux en entrée
+        vont toutes etre utilisées.
+
+    Fonction qui prend l'ordre de commande (dans le menu Production) et génère
+        une commande usine:
+            - temps/unité = somme des temps des opérations nécessaires
+                (en semaines).
+            - nombre de materiaux entrés
+            - nombre de materiaux pour un produit
+            - type de produit
+            - opérations
+            - ... (A completer?)
+
+    On part du principe (peut etre à étudier) que l'on travaille 8h par jour
+    pendant 5 jours. Soit 2400 mins de travail par semaine.
+
+
+    7:3
+
+
+    21:9 OK
+    20:9 -> int(max (ch1/div1, ch2/div2...))
