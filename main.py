@@ -86,6 +86,7 @@ class Window():
         self.body_tmp = []
         self.overbody = []
         self.items = []
+        self.num_window = 0
 
         self.draw_opening()
 
@@ -104,7 +105,6 @@ class Window():
         self.candidats    = []
         self.departs      = []
         self.couts        = []
-
 
         self.temps = None
         self.lesRH = None
@@ -206,7 +206,7 @@ class Window():
         labels = []
 
         new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, create_game, [])
-        load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, None, [])
+        load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, load_game, [])
         leave = create_label('Quitter', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
         labels.extend([new, load, leave])
 
@@ -264,8 +264,13 @@ class Window():
         items = []
 
         icons_name = ['Home', 'Ressources Humaines', 'Recherche & Développement', 'Production', 'Finances', 'Ventes', 'Options']
-        for name in icons_name:
-            label = create_label(name, 'font/colvetica/colvetica.ttf', 30, (236,240,241), (52,73,94), 0, 0, None, quit, [])
+        for i in range(len(icons_name)):
+            if i == self.num_window:
+                color = (46, 204, 113)
+            else:
+                color = (236,240,241)
+
+            label = create_label(icons_name[i], 'font/colvetica/colvetica.ttf', 30, color, (52,73,94), 0, 0, None, quit, [])
             label.set_marge_items(20)
             label.set_bg_color((52,73,94))
             label.set_padding(20,0,0,0)
@@ -372,7 +377,13 @@ class Window():
         self.button_info = []
         self.body = []
         self.body_tmp = []
+        self.num_window = 0
 
+    def save(self):
+        pass
+
+    def load(self):
+        pass
 
 ####################################################
 ##################| FONCTIONS |#####################

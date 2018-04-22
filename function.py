@@ -104,7 +104,7 @@ def change_tab(button, window, screen, *arg):
     for icon in window.nav:
         if icon.num == button.num:
             icon.set_focus()
-
+            window.num_window = icon.num
             if icon.num == 0:
                 window.set_body([])
             elif icon.num == 1:
@@ -122,6 +122,7 @@ def change_tab(button, window, screen, *arg):
         else:
             icon.remove_focus()
 
+    window.draw_nav_name()
     window.display(screen)
 
 def draw_rh(widget, window, screen, *arg):
@@ -670,6 +671,96 @@ def reset_game(widget, window, screen, *arg):
     window.draw_opening()
     window.display(screen)
 
+'''INCOMPLET'''
+def load_game(widget, window, screen, *arg):
+    text = 'Sauvegardes'
+    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 64, 48 , None, None, [])
+    label.set_direction('horizontal')
+    label.set_padding(20,10,10,10)
+    label.resize(512, 80)
+    label.set_align('center')
+    label.make_pos()
+
+    a = []
+    # for ind in window.candidats:
+    #     employee_info = []
+    #
+    #     employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #     employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+    #     employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #     employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #
+    #     frame_employee = Frame(0, 0, employee_info, draw_individu, [ind.id])
+    #     frame_employee.set_direction('vertical')
+    #     frame_employee.set_items_pos('auto')
+    #     frame_employee.resize(580, 'auto')
+    #     frame_employee.set_padding(20,0,20,20)
+    #     frame_employee.set_bg_color((236, 240, 241))
+    #     frame_employee.make_pos()
+    #
+    #     a.append(frame_employee)
+
+    item_list_save = Item_list(a, 64, 128, 556, 128, 20, 448, 'sauvegarde')
+
+    text = 'Informations sur la sauvegarde'
+    label_save = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (149,165,166), 640, 0, None, None, [])
+    label_save.set_direction('horizontal')
+    label_save.set_padding(20,10,10,10)
+    label_save.resize(640, 80)
+    label_save.set_align('center')
+    label_save.make_pos()
+
+    text = 'Sélectionner une sauvegarde'
+    label_void = create_label(text, 'font/colvetica/colvetica.ttf', 40, (189, 195, 198), (236,240,241), 0, 0, 660, None, [])
+    label_void.set_direction('horizontal')
+    label_void.resize('auto', 'auto')
+    # label_void.set_padding(0,10,10,10)
+    label_void.set_align('center')
+    label_void.make_pos()
+
+    frame_right = Frame(640, 375, [label_void], None, [])
+    frame_right.set_direction('vertical')
+    frame_right.set_items_pos('auto')
+    frame_right.resize(640, 'auto')
+    frame_right.set_align('center')
+    frame_right.set_bg_color((236,240,241))
+    frame_right.make_pos()
+
+    button_return = create_label( 'Menu principal', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, reset_game, [])
+    button_return.set_direction('vertical')
+    button_return.resize(514,'auto')
+    button_return.set_align('center')
+    button_return.make_pos()
+
+    frame_v = Frame(64, 605, [button_return], reset_game, [])
+    frame_v.set_direction('horizontal')
+    frame_v.set_items_pos('auto')
+    frame_v.resize('auto', 68)
+    frame_v.set_align('center')
+    frame_v.set_bg_color((230, 126, 34))
+    frame_v.make_pos()
+
+    button_load = create_label( 'Charger', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_load.set_direction('vertical')
+    button_load.resize(514,'auto')
+    button_load.set_align('center')
+    button_load.make_pos()
+
+    frame_v1 = Frame(704, 605, [button_load], None, [])
+    frame_v1.set_direction('horizontal')
+    frame_v1.set_items_pos('auto')
+    frame_v1.resize('auto', 68)
+    frame_v1.set_align('center')
+    frame_v1.set_bg_color((230, 126, 34))
+    frame_v1.make_pos()
+
+    rect0 = Rectangle(0, 0, 640, 720, (44,62,80), None, None, [])
+    rect1 = Rectangle(64, 0, 512, 48, (44,62,80), None, None, [])
+    rect2 = Rectangle(64, 576, 512, 145, (44,62,80), None, None, [])
+
+    window.body = [rect0, item_list_save, rect1, rect2, label, label_save, frame_right, frame_v, frame_v1]
+    window.display(screen)
+
 def draw_recruit(widget, window, screen, *arg):
     text = 'Liste des candidats'
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, draw_rh, [])
@@ -989,21 +1080,41 @@ def draw_finance(widget, window, screen, i, *arg):
 
     button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [0])
     button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [1])
-    button_compte = create_label("Compte de resultat", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [2])
-    button_macro = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [3])
+    button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [2])
+    button_macro = create_label("Macroéconomie", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [3])
+
+    lst_button_pret = [button_pret]
 
     focus_color = (41,128,185)
-    if i == 0:
+
+    if 0 <= i < 1:
         button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [0])
+        lst_button_pret = [button_pret]
+
+        button_resume_pret = create_label("Résumé", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0])
+        button_lst_pret = create_label("Liste des prêts", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.1])
+        button_ask_pret = create_label("Contracter un prêt", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.2])
+
+        if i == 0:
+            button_resume_pret = create_label("Résumé", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0])
+        elif i == 0.1:
+            button_lst_pret = create_label("Liste des prêts", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0.1])
+        elif i == 0.2:
+            button_ask_pret = create_label("Contracter un prêt", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0.2])
+
+        lst_button_pret.append(button_resume_pret)
+        lst_button_pret.append(button_lst_pret)
+        lst_button_pret.append(button_ask_pret)
+
     elif i == 1:
         button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
     elif i == 2:
-        button_compte = create_label("Compte de resultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
+        button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
     elif i == 3:
-        button_macro = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [3])
+        button_macro = create_label("Macroéconomie", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [3])
 
 
-    list_tmp = [button_pret, button_bilan, button_compte, button_macro]
+    list_tmp = lst_button_pret + [button_bilan, button_compte, button_macro]
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 80)
