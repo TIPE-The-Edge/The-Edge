@@ -19,6 +19,8 @@ import time
 import datetime
 import uuid
 import math
+import re
+import string
 
 # IMPORTS DE FICHIERS
 
@@ -112,8 +114,7 @@ class Window():
         self.argent = 0
 
         self.sha = ''
-        self.user_first_name = ''
-        self.user_surname = ''
+        self.user_name = ''
 
     def loop(self, screen):
         clock = pygame.time.Clock()
@@ -205,7 +206,7 @@ class Window():
 
         labels = []
 
-        new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, create_game, [])
+        new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, draw_ask_name, [])
         load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, load_game, [])
         leave = create_label('Quitter', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
         labels.extend([new, load, leave])
@@ -347,6 +348,7 @@ class Window():
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
         print(self.sha)
+        print(self.user_name)
 
     def unload_world(self):
         self.individus    = []

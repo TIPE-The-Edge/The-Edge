@@ -16,6 +16,8 @@ from pygame.sprite import Sprite, Group
 import random
 import os
 import math
+import re
+import string
 
 # IMPORTS DE FICHIERS
 
@@ -34,11 +36,11 @@ from world.objets import *
 from world.outils import *
 
 
-def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, arg):
+def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, *arg):
     if size == None:
-        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action, arg)
+        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action, *arg)
 
-        frame = Frame(x, y, [label], action, arg)
+        frame = Frame(x, y, [label], action, *arg)
 
     else:
         words = text.split(' ')
@@ -46,15 +48,15 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
 
         check_words = True
         for word in words:
-            label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, *arg)
             if label_word.rect.width > size:
                 check_words = False
-                lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, arg))
+                lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, *arg))
 
         while len(words) > 0 and check_words:
             i = 0
             line = words[i]
-            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
 
             while label.rect.width <= size:
                 i += 1
@@ -64,12 +66,12 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
                 else:
                     old_line = line
                     line += ' ' + words[i]
-                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
             words = words[i:]
-            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, arg)
+            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
             lines.append(label)
 
-        frame = Frame(x, y, lines, action, arg)
+        frame = Frame(x, y, lines, action, *arg)
 
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
@@ -79,6 +81,13 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
     frame.make_pos()
 
     return frame
+
+def check_string(widget, window, screen, regex, text, error_msg, *arg):
+    if re.match(regex, text) == None:
+        draw_alert(widget, window, screen, "Erreur", error_msg, clear_overbody, [])
+        return False
+    else:
+        return True
 
 def draw_part(window, item_group, screen):
     item_group_tmp = []
@@ -106,7 +115,7 @@ def change_tab(button, window, screen, *arg):
             icon.set_focus()
             window.num_window = icon.num
             if icon.num == 0:
-                window.set_body([])
+                draw_home(None, window, screen)
             elif icon.num == 1:
                 draw_rh(None, window, screen)
             elif icon.num == 2:
@@ -123,6 +132,17 @@ def change_tab(button, window, screen, *arg):
             icon.remove_focus()
 
     window.draw_nav_name()
+    window.display(screen)
+
+def draw_home(widget, window, screen, *arg):
+    button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_next.set_padding(20,20,15,15)
+    button_next.make_pos()
+    button_next.set_pos(1280-10-button_next.width, 720-10-button_next.height)
+    button_next.make_pos()
+
+    window.set_body([button_next])
+    window.draw_button_info('Aide', 'Salut')
     window.display(screen)
 
 def draw_rh(widget, window, screen, *arg):
@@ -548,11 +568,11 @@ def quit(widget, window, screen, *arg):
     window.quit()
 
 def get_entry(widget, window, screen, *arg):
-    entry_values = []
-    for item in window.body:
+    entry_values = {}
+    for item in window.items:
         if item.type == 'entry':
-            if item.char_min <= len(item.entry) <= item.char_max:
-                entry_values.append([item.id, item.entry])
+            entry_values.update({item.id: item.entry})
+    return entry_values
 
 def draw_alert(widget, window, screen, msg_type, msg, *arg):
     items = []
@@ -656,14 +676,58 @@ def clear_overbody(widget, window, screen, *arg):
     window.items = window.info_bar + window.nav + window.button_info + window.body + window.body_tmp
     window.display(screen)
 
+def draw_ask_name(widget, window, screen, *arg):
+    label1 = create_label('Avant de commencer,', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
+    label2 = create_label('Quel est votre nom ?', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
+    entry = Entry(0, 0, 500, 60, False, 'user_name', 0, None)
+
+    button_submit = create_label('Continuer', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, set_name, [])
+    button_submit.set_direction('vertical')
+    button_submit.resize(500,'auto')
+    button_submit.set_align('center')
+    button_submit.make_pos()
+
+    frame_v = Frame(0, 0, [button_submit], set_name, [])
+    frame_v.set_direction('horizontal')
+    frame_v.set_items_pos('auto')
+    frame_v.resize('auto', 60)
+    frame_v.set_align('center')
+    frame_v.set_bg_color((230, 126, 34))
+    frame_v.make_pos()
+
+    frame_v1 = Frame(0, 0, [label1, label2, entry, frame_v], None, [])
+    frame_v1.set_direction('vertical')
+    frame_v1.set_items_pos('auto')
+    frame_v1.set_marge_items(20)
+    frame_v1.resize(1280, 'auto')
+    frame_v1.set_align('center')
+    frame_v1.set_bg_color((236, 240, 241))
+    frame_v1.make_pos()
+
+    frame = Frame(0, 0, [frame_v1], None, [])
+    frame.set_direction('horizontal')
+    frame.set_items_pos('auto')
+    frame.resize('auto', 720)
+    frame.set_align('center')
+    frame.set_bg_color((236, 240, 241))
+    frame.make_pos()
+
+    window.body = [frame]
+    window.display(screen)
+
+def set_name(widget, window, screen, *arg):
+    entry = get_entry(widget, window, screen, *arg)
+    if check_string(widget, window, screen, r"^[a-zA-Z]+", entry['user_name'], "Des caractères ne sont pas acceptés"):
+        window.user_name = entry['user_name']
+        create_game(widget, window, screen, *arg)
+
 def create_game(widget, window, screen, *arg):
     window.gen_world()
-    window.set_body([])
+
     window.draw_info()
     window.draw_nav_button()
     window.draw_button_info('Aide', 'Il n\'y en a pas')
-
-    window.display(screen)
+    draw_home(None, window, screen)
 
 def reset_game(widget, window, screen, *arg):
     window.empty_window()
