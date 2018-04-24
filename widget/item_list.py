@@ -27,7 +27,7 @@ class Item_list():
             item_height = items[0].rect.height
 
         # Set background behind items
-        self.bg_color = (189, 195, 199)
+        self.bg_color = (191, 191, 191)
         self.bg_rect = pygame.Rect(list_x, list_y, item_width, scrollbar_height)
 
         # Set background behind thumb
@@ -41,7 +41,7 @@ class Item_list():
         else:
             thumb_height = (scrollbar_height * scrollbar_height) // all_items_height - 1
 
-        self.thumb_color = (255,255,255) #(189, 195, 199)
+        self.thumb_color = (108, 122, 137) #(189, 195, 199)
         self.thumb_color_pressed = (149, 165, 166)
         self.rect = pygame.Rect(scrollbar_x, scrollbar_y, scrollbar_width, thumb_height)
 
@@ -202,7 +202,7 @@ class Item_list():
 
     def create_void_panel(self, x, y, width, height):
         text = "Aucun(e) " + self.content + " disponible"
-        label_void = create_label(text, 'font/colvetica/colvetica.ttf', 40, (189, 195, 198), (236,240,241), 0, 0, width-20, None, [])
+        label_void = create_label(text, 'font/colvetica/colvetica.ttf', 40, (189, 195, 198), (242, 241, 239), 0, 0, width-20, None, [])
         label_void.set_direction('horizontal')
         label_void.resize('auto', height)
         # label_void.set_padding(0,10,10,10)
@@ -214,7 +214,7 @@ class Item_list():
         frame.set_items_pos('auto')
         frame.resize(width, height)
         frame.set_align('center')
-        frame.set_bg_color((236,240,241))
+        frame.set_bg_color((242, 241, 239))
         frame.make_pos()
 
         self.items.append(frame)

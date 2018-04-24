@@ -34,7 +34,13 @@ from widget.rectangle import *
 from world.function import *
 from world.objets import *
 from world.outils import *
+from world.innov import *
 
+'''
+================================================================================
+AUTRES
+================================================================================
+'''
 
 def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, *arg):
     if size == None:
@@ -82,6 +88,26 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
 
     return frame
 
+def create_label_value(labels, font1, font2, size1, size2, color1, color2, color_bg1, color_bg2, width1, width):
+    items = []
+    for element in labels:
+        label = create_label(element[0] + ' : ', font1, size1, color1, color_bg1, 0, 0, 400, None, [])
+        label.resize(width1, 'auto')
+        label.make_pos()
+        value = create_label(str(element[1]), font2, size2, color2, color_bg2, 0, 0, None, None, [])
+
+        frame_tmp = Frame(0, 0, [label,value], None, [])
+        frame_tmp.set_direction('horizontal')
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_bg_color(color_bg2)
+        frame_tmp.set_marge_items(50)
+        frame_tmp.resize(width, 'auto')
+        frame_tmp.make_pos()
+
+        items.append(frame_tmp)
+
+    return items
+
 def check_string(widget, window, screen, regex, text, error_msg, *arg):
     if re.match(regex, text) == None:
         draw_alert(widget, window, screen, "Erreur", error_msg, clear_overbody, [])
@@ -104,9 +130,30 @@ def draw_part(window, item_group, screen):
         i += 1
     window.items += item_group_tmp
 
+def get_uppest_item(items, mouse_pos):
+    uppest_item = None
+    for item in items:
+        if item.rect.collidepoint(mouse_pos):
+            if uppest_item == None:
+                uppest_item = item
+            elif uppest_item.level <= item.level:
+                uppest_item = item
+
+    return uppest_item
+
 def clear_body(widget, window, screen, *arg):
     window.set_body(arg[0](*arg))
     window.display(screen)
+
+def quit(widget, window, screen, *arg):
+    window.quit()
+
+def get_entry(widget, window, screen, *arg):
+    entry_values = {}
+    for item in window.items:
+        if item.type == 'entry':
+            entry_values.update({item.id: item.entry})
+    return entry_values
 
 '''INCOMPLET'''
 def change_tab(button, window, screen, *arg):
@@ -133,446 +180,6 @@ def change_tab(button, window, screen, *arg):
 
     window.draw_nav_name()
     window.display(screen)
-
-def draw_home(widget, window, screen, *arg):
-    button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
-    button_next.set_padding(20,20,15,15)
-    button_next.make_pos()
-    button_next.set_pos(1280-10-button_next.width, 720-10-button_next.height)
-    button_next.make_pos()
-
-    window.set_body([button_next])
-    window.draw_button_info('Aide', 'Salut')
-    window.display(screen)
-
-def draw_rh(widget, window, screen, *arg):
-    rh = window.lesRH
-
-    info1, info2, info3, info4 = [], [], [], []
-    info1.append(['Nombre d\'employés', rh.nbr_employes])
-    # info.append(['Bonheur moyen', rh.bonheur_moy])
-    info1.append(['Âge moyen', rh.age_moy])
-    info2.append(['Temps moyen passé dans la start-up', rh.exp_start_up_moy])
-    info2.append(['Expérience moyenne en R&D', rh.exp_RetD_moy])
-    info3.append(['Nombre d\'arrivées durant le dernier mois', rh.nbr_arrivees])
-    # info.append(['Taux d\'arrivées', rh.taux_arrivees])
-    info3.append(['Nombre de départs durant le dernier mois', rh.nbr_departs])
-    # info.append(['Taux de départ', rh.taux_departs])
-    # info.append(['what', rh.taux_rotation])
-    # info.append(['Coût de formations', rh.cout_formations])
-    # info.append(['Moyenne formations', rh.moy_formations])
-    info4.append(['Salaire moyen', rh.salaire_moy])
-    info4.append(['Masse salariale brute', rh.masse_sal_brute])
-    info4.append(['Masse salariale nette', rh.masse_sal_nette])
-    info4.append(['Coût de l\'emploi', rh.cout_emploi])
-    info4.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
-    info4.append(['Part de la masse salariale dans le budget de l\'entreprise', rh.part_masse_sal])
-
-    infos = [info1, info2, info3, info4]
-    frame_labels = []
-    for info in infos:
-        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (255,255,255), (255,255,255), (189,195,198), (189,195,198), 400, 'auto')
-        frame_tmp = Frame(0, 0, label_tmp, None, [])
-        frame_tmp.set_items_pos('auto')
-        frame_tmp.set_marge_items(10)
-        frame_tmp.set_direction('vertical')
-        frame_tmp.resize('auto', 'auto')
-        frame_tmp.set_bg_color((189,195,198))
-        frame_tmp.make_pos()
-        frame_labels.append(frame_tmp)
-
-    button_hired = create_label( 'Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_recruit, [])
-    button_hired.set_padding(0,0,15,15)
-    button_hired.set_direction('vertical')
-    button_hired.resize(300,"auto")
-    button_hired.set_align('center')
-    button_hired.make_pos()
-
-    frame_v = Frame(0, 0, [button_hired], None, [])
-    frame_v.set_direction('vertical')
-    frame_v.set_items_pos('auto')
-    frame_v.resize(560, 'auto')
-    frame_v.set_align('center')
-    frame_v.set_padding(0,0,20,0)
-    frame_v.set_bg_color((189, 195, 198))
-    frame_v.make_pos()
-
-    frame_left = Frame(80, 40, frame_labels + [frame_v] , None, [])
-    frame_left.set_direction('vertical')
-    frame_left.set_items_pos('auto')
-    frame_left.resize(600, 680)
-    frame_left.set_padding(20,20,20,20)
-    frame_left.set_marge_items(50)
-    frame_left.set_bg_color((189, 195, 198))
-    frame_left.make_pos()
-
-    text = 'Liste des employés'
-    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 680, 40, None, None, [])
-    label.set_direction('horizontal')
-    label.set_padding(20,10,10,10)
-    label.resize(680, 80)
-    label.set_align('center')
-    label.make_pos()
-
-    a = []
-    for ind in window.individus:
-        employee_info = []
-
-        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-
-        frame_employee = Frame(0, 0, employee_info, draw_employee, [ind.id, 0])
-        frame_employee.set_direction('vertical')
-        frame_employee.set_items_pos('auto')
-        frame_employee.resize(580, 'auto')
-        frame_employee.set_padding(20,0,20,20)
-        frame_employee.set_bg_color((236, 240, 241))
-        frame_employee.make_pos()
-
-        a.append(frame_employee)
-
-    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 600, 'employé')
-
-    window.set_body([item_list_employe, label, frame_left])
-    window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
-    window.display(screen)
-
-def draw_employee(widget, window, screen, ind_id, i, *arg):
-    ind = get_individu(window.individus, ind_id)
-
-    items = []
-
-    path = 'img/icon/right_white_arrow'
-    button_arrow = Button_img(0, path, 0, 0, None, [])
-    text = 'Employé ' + str(ind_id)
-    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
-    frame_back_rh = Frame(0,0, [button_arrow, name], draw_rh, [])
-    frame_back_rh.set_direction('horizontal')
-    frame_back_rh.set_items_pos('auto')
-    frame_back_rh.resize(250, 80)
-    frame_back_rh.set_align('center')
-    frame_back_rh.set_padding(10,0,0,0)
-    frame_back_rh.set_marge_items(10)
-    frame_back_rh.set_bg_color((149, 165, 166))
-    frame_back_rh.make_pos()
-
-    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id, 0])
-    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,1])
-    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,2])
-
-    f1 = ["Oui", fired_ind, [ind_id]]
-    f2 = ["Non", clear_overbody, []]
-    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment licencier ' + ind.prenom + ' ' + ind.nom + ' ?',f1, f2])
-
-    focus_color = (41,128,185)
-    if i == 0:
-        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,0])
-
-        title = create_label(ind.prenom + ' ' + ind.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
-        title.set_padding(0,0,0,30)
-        title.make_pos()
-
-        info1, info2, info3, info4, info5 = [], [], [], [], []
-        info1.append(['Genre', ind.genre])
-        info1.append(['Âge', ind.age])
-        info2.append(['Expérience en R&D', ind.exp_RetD])
-        info2.append(['Expérience start-up', ind.exp_startup])
-        info3.append(['Compétence de coopération', ind.competence_groupe])
-        info3.append(['Compétence en recherche', ind.competence_recherche])
-        info3.append(['Compétence en management', ind.competence_direction])
-        info4.append(['Statut', ind.statut])
-        info4.append(['Rôle', ind.role])
-        info5.append(['Salaire', ind.salaire])
-
-        infos = [info1, info2, info3, info4, info5]
-        frame_labels = []
-        for info in infos:
-            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 'auto')
-            frame_tmp = Frame(0, 0, label_tmp, None, [])
-            frame_tmp.set_items_pos('auto')
-            frame_tmp.set_marge_items(10)
-            frame_tmp.set_direction('vertical')
-            frame_tmp.resize('auto', 'auto')
-            frame_tmp.set_bg_color((236, 240, 241))
-            frame_tmp.make_pos()
-            frame_labels.append(frame_tmp)
-
-        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
-        frame_right.set_direction('vertical')
-        frame_right.set_items_pos('auto')
-        frame_right.set_padding(50,0,50,0)
-        frame_right.set_marge_items(30)
-        frame_right.set_bg_color((236,240,241))
-        frame_right.make_pos()
-
-        items.append(frame_right)
-
-    elif i == 1:
-        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,1])
-        roles = []
-        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
-        items.append(item_list_role)
-
-    elif i == 2:
-        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,2])
-        formations = []
-        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
-        items.append(item_list_formation)
-
-
-    list_tmp = [attribute, role, formation, fired]
-    for element in list_tmp:
-        element.set_direction('horizontal')
-        element.resize(250, 80)
-        element.set_padding(10,0,0,0)
-        element.set_align('center')
-        element.make_pos()
-
-    frame_left = Frame(80, 40, [frame_back_rh] + list_tmp, None, [])
-    frame_left.set_direction('vertical')
-    frame_left.set_items_pos('auto')
-    frame_left.resize(250, 680)
-    frame_left.set_marge_items(2)
-    frame_left.set_bg_color((189, 195, 198))
-    frame_left.make_pos()
-
-    items.append(frame_left)
-
-    window.set_body(items)
-    window.display(screen)
-
-def draw_rd(widget, window, screen, i, *arg):
-    items = []
-
-    button_project = create_label("Projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_rd, [0])
-    button_product = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_rd, [1])
-
-    focus_color = (41,128,185)
-    if i == 0:
-        button_project = create_label("Projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_rd, [0])
-
-        label_add_project = create_label("Ajouter un projet", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (52,73,94), 0, 0, None, None, [])
-        label_add_project.set_direction('horizontal')
-        label_add_project.resize(540, 'auto')
-        label_add_project.set_align('center')
-        label_add_project.make_pos()
-
-        path = 'img/icon/grey_sum'
-        icon_sum = Button_img(0, path, 0, 0, None, [])
-        individus = window.individus
-        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_add_project, [individus, []])
-        button_add_project.set_direction('horizontal')
-        button_add_project.set_items_pos('auto')
-        button_add_project.resize(950, 80)
-        button_add_project.set_align('center')
-        button_add_project.set_padding(350,0,0,0)
-        button_add_project.set_marge_items(0)
-        button_add_project.set_bg_color((52,73,94))
-        button_add_project.make_pos()
-
-        items.append(button_add_project)
-
-        projects = []
-
-        item_list_project = Item_list(projects, 330, 120, 1260, 120, 20, 600, 'projet')
-
-        items.append(item_list_project)
-
-    elif i == 1:
-        button_product = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_rd, [1])
-
-        products = []
-
-        item_list_product = Item_list(products, 330, 40, 1260, 40, 20, 680, 'produit')
-
-        items.append(item_list_product)
-
-    list_tmp = [button_project, button_product]
-    for element in list_tmp:
-        element.set_direction('horizontal')
-        element.resize(250, 80)
-        element.set_padding(10,0,0,0)
-        element.set_align('center')
-        element.make_pos()
-
-    frame_left = Frame(80, 40, list_tmp, None, [])
-    frame_left.set_direction('vertical')
-    frame_left.set_items_pos('auto')
-    frame_left.resize(250, 680)
-    frame_left.set_marge_items(2)
-    frame_left.set_bg_color((189, 195, 198))
-    frame_left.make_pos()
-
-    items.append(frame_left)
-
-    window.set_body(items)
-    window.display(screen)
-
-'''INCOMPLET'''
-def draw_product(widget, window, screen, prod_id, i, *arg):
-    items = []
-
-    path = 'img/icon/right_white_arrow'
-    button_arrow = Button_img(0, path, 0, 0, None, [])
-    text = 'Produit #'
-    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
-    frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
-    frame_back.set_direction('horizontal')
-    frame_back.set_items_pos('auto')
-    frame_back.resize(250, 80)
-    frame_back.set_align('center')
-    frame_back.set_padding(10,0,0,0)
-    frame_back.set_marge_items(10)
-    frame_back.set_bg_color((149, 165, 166))
-    frame_back.make_pos()
-
-    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id, 0])
-    update = create_label("Améliorer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id,1])
-
-    focus_color = (41,128,185)
-    if i == 0:
-        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,0])
-
-    elif i == 1:
-        update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,1])
-
-    list_tmp = [attribute, upgrade]
-    for element in list_tmp:
-        element.set_direction('horizontal')
-        element.resize(250, 'auto')
-        element.set_padding(10,0,20,20)
-        element.set_align('center')
-        element.make_pos()
-
-    frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
-    frame_left.set_direction('vertical')
-    frame_left.set_items_pos('auto')
-    frame_left.resize(250, 680)
-    frame_left.set_marge_items(2)
-    frame_left.set_bg_color((189, 195, 198))
-    frame_left.make_pos()
-
-    items.append(frame_left)
-
-    window.set_body(items)
-    window.display(screen)
-
-'''INCOMPLET'''
-def draw_upgrade_product(widget, window, screen, lst_ind, lst_ajout, *arg):
-    items = []
-
-    text = 'Liste des employés'
-    label_employe = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
-    label_employe.set_direction('horizontal')
-    label_employe.set_padding(20,10,10,10)
-    label_employe.resize(600, 80)
-    label_employe.set_align('center')
-    label_employe.make_pos()
-
-    a = []
-    for i in range(0,len(lst_ind)):
-        employee_info = []
-        ind = lst_ind[i]
-        lst_ind_tmp = []
-        lst_ind_tmp += lst_ind
-        lst_ind_tmp.pop(i)
-
-        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-
-        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind]])
-        frame_employee.set_direction('vertical')
-        frame_employee.set_items_pos('auto')
-        frame_employee.resize(580, 'auto')
-        frame_employee.set_padding(20,0,20,20)
-        frame_employee.set_bg_color((236, 240, 241))
-        frame_employee.make_pos()
-
-        a.append(frame_employee)
-
-    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'employé')
-    items.append(item_list_employe)
-    items.append(label_employe)
-
-    text = 'Liste des employés ajoutés'
-    label_ajout = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (44,62,80), 680, 40, None, None, [])
-    label_ajout.set_direction('horizontal')
-    label_ajout.set_padding(20,10,10,10)
-    label_ajout.resize(600, 80)
-    label_ajout.set_align('center')
-    label_ajout.make_pos()
-
-    lst_tmp = []
-    for i in range(0,len(lst_ajout)):
-        employee_info = []
-
-        ind = lst_ajout[i]
-        lst_ajout_tmp = []
-        lst_ajout_tmp += lst_ajout
-        lst_ajout_tmp.pop(i)
-
-        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
-        employe_name.set_items_pos('auto')
-        employe_name.resize(580, 'auto')
-        employe_name.set_padding(20,0,20,20)
-        employe_name.make_pos()
-
-        lst_tmp.append(employe_name)
-
-    item_ajoute = Item_list(lst_tmp, 680, 120, 1260, 120, 20, 500, 'employé')
-    items.append(item_ajoute)
-    items.append(label_ajout)
-
-    button_submit = create_label('Améliorer le produit', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
-    button_submit.set_padding(20,20,15,15)
-    button_submit.set_direction('vertical')
-    button_submit.make_pos()
-
-    frame_tmp = Frame(680, 620, [button_submit], None, [])
-    frame_tmp.set_direction('vertical')
-    frame_tmp.resize(1260-680,'auto')
-    frame_tmp.set_items_pos('auto')
-    frame_tmp.set_align('right')
-    frame_tmp.set_padding(20,0,30,0)
-    frame_tmp.set_bg_color((236, 240, 241))
-    frame_tmp.make_pos()
-    items.append(frame_tmp)
-
-    window.set_body(items)
-    window.display(screen)
-
-def draw_option(widget, window, screen, *arg):
-    button_quit = create_label("RETOURNER AU MENU PRINCIPAL", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, reset_game, [])
-    button_quit.set_direction('horizontal')
-    button_quit.set_padding(50,50,20,20)
-    button_quit.make_pos()
-
-    frame = Frame(80, 40, [button_quit], None, [])
-    frame.set_direction('vertical')
-    frame.set_items_pos('auto')
-    frame.resize(1200, 680)
-    frame.set_align('center')
-    frame.set_marge_items(0)
-    frame.set_padding(0,0,280,0)
-    frame.set_bg_color((236,240,241))
-    frame.make_pos()
-
-    window.set_body([frame])
-    window.display(screen)
-
-def quit(widget, window, screen, *arg):
-    window.quit()
-
-def get_entry(widget, window, screen, *arg):
-    entry_values = {}
-    for item in window.items:
-        if item.type == 'entry':
-            entry_values.update({item.id: item.entry})
-    return entry_values
 
 def draw_alert(widget, window, screen, msg_type, msg, *arg):
     items = []
@@ -825,6 +432,237 @@ def load_game(widget, window, screen, *arg):
     window.body = [rect0, item_list_save, rect1, rect2, label, label_save, frame_right, frame_v, frame_v1]
     window.display(screen)
 
+def get_with_id(group, ind_id):
+    for ind in group:
+        if ind.id == ind_id:
+            return ind
+    return None
+
+
+
+'''
+================================================================================
+HOME
+================================================================================
+'''
+
+def draw_home(widget, window, screen, *arg):
+    button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_next.set_padding(20,20,15,15)
+    button_next.make_pos()
+    button_next.set_pos(1280-10-button_next.width, 720-10-button_next.height)
+    button_next.make_pos()
+
+    window.set_body([button_next])
+    window.draw_button_info('Aide', 'Salut')
+    window.display(screen)
+
+
+
+'''
+================================================================================
+RH
+================================================================================
+'''
+
+def draw_rh(widget, window, screen, *arg):
+    rh = window.lesRH
+
+    info1, info2, info3, info4 = [], [], [], []
+    info1.append(['Nombre d\'employés', rh.nbr_employes])
+    # info.append(['Bonheur moyen', rh.bonheur_moy])
+    info1.append(['Âge moyen', rh.age_moy])
+    info2.append(['Temps moyen passé dans la start-up', rh.exp_start_up_moy])
+    info2.append(['Expérience moyenne en R&D', rh.exp_RetD_moy])
+    info3.append(['Nombre d\'arrivées durant le dernier mois', rh.nbr_arrivees])
+    # info.append(['Taux d\'arrivées', rh.taux_arrivees])
+    info3.append(['Nombre de départs durant le dernier mois', rh.nbr_departs])
+    # info.append(['Taux de départ', rh.taux_departs])
+    # info.append(['what', rh.taux_rotation])
+    # info.append(['Coût de formations', rh.cout_formations])
+    # info.append(['Moyenne formations', rh.moy_formations])
+    info4.append(['Salaire moyen', rh.salaire_moy])
+    info4.append(['Masse salariale brute', rh.masse_sal_brute])
+    info4.append(['Masse salariale nette', rh.masse_sal_nette])
+    info4.append(['Coût de l\'emploi', rh.cout_emploi])
+    info4.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
+    info4.append(['Part de la masse salariale dans le budget de l\'entreprise', rh.part_masse_sal])
+
+    infos = [info1, info2, info3, info4]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (255,255,255), (255,255,255), (189,195,198), (189,195,198), 400, 'auto')
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((189,195,198))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
+
+    button_hired = create_label( 'Recruter', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_recruit, [])
+    button_hired.set_padding(0,0,15,15)
+    button_hired.set_direction('vertical')
+    button_hired.resize(300,"auto")
+    button_hired.set_align('center')
+    button_hired.make_pos()
+
+    frame_v = Frame(0, 0, [button_hired], None, [])
+    frame_v.set_direction('vertical')
+    frame_v.set_items_pos('auto')
+    frame_v.resize(560, 'auto')
+    frame_v.set_align('center')
+    frame_v.set_padding(0,0,20,0)
+    frame_v.set_bg_color((189, 195, 198))
+    frame_v.make_pos()
+
+    frame_left = Frame(80, 40, frame_labels + [frame_v] , None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(600, 680)
+    frame_left.set_padding(20,20,20,20)
+    frame_left.set_marge_items(50)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    text = 'Liste des employés'
+    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 680, 40, None, None, [])
+    label.set_direction('horizontal')
+    label.set_padding(20,10,10,10)
+    label.resize(680, 80)
+    label.set_align('center')
+    label.make_pos()
+
+    a = []
+    for ind in window.individus:
+        employee_info = []
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_employee, [ind.id, 0])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 680, 120, 1260, 120, 20, 600, 'employé')
+
+    window.set_body([item_list_employe, label, frame_left])
+    window.draw_button_info('Aide', 'Informe toi sur les ressources humaines et intéragis avec les employées !')
+    window.display(screen)
+
+def draw_employee(widget, window, screen, ind_id, i, *arg):
+    ind = get_with_id(window.individus, ind_id)
+
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Employé ' + str(ind_id)
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back_rh = Frame(0,0, [button_arrow, name], draw_rh, [])
+    frame_back_rh.set_direction('horizontal')
+    frame_back_rh.set_items_pos('auto')
+    frame_back_rh.resize(250, 80)
+    frame_back_rh.set_align('center')
+    frame_back_rh.set_padding(10,0,0,0)
+    frame_back_rh.set_marge_items(10)
+    frame_back_rh.set_bg_color((149, 165, 166))
+    frame_back_rh.make_pos()
+
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id, 0])
+    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,1])
+    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,2])
+
+    f1 = ["Oui", fired_ind, [ind_id]]
+    f2 = ["Non", clear_overbody, []]
+    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment licencier ' + ind.prenom + ' ' + ind.nom + ' ?',f1, f2])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,0])
+
+        title = create_label(ind.prenom + ' ' + ind.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
+        title.set_padding(0,0,0,30)
+        title.make_pos()
+
+        info1, info2, info3, info4, info5 = [], [], [], [], []
+        info1.append(['Genre', ind.genre])
+        info1.append(['Âge', ind.age])
+        info2.append(['Expérience en R&D', ind.exp_RetD])
+        info2.append(['Expérience start-up', ind.exp_startup])
+        info3.append(['Compétence de coopération', ind.competence_groupe])
+        info3.append(['Compétence en recherche', ind.competence_recherche])
+        info3.append(['Compétence en management', ind.competence_direction])
+        info4.append(['Statut', ind.statut])
+        info4.append(['Rôle', ind.role])
+        info5.append(['Salaire', ind.salaire])
+
+        infos = [info1, info2, info3, info4, info5]
+        frame_labels = []
+        for info in infos:
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 'auto')
+            frame_tmp = Frame(0, 0, label_tmp, None, [])
+            frame_tmp.set_items_pos('auto')
+            frame_tmp.set_marge_items(10)
+            frame_tmp.set_direction('vertical')
+            frame_tmp.resize('auto', 'auto')
+            frame_tmp.set_bg_color((236, 240, 241))
+            frame_tmp.make_pos()
+            frame_labels.append(frame_tmp)
+
+        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
+        frame_right.set_direction('vertical')
+        frame_right.set_items_pos('auto')
+        frame_right.set_padding(50,0,50,0)
+        frame_right.set_marge_items(30)
+        frame_right.set_bg_color((236,240,241))
+        frame_right.make_pos()
+
+        items.append(frame_right)
+
+    elif i == 1:
+        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,1])
+        roles = []
+        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
+        items.append(item_list_role)
+
+    elif i == 2:
+        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,2])
+        formations = []
+        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
+        items.append(item_list_formation)
+
+
+    list_tmp = [attribute, role, formation, fired]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 80)
+        element.set_padding(10,0,0,0)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back_rh] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
 def draw_recruit(widget, window, screen, *arg):
     text = 'Liste des candidats'
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, draw_rh, [])
@@ -883,34 +721,16 @@ def draw_recruit(widget, window, screen, *arg):
     window.draw_button_info('Aide', 'Clique sur un candidat pour voir ses caractéristiques et engage le si ce dernier t\'intéresse !')
     window.display(screen)
 
-def get_individu(group, ind_id):
-    for ind in group:
-        if ind.id == ind_id:
-            return ind
-    return None
-
-def create_label_value(labels, font1, font2, size1, size2, color1, color2, color_bg1, color_bg2, width1, width):
-    items = []
-    for element in labels:
-        label = create_label(element[0] + ' : ', font1, size1, color1, color_bg1, 0, 0, 400, None, [])
-        label.resize(width1, 'auto')
-        label.make_pos()
-        value = create_label(str(element[1]), font2, size2, color2, color_bg2, 0, 0, None, None, [])
-
-        frame_tmp = Frame(0, 0, [label,value], None, [])
-        frame_tmp.set_direction('horizontal')
-        frame_tmp.set_items_pos('auto')
-        frame_tmp.set_bg_color(color_bg2)
-        frame_tmp.set_marge_items(50)
-        frame_tmp.resize(width, 'auto')
-        frame_tmp.make_pos()
-
-        items.append(frame_tmp)
-
-    return items
+def recruit(widget, window, screen, ind_id, *arg):
+    RH.recruter(window.individus, window.candidats, ind_id)
+    ind = get_with_id(window.individus, ind_id)
+    title_msg = 'Bravo !'
+    msg = 'Vous avez recruté ' + ind.prenom + ' ' + ind.nom
+    draw_recruit(widget, window, screen)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
 def draw_individu(widget, window, screen, ind_id, *arg):
-    ind = get_individu(window.candidats, ind_id)
+    ind = get_with_id(window.candidats, ind_id)
 
     title = create_label(ind.prenom+' '+ind.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
     title.set_padding(0,0,0,20)
@@ -957,39 +777,153 @@ def draw_individu(widget, window, screen, ind_id, *arg):
     window.set_body_tmp([frame_employee, button_hired])
     window.display(screen)
 
-def recruit(widget, window, screen, ind_id, *arg):
-    RH.recruter(window.individus, window.candidats, ind_id)
-    ind = get_individu(window.individus, ind_id)
-    title_msg = 'Bravo !'
-    msg = 'Vous avez recruté ' + ind.prenom + ' ' + ind.nom
-    draw_recruit(widget, window, screen)
-    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
-
 def fired_ind(widget, window, screen, ind_id, *arg):
-    ind = get_individu(window.individus, ind_id)
+    ind = get_with_id(window.individus, ind_id)
     title_msg = ''
     msg = 'Vous avez licencié ' + ind.prenom + ' ' + ind.nom
     RH.licencier(window.individus, window.departs, ind_id)
     draw_rh(widget, window, screen)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
-def get_uppest_item(items, mouse_pos):
-    uppest_item = None
-    for item in items:
-        if item.rect.collidepoint(mouse_pos):
-            if uppest_item == None:
-                uppest_item = item
-            elif uppest_item.level <= item.level:
-                uppest_item = item
 
-    return uppest_item
 
-# def draw_shadow(window, screen, item):
-#     rectangle = Rectangle(item.rect.x, item.rect.y, item.rect.width, item.rect.height, (0,0,0), 128, None, [])
-#     window.set_overbody([rectangle])
-#     window.display(screen)
+'''
+================================================================================
+RD
+================================================================================
+'''
 
-'''INCOMPLET'''
+def draw_rd(widget, window, screen, i, *arg):
+    items = []
+
+    button_project = create_label("Projet", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_rd, [0])
+    button_product = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_rd, [1])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        button_project = create_label("Projet", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_rd, [0])
+
+        label_add_project = create_label("Ajouter un projet", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (52,73,94), 0, 0, None, None, [])
+        label_add_project.set_direction('horizontal')
+        label_add_project.resize(540, 'auto')
+        label_add_project.set_align('center')
+        label_add_project.make_pos()
+
+        path = 'img/icon/grey_sum'
+        icon_sum = Button_img(0, path, 0, 0, None, [])
+
+        individus = []
+        for ind in window.individus :
+            if ind.projet == None :
+                individus.append(ind)
+
+        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_add_project, [individus, []])
+        button_add_project.set_direction('horizontal')
+        button_add_project.set_items_pos('auto')
+        button_add_project.resize(950, 80)
+        button_add_project.set_align('center')
+        button_add_project.set_padding(350,0,0,0)
+        button_add_project.set_marge_items(0)
+        button_add_project.set_bg_color((52,73,94))
+        button_add_project.make_pos()
+
+        items.append(button_add_project)
+
+        projects = []
+
+        for project in window.projets:
+            project_info = []
+
+            project_info.append(create_label(project.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            project_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+            label_phase = create_label("Phase :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_phase.resize(200, 'auto')
+            label_phase.set_items_pos('auto')
+            label_phase.make_pos()
+            label_phase_value = create_label(str(project.phase), 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+            frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
+            frame_tmp1.set_direction('horizontal')
+            frame_tmp1.set_items_pos('auto')
+            frame_tmp1.resize('auto', 'auto')
+            frame_tmp1.set_align('center')
+            frame_tmp1.set_marge_items(10)
+            frame_tmp1.set_bg_color((236, 240, 241))
+            frame_tmp1.make_pos()
+            project_info.append(frame_tmp1)
+
+            label_avancement = create_label("Avancement :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_avancement.resize(200, 'auto')
+            label_avancement.set_items_pos('auto')
+            label_avancement.make_pos()
+
+            pourcentage = str(int(project.avancement * 100 / window.paliers[project.phase-1]))
+            label_pourcentage = create_label(pourcentage+'%', 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            progress_bar = Progress_bar(0, 0, 600, 30, None, [], project.avancement, window.paliers[project.phase-1], (46, 204, 113), (255, 255, 255))
+            frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
+            frame_progress_bar.set_direction('horizontal')
+            frame_progress_bar.set_items_pos('auto')
+            frame_progress_bar.set_align('center')
+            frame_progress_bar.set_marge_items(20)
+            frame_progress_bar.set_bg_color((236, 240, 241))
+            frame_progress_bar.make_pos()
+
+            frame_tmp2 = Frame(0, 0, [label_avancement, frame_progress_bar], None, [])
+            frame_tmp2.set_direction('horizontal')
+            frame_tmp2.set_items_pos('auto')
+            frame_tmp2.resize('auto', 'auto')
+            frame_tmp2.set_align('center')
+            frame_tmp2.set_marge_items(10)
+            frame_tmp2.set_padding(0,0,0,0)
+            frame_tmp2.set_bg_color((236, 240, 241))
+            frame_tmp2.make_pos()
+            project_info.append(frame_tmp2)
+
+            frame_project = Frame(0, 0, project_info, draw_project, [project.id, 0])
+            frame_project.set_direction('vertical')
+            frame_project.set_items_pos('auto')
+            frame_project.resize(930, 'auto')
+            frame_project.set_padding(20,0,20,20)
+            frame_project.set_bg_color((236, 240, 241))
+            frame_project.make_pos()
+
+            projects.append(frame_project)
+
+        item_list_project = Item_list(projects, 330, 120, 1260, 120, 20, 600, 'projet')
+
+        items.append(item_list_project)
+
+    elif i == 1:
+        button_product = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_rd, [1])
+
+        products = []
+
+        item_list_product = Item_list(products, 330, 40, 1260, 40, 20, 680, 'produit')
+
+        items.append(item_list_product)
+
+    list_tmp = [button_project, button_product]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 80)
+        element.set_padding(10,0,0,0)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
 def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     items = []
 
@@ -1066,7 +1000,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     frame_tmp_entry.set_bg_color((236, 240, 241))
     frame_tmp_entry.make_pos()
 
-    button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, create_project, [lst_ajout])
     button_submit.set_padding(20,20,15,15)
     button_submit.set_direction('vertical')
     button_submit.make_pos()
@@ -1083,21 +1017,29 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     window.set_body(items)
     window.display(screen)
 
-'''INCOMPLET'''
-def draw_sales(widget, window, screen, *arg):
-    pass
+def create_project(widget, window, screen, lst_emp, *arg):
+    entry = get_entry(widget, window, screen, *arg)
+    if check_string(widget, window, screen, r"^[a-zA-Z0-9]+", entry['name_project'], "Nom de projet incorrect") and lst_emp != []:
+        window.projets.append(Projet(entry['name_project']))
+        for ind in lst_emp:
+            addChercheurs(window.projets[-1], window.individus, ind.id)
+        title_msg = 'Bravo !'
+        msg = 'Le projet ' + entry['name_project'] + ' a bien été crée.'
+        draw_rd(widget, window, screen, 0)
+        draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+    elif lst_emp == []:
+        draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
-'''INCOMPLET'''
-def draw_sales_product(widget, window, screen, prod_id, i, *arg):
-    # ind = get_individu(window.individus, ind_id)
+def draw_project(widget, window, screen, proj_id, i, *arg):
+    projet = get_with_id(window.projets, proj_id)
 
     items = []
 
     path = 'img/icon/right_white_arrow'
     button_arrow = Button_img(0, path, 0, 0, None, [])
-    text = 'Produit #'
+    text = 'Projet ' + str(proj_id)
     name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
-    frame_back = Frame(0,0, [button_arrow, name], draw_sales, [])
+    frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
     frame_back.set_direction('horizontal')
     frame_back.set_items_pos('auto')
     frame_back.resize(250, 80)
@@ -1107,18 +1049,125 @@ def draw_sales_product(widget, window, screen, prod_id, i, *arg):
     frame_back.set_bg_color((149, 165, 166))
     frame_back.make_pos()
 
-    info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id, 0])
-    text_product_kill = "Mettre en vente" #"Arrêter la distribution"
-    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id,1])
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_project, [proj_id,0])
+    participants  = create_label("Participants", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_project, [proj_id,1])
+
+    f1 = ["Oui", del_proj, [proj_id]]
+    f2 = ["Non", clear_overbody, []]
+    delete  = create_label("Supprimer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment supprimer le projet ' +  projet.nom + ' ?',f1, f2])
 
     focus_color = (41,128,185)
     if i == 0:
-        info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,0])
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_project, [proj_id,0])
+
+        title = create_label(projet.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
+        title.set_padding(0,0,0,30)
+        title.make_pos()
+
+        frame_labels = []
+
+        label_phase = create_label("Phase :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        label_phase.resize(200, 'auto')
+        label_phase.set_items_pos('auto')
+        label_phase.make_pos()
+
+        label_phase_value = create_label(str(projet.phase), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+        frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
+        frame_tmp1.set_direction('horizontal')
+        frame_tmp1.set_items_pos('auto')
+        frame_tmp1.resize('auto', 'auto')
+        frame_tmp1.set_align('center')
+        frame_tmp1.set_marge_items(10)
+        frame_tmp1.set_padding(0,0,0,0)
+        frame_tmp1.set_bg_color((236, 240, 241))
+        frame_tmp1.make_pos()
+        frame_labels.append(frame_tmp1)
+
+        label_avancement = create_label("Avancement :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        label_avancement.resize(200, 'auto')
+        label_avancement.set_items_pos('auto')
+        label_avancement.make_pos()
+
+        pourcentage = str(int(projet.avancement * 100 / window.paliers[projet.phase-1]))
+        label_pourcentage = create_label(pourcentage+'%', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        progress_bar = Progress_bar(0, 0, 600, 20, None, [], projet.avancement, window.paliers[projet.phase-1], (46, 204, 113), (255, 255, 255))
+        frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
+        frame_progress_bar.set_direction('horizontal')
+        frame_progress_bar.set_items_pos('auto')
+        frame_progress_bar.set_align('center')
+        frame_progress_bar.set_marge_items(20)
+        frame_progress_bar.set_bg_color((236, 240, 241))
+        frame_progress_bar.make_pos()
+
+        frame_tmp2 = Frame(0, 0, [label_avancement, frame_progress_bar], None, [])
+        frame_tmp2.set_direction('horizontal')
+        frame_tmp2.set_items_pos('auto')
+        frame_tmp2.resize('auto', 'auto')
+        frame_tmp2.set_align('center')
+        frame_tmp2.set_marge_items(10)
+        frame_tmp2.set_padding(0,0,0,0)
+        frame_tmp2.set_bg_color((236, 240, 241))
+        frame_tmp2.make_pos()
+        frame_labels.append(frame_tmp2)
+
+        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
+        frame_right.set_direction('vertical')
+        frame_right.set_items_pos('auto')
+        frame_right.set_padding(50,0,50,0)
+        frame_right.set_marge_items(30)
+        frame_right.set_bg_color((236,240,241))
+        frame_right.make_pos()
+
+        items.append(frame_right)
 
     elif i == 1:
-        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,1])
+        participants  = create_label("Participants", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_project, [proj_id,1])
+        a = []
+        for ind in window.individus:
+            if ind.projet == projet.nom:
+                employee_info = []
 
-    list_tmp = [info_market, make_sale]
+                employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+                employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+                frame_employee = Frame(0, 0, employee_info, draw_employee_project, [ind.id, 0, projet.id])
+                frame_employee.set_direction('vertical')
+                frame_employee.set_items_pos('auto')
+                frame_employee.resize(930, 'auto')
+                frame_employee.set_padding(20,0,20,20)
+                frame_employee.set_bg_color((236, 240, 241))
+                frame_employee.make_pos()
+
+                a.append(frame_employee)
+
+        item_list_employe = Item_list(a, 330, 40, 1260, 40, 20, 640, 'employé')
+        items.append(item_list_employe)
+
+        lst_ind = []
+        for ind in window.individus:
+            if ind.projet == None:
+                lst_ind.append(ind)
+
+        button_add = create_label( 'Ajouter des participants', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_add_to_project, [lst_ind, [], projet.id])
+        button_add.set_direction('vertical')
+        button_add.resize(950,'auto')
+        button_add.set_align('center')
+        button_add.make_pos()
+
+        frame_v1 = Frame(330, 640, [button_add], draw_add_to_project, [lst_ind, [], projet.id])
+        frame_v1.set_direction('horizontal')
+        frame_v1.set_items_pos('auto')
+        frame_v1.resize('auto', 80)
+        frame_v1.set_align('center')
+        frame_v1.set_bg_color((230, 126, 34))
+        frame_v1.make_pos()
+
+        items.append(frame_v1)
+
+    list_tmp = [attribute, participants, delete]
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 'auto')
@@ -1138,6 +1187,396 @@ def draw_sales_product(widget, window, screen, prod_id, i, *arg):
 
     window.set_body(items)
     window.display(screen)
+
+def draw_employee_project(widget, window, screen, ind_id, i, proj_id, *arg):
+    ind = get_with_id(window.individus, ind_id)
+
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Employé ' + str(ind_id)
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back_rh = Frame(0,0, [button_arrow, name], draw_project, [proj_id, 1])
+    frame_back_rh.set_direction('horizontal')
+    frame_back_rh.set_items_pos('auto')
+    frame_back_rh.resize(250, 80)
+    frame_back_rh.set_align('center')
+    frame_back_rh.set_padding(10,0,0,0)
+    frame_back_rh.set_marge_items(10)
+    frame_back_rh.set_bg_color((149, 165, 166))
+    frame_back_rh.make_pos()
+
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee_project, [ind_id, 0, proj_id, 1])
+    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee_project, [ind_id,1, proj_id, 1])
+    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee_project, [ind_id,2, proj_id, 1])
+
+    f1 = ["Oui", remove_from_project, [ind_id, proj_id]]
+    f2 = ["Non", clear_overbody, []]
+    fired = create_label("Retirer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous retirer ' + ind.prenom + ' ' + ind.nom + ' du projet ?',f1, f2])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee_project, [ind_id, 0, proj_id, 1])
+
+        title = create_label(ind.prenom + ' ' + ind.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
+        title.set_padding(0,0,0,30)
+        title.make_pos()
+
+        info1, info2, info3, info4, info5 = [], [], [], [], []
+        info1.append(['Genre', ind.genre])
+        info1.append(['Âge', ind.age])
+        info2.append(['Expérience en R&D', ind.exp_RetD])
+        info2.append(['Expérience start-up', ind.exp_startup])
+        info3.append(['Compétence de coopération', ind.competence_groupe])
+        info3.append(['Compétence en recherche', ind.competence_recherche])
+        info3.append(['Compétence en management', ind.competence_direction])
+        info4.append(['Statut', ind.statut])
+        info4.append(['Rôle', ind.role])
+        info5.append(['Salaire', ind.salaire])
+
+        infos = [info1, info2, info3, info4, info5]
+        frame_labels = []
+        for info in infos:
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 'auto')
+            frame_tmp = Frame(0, 0, label_tmp, None, [])
+            frame_tmp.set_items_pos('auto')
+            frame_tmp.set_marge_items(10)
+            frame_tmp.set_direction('vertical')
+            frame_tmp.resize('auto', 'auto')
+            frame_tmp.set_bg_color((236, 240, 241))
+            frame_tmp.make_pos()
+            frame_labels.append(frame_tmp)
+
+        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
+        frame_right.set_direction('vertical')
+        frame_right.set_items_pos('auto')
+        frame_right.set_padding(50,0,50,0)
+        frame_right.set_marge_items(30)
+        frame_right.set_bg_color((236,240,241))
+        frame_right.make_pos()
+
+        items.append(frame_right)
+
+    elif i == 1:
+        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee_project, [ind_id,1, proj_id, 1])
+        roles = []
+        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
+        items.append(item_list_role)
+
+    elif i == 2:
+        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee_project, [ind_id,2, proj_id, 1])
+        formations = []
+        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
+        items.append(item_list_formation)
+
+
+    list_tmp = [attribute, role, formation, fired]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 80)
+        element.set_padding(10,0,0,0)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back_rh] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+def del_proj(widget, window, screen, proj_id, *arg):
+    projet = get_with_id(window.projets, proj_id)
+    title_msg = ''
+    msg = 'Le projet ' + projet.nom + ' a été supprimé.'
+    delProject(window.projets, window.individus, proj_id)
+    draw_rd(widget, window, screen, 0)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def remove_from_project(widget, window, screen, ind_id, proj_id, *arg):
+    projet = get_with_id(window.projets, proj_id)
+    ind = get_with_id(window.individus, ind_id )
+    ind.prenom + ' ' + ind.nom
+    title_msg = ''
+    msg = 'L\'employé ' + ind.prenom + ' ' + ind.nom + ' a été retiré du projet.'
+    delChercheurs(projet, window.individus, ind_id)
+    draw_project(widget, window, screen, proj_id, 1)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def draw_add_to_project(widget, window, screen, lst_ind, lst_ajout, proj_id, *arg):
+    items = []
+
+    text = 'Liste des employés'
+    label_employe = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
+    label_employe.set_direction('horizontal')
+    label_employe.set_padding(20,10,10,10)
+    label_employe.resize(600, 80)
+    label_employe.set_align('center')
+    label_employe.make_pos()
+
+    a = []
+    for i in range(0,len(lst_ind)):
+        employee_info = []
+        ind = lst_ind[i]
+        lst_ind_tmp = []
+        lst_ind_tmp += lst_ind
+        lst_ind_tmp.pop(i)
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_add_to_project, [lst_ind_tmp, lst_ajout + [ind], proj_id])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'employé')
+    items.append(item_list_employe)
+    items.append(label_employe)
+
+    text = 'Liste des employés ajoutés'
+    label_ajout = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (44,62,80), 680, 40, None, None, [])
+    label_ajout.set_direction('horizontal')
+    label_ajout.set_padding(20,10,10,10)
+    label_ajout.resize(600, 80)
+    label_ajout.set_align('center')
+    label_ajout.make_pos()
+
+    lst_tmp = []
+    for i in range(0,len(lst_ajout)):
+        employee_info = []
+
+        ind = lst_ajout[i]
+        lst_ajout_tmp = []
+        lst_ajout_tmp += lst_ajout
+        lst_ajout_tmp.pop(i)
+
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_to_project, [lst_ind + [ind], lst_ajout_tmp, proj_id])
+        employe_name.set_items_pos('auto')
+        employe_name.resize(580, 'auto')
+        employe_name.set_padding(20,0,20,20)
+        employe_name.make_pos()
+
+        lst_tmp.append(employe_name)
+
+    item_ajoute = Item_list(lst_tmp, 680, 120, 1260, 120, 20, 400, 'employé')
+    items.append(item_ajoute)
+    items.append(label_ajout)
+
+    button_submit = create_label('Ajouter au projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, add_to_project, [lst_ajout, proj_id])
+    button_submit.resize(200,'auto')
+    button_submit.set_align('center')
+    button_submit.make_pos()
+
+    frame_v1 = Frame(0, 0, [button_submit], add_to_project, [lst_ajout, proj_id])
+    frame_v1.set_direction('horizontal')
+    frame_v1.set_items_pos('auto')
+    frame_v1.resize('auto', 60)
+    frame_v1.set_align('center')
+    frame_v1.set_bg_color((230, 126, 34))
+    frame_v1.make_pos()
+
+    button_back = create_label('Retour', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_project, [proj_id, 1])
+    button_back.resize(200,'auto')
+    button_back.set_align('center')
+    button_back.make_pos()
+
+    frame_v2 = Frame(0, 0, [button_back], draw_project, [proj_id, 1])
+    frame_v2.set_direction('horizontal')
+    frame_v2.set_items_pos('auto')
+    frame_v2.resize('auto', 60)
+    frame_v2.set_align('center')
+    frame_v2.set_bg_color((230, 126, 34))
+    frame_v2.make_pos()
+
+    frame_tmp = Frame(680, 520, [frame_v1, frame_v2], None, [])
+    frame_tmp.set_direction('vertical')
+    frame_tmp.set_items_pos('auto')
+    frame_tmp.set_padding(20,0,30,0)
+    frame_tmp.set_marge_items(30)
+    frame_tmp.set_bg_color((236, 240, 241))
+    frame_tmp.make_pos()
+    items.append(frame_tmp)
+
+    window.set_body(items)
+    window.display(screen)
+
+def add_to_project(widget, window, screen, lst_ind, proj_id):
+    projet = get_with_id(window.projets, proj_id)
+    if lst_ind == []:
+        draw_alert(widget, window, screen, 'Erreur', 'Aucun employé sélectionné', clear_overbody, [])
+    else:
+        for ind in lst_ind:
+            addChercheurs(projet, window.individus, ind.id)
+
+        msg = 'Les employés ont bien été ajouté au projet'
+        draw_project(widget, window, screen, proj_id, 1)
+        draw_alert(widget, window, screen, '', msg, clear_overbody, [])
+
+'''INCOMPLET'''
+def draw_product(widget, window, screen, prod_id, i, *arg):
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Produit #'
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
+    frame_back.set_direction('horizontal')
+    frame_back.set_items_pos('auto')
+    frame_back.resize(250, 80)
+    frame_back.set_align('center')
+    frame_back.set_padding(10,0,0,0)
+    frame_back.set_marge_items(10)
+    frame_back.set_bg_color((149, 165, 166))
+    frame_back.make_pos()
+
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id, 0])
+    update = create_label("Améliorer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id,1])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,0])
+
+    elif i == 1:
+        update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,1])
+
+    list_tmp = [attribute, upgrade]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 'auto')
+        element.set_padding(10,0,20,20)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+'''INCOMPLET'''
+def draw_upgrade_product(widget, window, screen, lst_ind, lst_ajout, *arg):
+    items = []
+
+    text = 'Liste des employés'
+    label_employe = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
+    label_employe.set_direction('horizontal')
+    label_employe.set_padding(20,10,10,10)
+    label_employe.resize(600, 80)
+    label_employe.set_align('center')
+    label_employe.make_pos()
+
+    a = []
+    for i in range(0,len(lst_ind)):
+        employee_info = []
+        ind = lst_ind[i]
+        lst_ind_tmp = []
+        lst_ind_tmp += lst_ind
+        lst_ind_tmp.pop(i)
+
+        employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind]])
+        frame_employee.set_direction('vertical')
+        frame_employee.set_items_pos('auto')
+        frame_employee.resize(580, 'auto')
+        frame_employee.set_padding(20,0,20,20)
+        frame_employee.set_bg_color((236, 240, 241))
+        frame_employee.make_pos()
+
+        a.append(frame_employee)
+
+    item_list_employe = Item_list(a, 80, 120, 660, 120, 20, 600, 'employé')
+    items.append(item_list_employe)
+    items.append(label_employe)
+
+    text = 'Liste des employés ajoutés'
+    label_ajout = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (44,62,80), 680, 40, None, None, [])
+    label_ajout.set_direction('horizontal')
+    label_ajout.set_padding(20,10,10,10)
+    label_ajout.resize(600, 80)
+    label_ajout.set_align('center')
+    label_ajout.make_pos()
+
+    lst_tmp = []
+    for i in range(0,len(lst_ajout)):
+        employee_info = []
+
+        ind = lst_ajout[i]
+        lst_ajout_tmp = []
+        lst_ajout_tmp += lst_ajout
+        lst_ajout_tmp.pop(i)
+
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
+        employe_name.set_items_pos('auto')
+        employe_name.resize(580, 'auto')
+        employe_name.set_padding(20,0,20,20)
+        employe_name.make_pos()
+
+        lst_tmp.append(employe_name)
+
+    item_ajoute = Item_list(lst_tmp, 680, 120, 1260, 120, 20, 500, 'employé')
+    items.append(item_ajoute)
+    items.append(label_ajout)
+
+    button_submit = create_label('Améliorer le produit', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_submit.set_padding(20,20,15,15)
+    button_submit.set_direction('vertical')
+    button_submit.make_pos()
+
+    frame_tmp = Frame(680, 620, [button_submit], None, [])
+    frame_tmp.set_direction('vertical')
+    frame_tmp.resize(1260-680,'auto')
+    frame_tmp.set_items_pos('auto')
+    frame_tmp.set_align('right')
+    frame_tmp.set_padding(20,0,30,0)
+    frame_tmp.set_bg_color((236, 240, 241))
+    frame_tmp.make_pos()
+    items.append(frame_tmp)
+
+    window.set_body(items)
+    window.display(screen)
+
+
+
+'''
+================================================================================
+PRODUCTION
+================================================================================
+'''
+
+
+
+'''
+================================================================================
+FINANCE
+================================================================================
+'''
 
 def draw_finance(widget, window, screen, i, *arg):
     items = []
@@ -1198,3 +1637,98 @@ def draw_finance(widget, window, screen, i, *arg):
 
     window.set_body(items)
     window.display(screen)
+
+'''
+================================================================================
+VENTES
+================================================================================
+'''
+
+'''INCOMPLET'''
+def draw_sales(widget, window, screen, *arg):
+    pass
+
+'''INCOMPLET'''
+def draw_sales_product(widget, window, screen, prod_id, i, *arg):
+    # ind = get_with_id(window.individus, ind_id)
+
+    items = []
+
+    path = 'img/icon/right_white_arrow'
+    button_arrow = Button_img(0, path, 0, 0, None, [])
+    text = 'Produit #'
+    name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
+    frame_back = Frame(0,0, [button_arrow, name], draw_sales, [])
+    frame_back.set_direction('horizontal')
+    frame_back.set_items_pos('auto')
+    frame_back.resize(250, 80)
+    frame_back.set_align('center')
+    frame_back.set_padding(10,0,0,0)
+    frame_back.set_marge_items(10)
+    frame_back.set_bg_color((149, 165, 166))
+    frame_back.make_pos()
+
+    info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id, 0])
+    text_product_kill = "Mettre en vente" #"Arrêter la distribution"
+    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id,1])
+
+    focus_color = (41,128,185)
+    if i == 0:
+        info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,0])
+
+    elif i == 1:
+        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,1])
+
+    list_tmp = [info_market, make_sale]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 'auto')
+        element.set_padding(10,0,20,20)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, [frame_back] + list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.display(screen)
+
+
+
+'''
+================================================================================
+OPTIONS
+================================================================================
+'''
+
+def draw_option(widget, window, screen, *arg):
+    button_quit = create_label("RETOURNER AU MENU PRINCIPAL", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, reset_game, [])
+    button_quit.set_direction('horizontal')
+    button_quit.set_padding(50,50,20,20)
+    button_quit.make_pos()
+
+    frame = Frame(80, 40, [button_quit], None, [])
+    frame.set_direction('vertical')
+    frame.set_items_pos('auto')
+    frame.resize(1200, 680)
+    frame.set_align('center')
+    frame.set_marge_items(0)
+    frame.set_padding(0,0,280,0)
+    frame.set_bg_color((236,240,241))
+    frame.make_pos()
+
+    window.set_body([frame])
+    window.display(screen)
+
+
+# def draw_shadow(window, screen, item):
+#     rectangle = Rectangle(item.rect.x, item.rect.y, item.rect.width, item.rect.height, (0,0,0), 128, None, [])
+#     window.set_overbody([rectangle])
+#     window.display(screen)

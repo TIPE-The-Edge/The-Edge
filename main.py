@@ -37,7 +37,7 @@ from widget.rectangle import *
 from world.function import *
 from world.objets import *
 from world.outils import *
-from world.RH import *
+from world.innov import *
 
 
 """ TO DO LIST ✔✘
@@ -107,6 +107,11 @@ class Window():
         self.candidats    = []
         self.departs      = []
         self.couts        = []
+
+        self.depenses = []
+        self.projets = []
+        self.produits = []
+        self.paliers = [80, 100, 100, 100]
 
         self.temps = None
         self.lesRH = None
@@ -347,6 +352,7 @@ class Window():
         self.lesRH = RH()
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
+        self.produits.append(Produit(self.produits, [], [], [], ""))
         print(self.sha)
         print(self.user_name)
 
@@ -365,10 +371,17 @@ class Window():
         self.departs      = []
         self.couts        = []
 
+        self.depenses = []
+        self.projets = []
+        self.produits = []
+
         self.temps = None
         self.lesRH = None
         self.month = 0
         self.argent = 0
+
+        self.sha = ''
+        self.user_name = ''
 
     def empty_window(self):
         self.overbody = []

@@ -19,7 +19,6 @@ import operator
 from world.function import *
 from world.objets import *
 from world.outils import *
-from world.RH import *
 
 ####################################
 

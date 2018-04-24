@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite, Group
+from widget.rectangle import *
 
 class Progress_bar():
 
@@ -8,12 +9,12 @@ class Progress_bar():
         self.type = 'progress_bar'
         self.level = 0
 
-        self.bg_color = bg_color
+        self.width_bar = value * width // max_value
+
+        self.bg_color = color_bg
         self.rect = pygame.Rect(x, y, width, height)
 
         self.color = color
-        width_bar = value * width // max_value
-        self.rect_bar = pygame.Rect(x, y, width_bar, height)
 
         self.items = []
         self.action = action
@@ -22,7 +23,10 @@ class Progress_bar():
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.bg_color, self.rect)
-        pygame.draw.rect(screen, self.color, self.rect_bar)
+        width = self.rect.width
+        self.rect.width = self.width_bar
+        pygame.draw.rect(screen, self.color, self.rect)
+        self.rect.width = width
 
     def do(self, window, screen):
         if self.action != None:
