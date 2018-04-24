@@ -108,6 +108,22 @@ def create_label_value(labels, font1, font2, size1, size2, color1, color2, color
 
     return items
 
+def create_button(text, police, fontsize, msg_color, bg_color, x, y, width, height, action, *arg):
+    button = create_label(text, police, fontsize, msg_color, bg_color, x, y, None, action, *arg)
+    button.resize(width,'auto')
+    button.set_align('center')
+    button.make_pos()
+
+    frame_tmp = Frame(0, 0, [button], action, *arg)
+    frame_tmp.set_direction('horizontal')
+    frame_tmp.set_items_pos('auto')
+    frame_tmp.resize('auto', height)
+    frame_tmp.set_align('center')
+    frame_tmp.set_bg_color(bg_color)
+    frame_tmp.make_pos()
+
+    return frame_tmp
+
 def check_string(widget, window, screen, regex, text, error_msg, *arg):
     if re.match(regex, text) == None:
         draw_alert(widget, window, screen, "Erreur", error_msg, clear_overbody, [])
@@ -342,6 +358,10 @@ def reset_game(widget, window, screen, *arg):
     window.draw_opening()
     window.display(screen)
 
+def close_game(widget, window, screen, *arg):
+    window.run = False
+
+
 '''INCOMPLET'''
 def load_game(widget, window, screen, *arg):
     text = 'Sauvegardes'
@@ -447,7 +467,7 @@ HOME
 '''
 
 def draw_home(widget, window, screen, *arg):
-    button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, next_tour, [])
     button_next.set_padding(20,20,15,15)
     button_next.make_pos()
     button_next.set_pos(1280-10-button_next.width, 720-10-button_next.height)
@@ -456,6 +476,9 @@ def draw_home(widget, window, screen, *arg):
     window.set_body([button_next])
     window.draw_button_info('Aide', 'Salut')
     window.display(screen)
+
+def next_tour(widget, window, screen, *arg):
+    pass
 
 
 
@@ -898,6 +921,22 @@ def draw_rd(widget, window, screen, i, *arg):
         button_product = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_rd, [1])
 
         products = []
+
+        for product in window.produits:
+            product_info = []
+
+            product_info.append(create_label(product.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            product_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+            frame_product = Frame(0, 0, product_info, draw_product, [0, 0])
+            frame_product.set_direction('vertical')
+            frame_product.set_items_pos('auto')
+            frame_product.resize(930, 'auto')
+            frame_product.set_padding(20,0,20,20)
+            frame_product.set_bg_color((236, 240, 241))
+            frame_product.make_pos()
+
+            products.append(frame_product)
 
         item_list_product = Item_list(products, 330, 40, 1260, 40, 20, 680, 'produit')
 
@@ -1455,7 +1494,7 @@ def draw_product(widget, window, screen, prod_id, i, *arg):
     elif i == 1:
         update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,1])
 
-    list_tmp = [attribute, upgrade]
+    list_tmp = [attribute, update]
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 'auto')
@@ -1709,26 +1748,40 @@ OPTIONS
 '''
 
 def draw_option(widget, window, screen, *arg):
-    button_quit = create_label("RETOURNER AU MENU PRINCIPAL", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (255,0,0), 0, 0, None, reset_game, [])
-    button_quit.set_direction('horizontal')
-    button_quit.set_padding(50,50,20,20)
-    button_quit.make_pos()
+    label_user = create_label("Utilisateur :", 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
 
-    frame = Frame(80, 40, [button_quit], None, [])
+    label_user_value = create_label(window.user_name, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+    frame_tmp1 = Frame(0, 0, [label_user, label_user_value], None, [])
+    frame_tmp1.set_direction('horizontal')
+    frame_tmp1.set_items_pos('auto')
+    frame_tmp1.resize('auto', 'auto')
+    frame_tmp1.set_align('center')
+    frame_tmp1.set_marge_items(50)
+    frame_tmp1.set_padding(0,0,0,0)
+    frame_tmp1.set_bg_color((236, 240, 241))
+    frame_tmp1.make_pos()
+
+    options = create_button("Options", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
+    save = create_button("Sauvegarder", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
+    f1 = ["Oui", reset_game, []]
+    f2 = ["Non", clear_overbody, []]
+    return_opening = create_button("Retourner au menu principal", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment retourner au menu principal?',f1, f2])
+    f1 = ["Oui", close_game, []]
+    f2 = ["Non", clear_overbody, []]
+    quit = create_button("Quitter", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment quitter le jeu ?',f1, f2])
+    f1 = ["Oui", clear_overbody, []]
+    f2 = ["Non", clear_overbody, []]
+    del_save = create_button("Supprimer la sauvegarde", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (231, 76, 60), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment supprimer la sauvegarde ?',f1, f2])
+
+    frame = Frame(80, 40, [frame_tmp1, options, save, return_opening, quit, del_save], None, [])
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
     frame.resize(1200, 680)
-    frame.set_align('center')
-    frame.set_marge_items(0)
-    frame.set_padding(0,0,280,0)
+    frame.set_marge_items(20)
+    frame.set_padding(20,0,20,0)
     frame.set_bg_color((236,240,241))
     frame.make_pos()
 
     window.set_body([frame])
     window.display(screen)
-
-
-# def draw_shadow(window, screen, item):
-#     rectangle = Rectangle(item.rect.x, item.rect.y, item.rect.width, item.rect.height, (0,0,0), 128, None, [])
-#     window.set_overbody([rectangle])
-#     window.display(screen)
