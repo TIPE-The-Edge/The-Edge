@@ -38,6 +38,7 @@ from world.function import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
+from world.contracterPret import *
 
 
 """ TO DO LIST ✔✘
@@ -111,7 +112,17 @@ class Window():
         self.depenses = []
         self.projets = []
         self.produits = []
+
         self.paliers = [80, 100, 100, 100]
+        self.donneesF = {
+            "chiffreAff": [3000,4000,5000],
+            "resultatEx": [500,600,800],
+            "actif": 30000,
+            "disponibilité": 300,
+            "dette": 10000,
+            "capital": 30000,
+            "report à nouveau": 15000
+            }
 
         self.temps = None
         self.lesRH = None

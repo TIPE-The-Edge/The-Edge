@@ -166,7 +166,7 @@ def affichageInteret():
 def dureePret(typePret):
     if typePret == "court":
         debut = "1 mois"
-        fin = " 12 mois"
+        fin = "12 mois"
     elif typePret == "moyen":
         debut = "2 ans"
         fin = "4 ans"
@@ -264,5 +264,3 @@ def testUnitaire():
     affichageTypePret('moyen',2.2);
     print("\n\n\n")
     affichageFinal(2.2,30000,24,2);
-
-testUnitaire();

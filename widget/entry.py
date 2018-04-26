@@ -174,3 +174,10 @@ class Entry():
 
     def set_type(self, type):
         self.type = type
+
+    def set_entry(self, value):
+        self.entry = value
+        self.entry_display = value
+        self.cursor_pos += len(value)
+        self.max_cursor_pos += len(value)
+        self.range_max += len(value)
