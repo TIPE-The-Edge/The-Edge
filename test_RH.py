@@ -83,8 +83,7 @@ if __name__ == "__main__" :
         Individu.updateExpStartUp(individus)
 
         # RH
-        if len(individus) != 0:
-            lesRH.update(individus, departs, 3, 3)
+        lesRH.update(individus, departs, 3, 3)
 
         RH.updateDeparts(departs)
 
@@ -154,6 +153,8 @@ if __name__ == "__main__" :
                             idt = int(input("recruter qui? "))
                             RH.recruter(individus, candidats, idt)
 
+                            lesRH.update(individus, departs, 3, 3)
+
                             menu = int(input("menu? \n  0: Retour \n  1: Recruter\n "))
 
                         menu = 1
@@ -170,6 +171,8 @@ if __name__ == "__main__" :
 
                             idt = int(input("virer ? "))
                             RH.licencier(individus, departs, idt)
+
+                            lesRH.update(individus, departs, 3, 3)
 
                             menu = int(input("menu? \n  0: Retour \n  1: Licencier\n "))
 

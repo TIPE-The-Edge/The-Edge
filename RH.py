@@ -81,64 +81,95 @@ class RH(object):
                 self.nbr_employes, self.age_moy, self.exp_start_up_moy, self.exp_RetD_moy, self.nbr_arrivees, self.nbr_departs, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
 
     def __init__(self):
-        self.nbr_employes     = None
-        # self.bonheur_moy      = None
-        self.age_moy          = None
+        self.nbr_employes     = 0
+        # self.bonheur_moy      = 0
+        self.age_moy          = 0
 
         # Experience
-        self.exp_start_up_moy = None
-        self.exp_RetD_moy     = None
+        self.exp_start_up_moy = 0
+        self.exp_RetD_moy     = 0
 
         # Flux
-        self.nbr_arrivees  = None
-        # self.taux_arrivees = None
-        self.nbr_departs   = None
-        # self.taux_departs  = None
-        # self.taux_rotation = None
+        self.nbr_arrivees  = 0
+        # self.taux_arrivees = 0
+        self.nbr_departs   = 0
+        # self.taux_departs  = 0
+        # self.taux_rotation = 0
 
         # Formation
-        self.cout_formations = None # BONUS
-        self.moy_formations  = None # BONUS
+        self.cout_formations = 0 # BONUS
+        self.moy_formations  = 0 # BONUS
 
         # Couts
-        self.salaire_moy     = None
-        self.masse_sal_brute = None
-        self.masse_sal_nette = None
-        self.cout_emploi     = None
-        self.cout_moy_emploi = None
-        self.part_masse_sal  = None
+        self.salaire_moy     = 0
+        self.masse_sal_brute = 0
+        self.masse_sal_nette = 0
+        self.cout_emploi     = 0
+        self.cout_moy_emploi = 0
+        self.part_masse_sal  = 0
 
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
         self.nbr_employes     = RH.nbr(individus)
-        # self.bonheur_moy      = RH.bonheurMoyen(individus) #BONUS
-        self.age_moy          = RH.ageMoyen(individus)
 
-        # Experience
-        self.exp_start_up_moy = RH.expStartUpMoyenne(individus)
-        self.exp_RetD_moy     = RH.expRetDMoyenne(individus)
+        if self.nbr_employes > 0:
 
-        # Flux
-        self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
-        # self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
-        self.nbr_departs   = RH.departs(departs, seuil_departs)
-        # self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
-        # self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
+            # self.bonheur_moy      = RH.bonheurMoyen(individus) #BONUS
+            self.age_moy          = RH.ageMoyen(individus)
 
-        # Formation #BONUS
-        # self.cout_formations = None # Fonds investis dans la formation
-        # self.moy_formations  = None # Moyenne de formations par employé
+            # Experience
+            self.exp_start_up_moy = RH.expStartUpMoyenne(individus)
+            self.exp_RetD_moy     = RH.expRetDMoyenne(individus)
 
-        # Couts
-        self.salaire_moy     = RH.salaireMoyen(individus)
-        self.masse_sal_brute = RH.masseSalBrute(individus) # Masse salariale brute
-        self.masse_sal_nette = RH.masseSalNette(individus) # Masse salariale nette
-        self.cout_emploi     = round(self.masse_sal_brute + (self.masse_sal_brute*0.42) + 0, 2)
-                                # Cout total des employés
-                                # (salaire net + charges sociales salariales)
-                                # + charges patronales
-                                # + charges indirectes
-        self.cout_moy_emploi = round(self.cout_emploi/self.nbr_employes, 2) # Coût moyen par emploi
-        self.part_masse_sal  = None # Part de la masse salariale dans le budget de fonctionnement (LC)
+            # Flux
+            self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
+            # self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
+            self.nbr_departs   = RH.departs(departs, seuil_departs)
+            # self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
+            # self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
+
+            # Formation #BONUS
+            # self.cout_formations = None # Fonds investis dans la formation
+            # self.moy_formations  = None # Moyenne de formations par employé
+
+            # Couts
+            self.salaire_moy     = RH.salaireMoyen(individus)
+            self.masse_sal_brute = RH.masseSalBrute(individus) # Masse salariale brute
+            self.masse_sal_nette = RH.masseSalNette(individus) # Masse salariale nette
+            self.cout_emploi     = round(self.masse_sal_brute + (self.masse_sal_brute*0.42) + 0, 2)
+                                    # Cout total des employés
+                                    # (salaire net + charges sociales salariales)
+                                    # + charges patronales
+                                    # + charges indirectes
+            self.cout_moy_emploi = round(self.cout_emploi/self.nbr_employes, 2) # Coût moyen par emploi
+            self.part_masse_sal  = None # Part de la masse salariale dans le budget de fonctionnement (LC)
+
+        else:
+            # self.bonheur_moy      = 0
+            self.age_moy          = 0
+
+            # Experience
+            self.exp_start_up_moy = 0
+            self.exp_RetD_moy     = 0
+
+            # Flux
+            self.nbr_arrivees  = 0
+            # self.taux_arrivees = 0
+            self.nbr_departs   = 0
+            # self.taux_departs  = 0
+            # self.taux_rotation = 0
+
+            # Formation
+            self.cout_formations = 0 # BONUS
+            self.moy_formations  = 0 # BONUS
+
+            # Couts
+            self.salaire_moy     = 0
+            self.masse_sal_brute = 0
+            self.masse_sal_nette = 0
+            self.cout_emploi     = 0
+            self.cout_moy_emploi = 0
+            self.part_masse_sal  = 0
+
 
     def nbr(individus):
         return len(individus)

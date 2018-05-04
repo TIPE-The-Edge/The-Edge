@@ -181,7 +181,6 @@ class Fournisseur(object):
 
         return(liste)
 
-
 class Machine(object):
 
     # Liste des noms existants
@@ -452,7 +451,7 @@ class Stock(object):
         self.produits  = [[]]
 
     def __repr__(self):
-        return "{} - {}\n           {}".format(
+        return "{}:\n\nMat : {}\n\nProd : {}".format(
                 self.nom, self.materiaux, self.produits)
 
     def genLocalistation(self):

@@ -2,9 +2,11 @@ Maxence :
     Je suis en train de refaire proprement le programme production
     dans test_production.py.
 
+        l'argent disponible n'est pas pris en compte.
+
     Apparement les prix des materiaux sont détaillés dans le csv. Du coup
     l'attribut cout de la classe Materiau est peut etre inutile. Et du coup
-    la classe Materiau aussi. 
+    la classe Materiau aussi.
     Certaines fonctions prennent en compte cet attribut, il va falloir le
     changer et trouver un moyen de relier les prix ducsv aux materiaux.
     J'ai aussi retiré le multiplicateur de prix des fournisseurs du coup.

@@ -24,7 +24,6 @@ Population : # de consommateurs
 Fournisseur :
     self.materiaux_vendu (Besoin d'une fonction)
 
-    approvisionnement()
 
 Machine :
     self.operations_realisables (Besoin d'une fonction)
