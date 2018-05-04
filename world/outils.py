@@ -15,11 +15,6 @@ from math import *
 
 import numpy as np
 import operator
-
-from world.function import *
-from world.objets import *
-from world.outils import *
-
 ####################################
 
 
@@ -77,10 +72,24 @@ def aleaLoiNormale(esperance, ecart_type) :
 
 # Fonction Compétence "Recherche"
 def compRecherche(individus) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
     return(sum([individu.competence_recherche for individu in individus]))
 
 # Fonction Compétence "Groupe"
 def compGroupe(individus) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
     # On fait la moyenne des capacités de travail de groupe des chercheurs
     moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
     leader = max([individu.competence_direction for individu in individus])
@@ -88,8 +97,20 @@ def compGroupe(individus) :
         moyenne += (int(leader/8))+(leader-8)
     return(10*moyenne -50)
 
-def progres(individus) :
-    return(compRecherche(individus)+(compGroupe(individus)/100)*compRecherche(individus))
+def progres(individus, nom_projet) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ...
+    """
+    chercheurs = []
+    for ind in individus :
+        if ind.projet==nom_projet :
+            chercheurs.append(ind)
+            
+    return(compRecherche(chercheurs)+(compGroupe(chercheurs)/100)*compRecherche(chercheurs))
 
 
 def readNameFile(fichier):
@@ -127,6 +148,69 @@ def semaine_to_annee(semaines):
     return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
 
 
+def ajout(liste_depart, liste_arrivee):
+    """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
+    Entree : une liste [["nom", val], ..]
+             une liste [["nom", val], ..]
+    """
+
+    for couple_depart in liste_depart:
+        for couple_arrivee in liste_arrivee:
+            if couple_depart[0] == couple_arrivee[0]:
+                couple_arrivee[1] += couple_depart[1]
+
+
+def retire(liste_depart, liste_arrivee):
+    """ Retire les valeur d'une liste à la 2e, au bon endroit.
+    Entree : une liste [["nom", val], ..]
+             une liste [["nom", val], ..]
+    """
+
+    for couple_depart in liste_depart:
+        for couple_arrivee in liste_arrivee:
+            if couple_depart[0] == couple_arrivee[0]:
+                couple_arrivee[1] -= couple_depart[1]
+
+
+def retireAll(produit, liste_arrivee):
+    """ Retire les valeur d'une liste à la 2e, au bon endroit.
+    Entree : une liste [["nom", val], ..]
+             une liste [["nom", val], ..]
+    """
+
+    for i in range(len(liste_arrivee)):
+        if produit == liste_arrivee[i][0]:
+            del liste_arrivee[i]
+
+
+def selectProduit(produits, identifiant) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    TEST UNITAIRE  : ...
+    """
+    for prod in produits :
+        if prod.id == identifiant :
+            return(prod)
+    return(None)
+
+
+def existProjet(projets, nom) :
+    """
+    FONCTION       : Vérifie que le nom existe déjà dans la liste
+                     des projets.
+    ENTREES        : La liste des projets (Projet list) et un nom
+                     (string).
+    SORTIE         : Un booléen indiquant si le nom a déjà été utilisé
+                     (bool).
+    """
+    
+    for proj in projets :
+        if proj.nom == nom :
+            return(True)
+
+    return(False)
 
 '''
 def nom_fontion() :

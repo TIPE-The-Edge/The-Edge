@@ -358,12 +358,11 @@ class Window():
 
     def gen_world(self):
         self.sha = uuid.uuid4().hex
-        for i in range (10):
+        for i in range (5):
             self.candidats.append(Individu())
         self.lesRH = RH()
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
-        self.produits.append(Produit(self.produits, [], [], [], ""))
         print(self.sha)
         print(self.user_name)
 

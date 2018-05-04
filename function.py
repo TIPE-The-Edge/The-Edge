@@ -246,6 +246,7 @@ def draw_alert(widget, window, screen, msg_type, msg, *arg):
     window.set_overbody([frame])
     window.display(screen)
 
+'''A MODIFIER'''
 def draw_alert_option(widget, window, screen, msg_type, msg, *arg):
     items = []
     try:
@@ -483,7 +484,10 @@ def draw_home(widget, window, screen, *arg):
     window.display(screen)
 
 def next_tour(widget, window, screen, *arg):
-    pass
+    window.projets = avance(window.projets, window.paliers, window.individus)
+    window.projets, frais_RD = allProgression(window.projets, window.individus, window.paliers)
+    for i in range(len(frais_RD)) :
+        window.depenses.append(frais_RD[i])
 
 
 
@@ -637,7 +641,7 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
         infos = [info1, info2, info3, info4, info5]
         frame_labels = []
         for info in infos:
-            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 'auto')
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 400, 'auto')
             frame_tmp = Frame(0, 0, label_tmp, None, [])
             frame_tmp.set_items_pos('auto')
             frame_tmp.set_marge_items(10)
@@ -751,6 +755,7 @@ def draw_recruit(widget, window, screen, *arg):
 
 def recruit(widget, window, screen, ind_id, *arg):
     RH.recruter(window.individus, window.candidats, ind_id)
+    window.lesRH.update(window.individus, window.departs, 3, 3)
     ind = get_with_id(window.individus, ind_id)
     title_msg = 'Bravo !'
     msg = 'Vous avez recruté ' + ind.prenom + ' ' + ind.nom
@@ -779,7 +784,7 @@ def draw_individu(widget, window, screen, ind_id, *arg):
     infos = [info1, info2, info3, info4, info5]
     frame_labels = []
     for info in infos:
-        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 300, 520)
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 400, 520)
         frame_tmp = Frame(0, 0, label_tmp, None, [])
         frame_tmp.set_items_pos('auto')
         frame_tmp.set_marge_items(10)
@@ -810,6 +815,7 @@ def fired_ind(widget, window, screen, ind_id, *arg):
     title_msg = ''
     msg = 'Vous avez licencié ' + ind.prenom + ' ' + ind.nom
     RH.licencier(window.individus, window.departs, ind_id)
+    window.lesRH.update(window.individus, window.departs, 3, 3)
     draw_rh(widget, window, screen)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
