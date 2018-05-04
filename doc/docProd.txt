@@ -1,0 +1,22 @@
+
+
+##################
+###### TODO ######
+##################
+
+APPROVISIONNEMENT :
+
+    Etapes d'achat :
+        1 - On choisit les materiaux que l'on veut.
+
+TRANSPORT :
+
+STOCK :
+
+PRODUCTION :
+
+    Les commandes sont "parfaites", les quantités de materiaux en entrée
+        vont toutes etre utilisées.
+
+    On part du principe (peut etre à étudier) que l'on travaille 8h par jour
+    pendant 5 jours. Soit 2400 mins de travail par semaine.

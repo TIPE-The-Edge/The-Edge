@@ -69,10 +69,8 @@ class Fournisseur(object):
 
         self.nom = self.genNom()
         self.localisation = self.genLocalistation()
-        
+
         self.materiaux_vendu = [mat[0] for mat in readLineCSV("materiaux.csv","pays",self.localisation,["materiaux"])]
-        self.modificateur_prix = 1 #TODO # Multiplicateur des prix du
-                                         # fournisseur.
 
     def __repr__(self):
         return "{} - {} : {}".format(
@@ -125,7 +123,7 @@ class Fournisseur(object):
         for com in commande:
             for mat in materiaux:
                 if com[0] == mat.nom:
-                    somme += com[1] * mat.prix * fournisseur.modificateur_prix
+                    somme += com[1] * mat.prix
 
         return(somme)
 
@@ -169,6 +167,20 @@ class Fournisseur(object):
 
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
+
+    def checkMat(fournisseurs, materiau):
+        """ Renvoie la liste des fournisseurs qui vendent le materieau entré.
+        Entrée :
+        """
+
+        # Vérifie dans la base de données quel pays vend le materiau.
+        pays = [four[0] for four in readLineCSV("materiaux.csv","materiaux",materiau,["pays"])]
+
+        # Check dans les fournisseurs ceux qui sont dans les pays vendeurs.
+        liste = [four for four in fournisseurs if four.localisation in pays]
+
+        return(liste)
+
 
 class Machine(object):
 
