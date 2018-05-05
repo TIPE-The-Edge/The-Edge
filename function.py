@@ -484,10 +484,18 @@ def draw_home(widget, window, screen, *arg):
     window.display(screen)
 
 def next_tour(widget, window, screen, *arg):
+
+    #>>> partie RD
     window.projets = avance(window.projets, window.paliers, window.individus)
-    window.projets, frais_RD = allProgression(window.projets, window.individus, window.paliers)
+    # Il faut faire apparaitre les nootifications.
+    window.projets, frais_RD, notifications = allProgression(window.projets, window.individus, window.paliers)
     for i in range(len(frais_RD)) :
         window.depenses.append(frais_RD[i])
+    completedProject(window.projets, window.produits, window.individus)
+
+    # Affichage des notifications
+    for notification in notifications :
+        draw_alert(widget, window, screen, 'Message', notification, clear_overbody, [])
 
 
 
@@ -875,7 +883,7 @@ def draw_rd(widget, window, screen, i, *arg):
             label_phase.resize(200, 'auto')
             label_phase.set_items_pos('auto')
             label_phase.make_pos()
-            label_phase_value = create_label(str(project.phase), 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_phase_value = create_label(nomPhase(project.phase), 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
 
             frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
             frame_tmp1.set_direction('horizontal')
@@ -972,6 +980,7 @@ def draw_rd(widget, window, screen, i, *arg):
     items.append(frame_left)
 
     window.set_body(items)
+    window.draw_button_info('Aide', 'Clique sur un projet pour voir ses caractéristiques ou crée un projet innovant !')
     window.display(screen)
 
 def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
@@ -1065,6 +1074,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     items.append(frame_tmp)
 
     window.set_body(items)
+    window.draw_button_info('Aide', 'Sélectionne des employés pour ton nouveau projet et donne lui un nom !')
     window.display(screen)
 
 def create_project(widget, window, screen, lst_emp, *arg):
@@ -1121,7 +1131,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         label_phase.set_items_pos('auto')
         label_phase.make_pos()
 
-        label_phase_value = create_label(str(projet.phase), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        label_phase_value = create_label(nomPhase(projet.phase), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
 
         frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
         frame_tmp1.set_direction('horizontal')
@@ -1236,6 +1246,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
     items.append(frame_left)
 
     window.set_body(items)
+    window.draw_button_info('Aide', 'Informez-vous sur l\'avancement du projet et sur les actions à réaliser !')
     window.display(screen)
 
 def draw_employee_project(widget, window, screen, ind_id, i, proj_id, *arg):

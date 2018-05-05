@@ -212,6 +212,31 @@ def existProjet(projets, nom) :
 
     return(False)
 
+
+
+def nomPhase(phase) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
+    #>>> Initialisation des variables locales <<<#
+
+    #>>> Corps de la fonction <<<#
+    if phase==1 :
+        nom = 'Etude de marché'
+    elif phase==2 :
+        nom = 'Conception'
+    elif phase==3 :
+        nom = 'Construction du prototype'
+    else :
+        nom = 'Tests de validation'
+    #>>> Sortie <<<#
+    return(nom)
+
+
 '''
 def nom_fontion() :
     """

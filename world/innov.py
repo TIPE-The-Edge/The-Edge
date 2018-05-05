@@ -18,7 +18,6 @@ from math import *
 from world.objets import *
 from world.outils import *
 #from world.lecture import *
-from world.amelio import *
 ####################################
 
 
@@ -177,6 +176,8 @@ def allProgression(projets, employes, paliers) :
     """
     # Initialisation de la liste des dépenses
     depenses = []
+    # Initialisation des notifications
+    notifications = []
 
     for proj in projets :
         if proj.id < 0 :
@@ -191,7 +192,8 @@ def allProgression(projets, employes, paliers) :
                         couts = Projet.progression(proj, employes, paliers, "")
                         depenses.append(couts)
 
-                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    print("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
                     couts = Projet.progression(proj, employes, paliers, "")
 
             elif proj.phase == 2 :
@@ -199,6 +201,7 @@ def allProgression(projets, employes, paliers) :
                     couts=Projet.progression(proj, employes, paliers, False)
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
                     couts = Projet.progression(proj, employes, paliers, False)
 
             elif proj.phase == 3 :
@@ -208,19 +211,21 @@ def allProgression(projets, employes, paliers) :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
                         print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                        notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
                         couts = Projet.progression(proj, employes, paliers, False)
                     else :
                         couts = Projet.progression(proj, employes, paliers, None)
 
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
                     couts = Projet.progression(proj, employes, paliers, False)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
             depenses.append(couts)
 
-    return(projets, depenses)
+    return(projets, depenses, notifications)
 
 def selectProject(projets, identifiant) :
     """
@@ -252,13 +257,17 @@ def avance(projets, paliers, employes) :
 
 def status(projet, paliers, depenses) :
     """
-    FONCTION       :
+    FONCTION       : Fournis les informations quant au développement 
+                     d'un projet.
     ENTREES        :
     SORTIE         :
     TEST UNITAIRE  : ...
     """
+    msg_general = ""
+    boutons = []
 
     if projet.phase==1 and projet.attente==True:
+        # PROVISOIRE
         print(projet.produit.appreciation)
         print("Veuillez sélectionner une population cible :\n")
         count = 1
@@ -270,7 +279,18 @@ def status(projet, paliers, depenses) :
         if choix in ["Jeunes", "Actifs", "Seniors"] :
             depenses.append(Projet.progression(projet, employes, paliers, choix))
 
+        # DEFINITIF
+        msg_general += "Les résultats de l'étude de marché sont arrivés !\n" 
+        msg_general += "Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :"
+        bouton_1 = ["Jeunes :\n"+projet.produit.appreciation[0][0], Projet.progression, [projet, employes, paliers, "Jeunes"]]
+        bouton_2 = ["Actifs :\n"+projet.produit.appreciation[1][0], Projet.progression, [projet, employes, paliers, "Actifs"]]
+        bouton_3 = ["Seniors :\n"+projet.produit.appreciation[2][0], Projet.progression, [projet, employes, paliers, "Seniors"]]
+        boutons.append(bouton_1)
+        boutons.append(bouton_2)
+        boutons.append(bouton_3)
+
     elif projet.phase==2 and projet.attente==True:
+        # PROVISOIRE
         print("Vos chercheurs sont près à passer à la phase expérimentale.")
         print("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
         print("1. Oui \n2. Non \n")
@@ -278,9 +298,15 @@ def status(projet, paliers, depenses) :
         if choix == 1 :
             depenses.append(Projet.progression(projet, employes, paliers, True))
 
+        # DEFINITIF
+        msg_general += "Vos chercheurs sont près à passer à la phase expérimentale.\n"
+        msg_general += "Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros." 
+        boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
+
 
     elif projet.phase==4 :
         if projet.attente==False :
+            # PROVISOIRE
             print("Vos chercheurs pensent qu'il serait bénéfique de faire tester le prototype par des consommateurs, cela permettrait d'accélérer la création du produit final")
             print("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
             print("1. Oui \n2. Non \n")
@@ -288,8 +314,13 @@ def status(projet, paliers, depenses) :
             if choix == 1 :
                 depenses.append(Projet.progression(projet, employes, paliers, True))
 
+            # DEFINITIF
+            msg_general += "Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final\n"
+            msg_general += "Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros."
+            boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
 
         else :
+            # PROVISOIRE
             print("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
             print("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
             print("1. Oui \n2. Non \n")
@@ -297,8 +328,15 @@ def status(projet, paliers, depenses) :
             if choix == 1 :
                 depenses.append(Projet.progression(projet, employes, paliers, True))
 
+            # DEFINITIF
+            msg_general += "Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.\n"
+            msg_general += "Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros."
+            boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
+
     else :
-        print("En cours")
+        msg_general += "Le projet avance bien."
+
+    #return(msg_general, boutons)
 
 def completedProject(projets, produits, employes) :
     """
@@ -738,6 +776,123 @@ class Projet(object):
         return("{}.{} // Phase : {} | Progression : {}".format(self.id,self.nom,self.phase, self.avancement))
 
 
+class Ameliore() :
+
+    id = -1
+
+    def __init__(self, produit, nom) :
+
+        # Initialise l'identifiant du Projet
+        self.id = Ameliore.id
+        Ameliore.id -= 1
+
+        # Initialise le nom de l'amélioration
+        self.nom = nom
+
+        self.produit = produit
+        self.avancement = 0
+        self.palier = Ameliore.fixePalier(self)
+        self.phase = 1
+        self.attente = False
+
+    def changeMateriaux(self) :
+        """
+        FONCTION       : Supprime un élément de la liste des matériaux.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : Une amélioration dont la liste des matériaux
+                         du produit est diminué de 1.
+        """
+        del self.produit.materiaux[-1]
+        return(self)
+
+    def changeOperations(self) :
+        """
+        FONCTION       : Supprime un élément de la liste des opérations.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : Une amélioration dont la liste des opérations
+                         du produit est diminué de 1.
+        """
+        del self.produit.operations[-1]
+        return(self)
+
+    def changeUtilite(self) :
+        """
+        FONCTION       : Augmente l'utilité de la population ciblée.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : Une amélioration dont l'utilité de la
+                         population ciblée a augmenté.
+        REMARQUES      : L'augmentation est inversement
+                         proportionnelle au nombre d'améliorations.
+        """
+
+        bonus = aleaLoiNormale(10, 1.6)-(self.produit.nbr_ameliorations)
+        if bonus < 0 :
+            bonus = 0
+
+        for uti in self.produit.utilite :
+            if uti[0] == self.produit.cible :
+                uti[1]+=bonus
+
+        return(self)
+
+    def update(self) :
+        """
+        FONCTION       : Procède à l'amélioration du produit en fonction
+                         du résultat obtenu aléatoirement.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : L'amélioration dont le produit est amélioré.
+        """
+
+        valeur = aleaLoiNormale(50, (16/1+(self.produit.nbr_ameliorations)))
+
+        if valeur < 34 and len(self.produit.materiaux)>1 :
+            Ameliore.changeMateriaux(self)
+
+        elif 66<valeur and len(self.produit.operations)>1:
+            Ameliore.changeOperations(self)
+
+        else :
+            Ameliore.changeUtilite(self)
+
+        self.produit.nbr_ameliorations += 1
+        return(self)
+
+    def fixePalier(self) :
+        """
+        FONCTION       : Fixe le nombre de points d'avancement
+                         requis pour procéder à l'amélioration
+                         du produit.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : Une amélioration dont le palier est fixé.
+        """
+
+        return(80)
+
+    def progression(self) :
+        """
+        FONCTION       : Modélise le développement de l'amélioration
+                         d'un produit.
+        ENTREES        : Une amélioration (Ameliore)
+        SORTIE         : L'amélioration mise à jour.
+        """
+        # Initialisation des coûts
+        couts = [self.nom, 0]
+
+        if self.avancement >= self.palier :
+            # On améliore une caractéristique de notre produit
+            self = Ameliore.update(self)
+            if self.produit.nbr_ameliorations > 1 :
+                self.produit.nom = self.produit.nom[:-1] + str(self.produit.nbr_ameliorations+1)
+            else :
+                self.produit.nom = self.produit.nom+" v"+str(self.produit.nbr_ameliorations+1)
+            self.phase = 5
+            self.produit.develop = False
+
+        return(couts)
+
+    def __repr__(self) :
+        return("{}. {} // Produit en développement : {} | Progression : {}".format(self.id, self.nom, self.produit.nom, self.avancement))
+
 ####################################
 ########| TESTS UNITAIRES |#########
 ####################################
@@ -792,7 +947,7 @@ if __name__=="__main__" :
 
         if menu == 0 : # Fin de tour
             projets = avance(projets, paliers, employes)
-            projets, frais_RD = allProgression(projets, employes, paliers)
+            projets, frais_RD, notifications = allProgression(projets, employes, paliers)
             for i in range(len(frais_RD)) :
                 depenses.append(frais_RD[i])
 
