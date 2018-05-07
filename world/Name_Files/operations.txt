@@ -1,5 +1,5 @@
-avancée
-brève
+avancee
+breve
 lente
 moderne
 rapide

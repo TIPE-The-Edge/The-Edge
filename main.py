@@ -21,6 +21,7 @@ import uuid
 import math
 import re
 import string
+import pickle
 
 # IMPORTS DE FICHIERS
 
@@ -39,6 +40,7 @@ from world.objets import *
 from world.outils import *
 from world.innov import *
 from world.contracterPret import *
+from lib.save import *
 
 
 """ TO DO LIST ✔✘
@@ -79,58 +81,10 @@ FRAME_RATE = 60
 class Window():
 
     def __init__(self,screen):
-
-        self.run = True
-        self.info_bar = []
-        self.nav = []
-        self.nav_name = []
-        self.button_info = []
-        self.body = []
-        self.body_tmp = []
-        self.overbody = []
-        self.items = []
-        self.num_window = 0
-
+        self.set_window()
+        self.set_var()
         self.draw_opening()
-
         self.display(screen)
-
-        self.individus    = []
-        self.produits     = []
-        self.operations   = []
-        self.materiaux    = []
-        self.formations   = []
-        self.populations  = []
-        self.fournisseurs = []
-        self.machines     = []
-        self.transports   = []
-        self.stocks       = []
-        self.candidats    = []
-        self.departs      = []
-        self.couts        = []
-
-        self.depenses = []
-        self.projets = []
-        self.produits = []
-
-        self.paliers = [80, 100, 100, 100]
-        self.donneesF = {
-            "chiffreAff": [3000,4000,5000],
-            "resultatEx": [500,600,800],
-            "actif": 30000,
-            "disponibilité": 300,
-            "dette": 10000,
-            "capital": 30000,
-            "report à nouveau": 15000
-            }
-
-        self.temps = None
-        self.lesRH = None
-        self.month = 0
-        self.argent = 0
-
-        self.sha = ''
-        self.user_name = ''
 
     def loop(self, screen):
         clock = pygame.time.Clock()
@@ -223,7 +177,7 @@ class Window():
         labels = []
 
         new = create_label('Commencer une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, draw_ask_name, [])
-        load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, load_game, [])
+        load = create_label('Charger une partie', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, draw_load_game, [])
         leave = create_label('Quitter', 'font/colvetica/colvetica.ttf', 30, (236, 240, 241), (52,73,94), 0, 0, None, quit, [])
         labels.extend([new, load, leave])
 
@@ -358,15 +312,31 @@ class Window():
 
     def gen_world(self):
         self.sha = uuid.uuid4().hex
+        self.date_creation = datetime.datetime.now().date()
+        self.timestart = round(time.time())
+
         for i in range (5):
             self.candidats.append(Individu())
         self.lesRH = RH()
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
+        self.donneesF = {
+            "chiffreAff": [3000,4000,5000],
+            "resultatEx": [500,600,800],
+            "actif": 30000,
+            "disponibilité": 300,
+            "dette": 10000,
+            "capital": 30000,
+            "report à nouveau": 15000
+            }
         print(self.sha)
         print(self.user_name)
 
-    def unload_world(self):
+    def set_var(self):
+        self.time_used = 0
+        self.time_start = 0
+        self.paliers = [80, 100, 100, 100]
+
         self.individus    = []
         self.produits     = []
         self.operations   = []
@@ -385,6 +355,8 @@ class Window():
         self.projets = []
         self.produits = []
 
+        self.donneesF = {}
+
         self.temps = None
         self.lesRH = None
         self.month = 0
@@ -392,8 +364,13 @@ class Window():
 
         self.sha = ''
         self.user_name = ''
+        self.date_creation = None
+        self.total_time = 0
+        self.last_used = None
 
-    def empty_window(self):
+        self.save = Save()
+
+    def set_window(self):
         self.overbody = []
         self.items = []
         self.nav = []
@@ -403,12 +380,9 @@ class Window():
         self.body = []
         self.body_tmp = []
         self.num_window = 0
+        self.run = True
 
-    def save(self):
-        pass
 
-    def load(self):
-        pass
 
 ####################################################
 ##################| FONCTIONS |#####################

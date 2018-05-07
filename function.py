@@ -18,6 +18,9 @@ import os
 import math
 import re
 import string
+import pickle
+import time
+import datetime
 
 # IMPORTS DE FICHIERS
 
@@ -36,6 +39,7 @@ from world.objets import *
 from world.outils import *
 from world.innov import *
 from world.contracterPret import *
+from lib.save import *
 
 '''
 ================================================================================
@@ -202,17 +206,52 @@ def change_tab(button, window, screen, *arg):
     window.draw_nav_name()
     window.display(screen)
 
-def draw_alert(widget, window, screen, msg_type, msg, *arg):
+def draw_alert_tmp(widget, window, screen, msg_type, msg, *arg):
     items = []
     try:
         widget.set_focus()
     except:
         pass
 
-    s = pygame.Surface((1000,750))  # the size of your rect
-    s.set_alpha(128)                # alpha level
-    s.fill((255,255,255))           # this fills the entire surface
-    screen.blit(s, (0,0))
+    rect = Rectangle(0, 0, 1280, 720, (0,0,0), 0, clear_overbody, [])
+
+    if msg_type != '':
+        label_type = create_label(msg_type, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236,240,241), 0, 0, 1280//3, None, [])
+        label_type.set_align('center')
+        label_type.make_pos()
+        items.append(label_type)
+
+    label_msg = create_label(msg, 'font/colvetica/colvetica.ttf', 30, (52, 73, 95), (236,240,241), 0, 0, 1280//3, None, [])
+    label_msg.set_align('center')
+    label_msg.make_pos()
+    items.append(label_msg)
+
+    label_msg_save = create_label("Partie sauvegardé", 'font/colvetica/colvetica.ttf', 30, (52, 73, 95), (236,240,241), 0, 0, 1280//3, None, [])
+    label_msg_save.set_align('center')
+    label_msg_save.make_pos()
+    items.append(label_msg_save)
+
+    frame = Frame(0, 0, items, clear_overbody, [])
+    frame.set_direction('vertical')
+    frame.set_items_pos('auto')
+    frame.resize('auto', 'auto')
+    frame.set_align('center')
+    frame.set_marge_items(50)
+    frame.set_bg_color((236,240,241))
+    frame.set_padding(50,50,30,30)
+    frame.make_pos()
+
+    frame.move(1280/2 - frame.rect.width//2, 720/2 - frame.rect.height//2)
+
+    window.set_overbody([rect, frame])
+    window.display(screen)
+
+def draw_alert(widget, window, screen, msg_type, msg, *arg):
+    items = []
+    try:
+        widget.set_focus()
+    except:
+        pass
 
     if msg_type != '':
         label_type = create_label(msg_type, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236,240,241), 0, 0, 1280//3, None, [])
@@ -246,18 +285,12 @@ def draw_alert(widget, window, screen, msg_type, msg, *arg):
     window.set_overbody([frame])
     window.display(screen)
 
-'''A MODIFIER'''
-def draw_alert_option(widget, window, screen, msg_type, msg, *arg):
+def draw_alert_option(widget, window, screen, msg_type, msg, callbacks, *arg):
     items = []
     try:
         widget.set_focus()
     except:
         pass
-
-    s = pygame.Surface((1000,750))  # the size of your rect
-    s.set_alpha(128)                # alpha level
-    s.fill((255,255,255))           # this fills the entire surface
-    screen.blit(s, (0,0))
 
     if msg_type != '':
         label_type = create_label(msg_type, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236,240,241), 0, 0, 1280//3, None, [])
@@ -271,7 +304,7 @@ def draw_alert_option(widget, window, screen, msg_type, msg, *arg):
     items.append(label_msg)
 
     buttons = []
-    for element in arg:
+    for element in callbacks:
         button = create_label(element[0], 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230,126,34), 0, 0, None, element[1], element[2])
         button.set_padding(30,30,10,10)
         button.make_pos()
@@ -306,6 +339,9 @@ def clear_overbody(widget, window, screen, *arg):
     window.display(screen)
 
 def draw_ask_name(widget, window, screen, *arg):
+    path = 'img/icon/left_gray_arrow'
+    button_arrow = Button_img(0, path, 0, 0, reset_game, [])
+
     label1 = create_label('Avant de commencer,', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
     label2 = create_label('Quel est votre nom ?', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
     entry = Entry(0, 0, 500, 60, False, 'user_name', 0, None)
@@ -341,35 +377,31 @@ def draw_ask_name(widget, window, screen, *arg):
     frame.set_bg_color((236, 240, 241))
     frame.make_pos()
 
-    window.body = [frame]
+    window.body = [frame, button_arrow]
     window.display(screen)
 
 def set_name(widget, window, screen, *arg):
     entry = get_entry(widget, window, screen, *arg)
-    if check_string(widget, window, screen, r"^[a-zA-Z]+", entry['user_name'], "Des caractères ne sont pas acceptés"):
+    if check_string(widget, window, screen, r"^[a-zA-Zéèàùç\-]+$", entry['user_name'], "Des caractères ne sont pas acceptés"):
         window.user_name = entry['user_name']
         create_game(widget, window, screen, *arg)
 
 def create_game(widget, window, screen, *arg):
     window.gen_world()
 
-    window.draw_info()
-    window.draw_nav_button()
-    window.draw_button_info('Aide', 'Il n\'y en a pas')
-    draw_home(None, window, screen)
+    start_game(window, screen)
 
 def reset_game(widget, window, screen, *arg):
-    window.empty_window()
-    window.unload_world()
+    window.set_window()
+    window.set_var()
     window.draw_opening()
     window.display(screen)
 
 def close_game(widget, window, screen, *arg):
     window.run = False
 
-
 '''INCOMPLET'''
-def load_game(widget, window, screen, *arg):
+def draw_load_game(widget, window, screen, *arg):
     text = 'Sauvegardes'
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 64, 48 , None, None, [])
     label.set_direction('horizontal')
@@ -379,23 +411,20 @@ def load_game(widget, window, screen, *arg):
     label.make_pos()
 
     a = []
-    # for ind in window.candidats:
-    #     employee_info = []
-    #
-    #     employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #     employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-    #     employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #     employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #
-    #     frame_employee = Frame(0, 0, employee_info, draw_individu, [ind.id])
-    #     frame_employee.set_direction('vertical')
-    #     frame_employee.set_items_pos('auto')
-    #     frame_employee.resize(580, 'auto')
-    #     frame_employee.set_padding(20,0,20,20)
-    #     frame_employee.set_bg_color((236, 240, 241))
-    #     frame_employee.make_pos()
-    #
-    #     a.append(frame_employee)
+    for save in window.save.getSaves():
+        save_info = []
+
+        save_info.append(create_label(save[1], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_save_info = Frame(0, 0, save_info, draw_save, [save[0]])
+        frame_save_info.set_direction('vertical')
+        frame_save_info.set_items_pos('auto')
+        frame_save_info.resize(492, 'auto')
+        frame_save_info.set_padding(20,0,20,20)
+        frame_save_info.set_bg_color((236, 240, 241))
+        frame_save_info.make_pos()
+
+        a.append(frame_save_info)
 
     item_list_save = Item_list(a, 64, 128, 556, 128, 20, 448, 'sauvegarde')
 
@@ -437,13 +466,55 @@ def load_game(widget, window, screen, *arg):
     frame_v.set_bg_color((230, 126, 34))
     frame_v.make_pos()
 
-    button_load = create_label( 'Charger', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, None, [])
+    rect0 = Rectangle(0, 0, 640, 720, (44,62,80), None, None, [])
+    rect1 = Rectangle(64, 0, 512, 48, (44,62,80), None, None, [])
+    rect2 = Rectangle(64, 576, 512, 145, (44,62,80), None, None, [])
+
+    window.body = [rect0, item_list_save, rect1, rect2, label, label_save, frame_right, frame_v]
+    window.display(screen)
+
+'''IMCOMPLET'''
+def draw_save(widget, window, screen, save_name, *arg):
+    save = window.save.getSave(save_name)
+
+    title = create_label(save.user_name, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    title.set_padding(0,0,0,20)
+    title.make_pos()
+
+    info1, info2, info3, info4, info5 = [], [], [], [], []
+    info1.append(['Date de création', save.date_creation.strftime('%d/%m/%y')])
+    info1.append(['Temps d\'utilisation', time_convert(save.total_time)])
+    info1.append(['Dernière utilisation', save.last_used.strftime('%d/%m/%y')])
+
+    infos = [info1, info2, info3, info4, info5]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 200, 0)
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((236, 240, 241))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
+
+
+    frame_right = Frame(640, 70, [title] + frame_labels, None, [])
+    frame_right.set_direction('vertical')
+    frame_right.set_items_pos('auto')
+    frame_right.resize(640, 537)
+    frame_right.set_padding(30,0,30,0)
+    frame_right.set_bg_color((236,240,241))
+    frame_right.make_pos()
+
+    button_load = create_label( 'Charger', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, load, [save_name])
     button_load.set_direction('vertical')
     button_load.resize(514,'auto')
     button_load.set_align('center')
     button_load.make_pos()
 
-    frame_v1 = Frame(704, 605, [button_load], None, [])
+    frame_v1 = Frame(704, 605, [button_load], load, [save_name])
     frame_v1.set_direction('horizontal')
     frame_v1.set_items_pos('auto')
     frame_v1.resize('auto', 68)
@@ -451,18 +522,40 @@ def load_game(widget, window, screen, *arg):
     frame_v1.set_bg_color((230, 126, 34))
     frame_v1.make_pos()
 
-    rect0 = Rectangle(0, 0, 640, 720, (44,62,80), None, None, [])
-    rect1 = Rectangle(64, 0, 512, 48, (44,62,80), None, None, [])
-    rect2 = Rectangle(64, 576, 512, 145, (44,62,80), None, None, [])
-
-    window.body = [rect0, item_list_save, rect1, rect2, label, label_save, frame_right, frame_v, frame_v1]
+    window.set_body_tmp([frame_right, frame_v1])
     window.display(screen)
+
+def load(widget, window, screen, save_name,*arg):
+    window.save.load(window, save_name)
+    start_game(window, screen)
+
+def start_game(window, screen):
+    window.time_start = round(time.time())
+    window.draw_info()
+    window.draw_nav_button()
+    window.draw_button_info('Aide', 'Il n\'y en a pas')
+    draw_home(None, window, screen)
 
 def get_with_id(group, ind_id):
     for ind in group:
         if ind.id == ind_id:
             return ind
     return None
+
+def time_convert(time):
+    hour = (time // 3600)
+    min = (time // 60)
+
+    if hour == 1:
+        return str(hour) + ' heure'
+    elif hour > 1 :
+        return str(hour) + ' heures'
+    elif min == 1:
+        return str(min) + ' minute'
+    elif min > 1 :
+        return str(min) + ' minutes'
+    else:
+        return str(time) + ' secondes'
 
 
 
@@ -472,14 +565,44 @@ HOME
 ================================================================================
 '''
 
+'''IMCOMPLET'''
 def draw_home(widget, window, screen, *arg):
+    text = 'Notification'
+    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
+    label.set_direction('horizontal')
+    label.set_padding(20,10,10,10)
+    label.resize(600, 80)
+    label.set_align('center')
+    label.make_pos()
+
+    a = []
+    # for nottif in window.candidats:
+    #     employee_info = []
+    #
+    #     employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #     employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+    #     employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #     employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+    #
+    #     frame_employee = Frame(0, 0, employee_info, draw_individu, [ind.id])
+    #     frame_employee.set_direction('vertical')
+    #     frame_employee.set_items_pos('auto')
+    #     frame_employee.resize(580, 'auto')
+    #     frame_employee.set_padding(20,0,20,20)
+    #     frame_employee.set_bg_color((236, 240, 241))
+    #     frame_employee.make_pos()
+    #
+    #     a.append(frame_employee)
+
+    item_list_notif = Item_list(a, 80, 120, 660, 120, 20, 600, 'notification')
+
     button_next = create_label('Tour suivant', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, next_tour, [])
     button_next.set_padding(20,20,15,15)
     button_next.make_pos()
     button_next.set_pos(1280-10-button_next.width, 720-10-button_next.height)
     button_next.make_pos()
 
-    window.set_body([button_next])
+    window.set_body([label, item_list_notif, button_next])
     window.draw_button_info('Aide', 'Salut')
     window.display(screen)
 
@@ -493,9 +616,12 @@ def next_tour(widget, window, screen, *arg):
         window.depenses.append(frais_RD[i])
     completedProject(window.projets, window.produits, window.individus)
 
-    # Affichage des notifications
-    for notification in notifications :
-        draw_alert(widget, window, screen, 'Message', notification, clear_overbody, [])
+    # # Affichage des notifications
+    # for notification in notifications :
+    #     draw_alert(widget, window, screen, 'Message', notification, clear_overbody, [])
+
+    save(widget, window, screen, *arg)
+    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine x", [])
 
 
 
@@ -624,7 +750,7 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
 
     f1 = ["Oui", fired_ind, [ind_id]]
     f2 = ["Non", clear_overbody, []]
-    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment licencier ' + ind.prenom + ' ' + ind.nom + ' ?',f1, f2])
+    fired = create_label("Licencier", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment licencier ' + ind.prenom + ' ' + ind.nom + ' ?',[f1, f2]])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -876,8 +1002,8 @@ def draw_rd(widget, window, screen, i, *arg):
         for project in window.projets:
             project_info = []
 
-            project_info.append(create_label(project.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            project_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            project_info.append(create_label(project.nom, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            project_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 5, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
             label_phase = create_label("Phase :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
             label_phase.resize(200, 'auto')
@@ -926,6 +1052,7 @@ def draw_rd(widget, window, screen, i, *arg):
             frame_project.set_direction('vertical')
             frame_project.set_items_pos('auto')
             frame_project.resize(930, 'auto')
+            frame_project.set_marge_items(20)
             frame_project.set_padding(20,0,20,20)
             frame_project.set_bg_color((236, 240, 241))
             frame_project.make_pos()
@@ -1079,7 +1206,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
 
 def create_project(widget, window, screen, lst_emp, *arg):
     entry = get_entry(widget, window, screen, *arg)
-    if check_string(widget, window, screen, r"^[a-zA-Z0-9]+", entry['name_project'], "Nom de projet incorrect") and lst_emp != []:
+    if check_string(widget, window, screen, r"^[a-zA-Z0-9 ]+$", entry['name_project'], "Nom de projet incorrect") and lst_emp != []:
         window.projets.append(Projet(entry['name_project']))
         for ind in lst_emp:
             addChercheurs(window.projets[-1], window.individus, ind.id)
@@ -1114,7 +1241,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
 
     f1 = ["Oui", del_proj, [proj_id]]
     f2 = ["Non", clear_overbody, []]
-    delete  = create_label("Supprimer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment supprimer le projet ' +  projet.nom + ' ?',f1, f2])
+    delete  = create_label("Supprimer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous vraiment supprimer le projet ' +  projet.nom + ' ?',[f1, f2]])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -1274,7 +1401,7 @@ def draw_employee_project(widget, window, screen, ind_id, i, proj_id, *arg):
 
     f1 = ["Oui", remove_from_project, [ind_id, proj_id]]
     f2 = ["Non", clear_overbody, []]
-    fired = create_label("Retirer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous retirer ' + ind.prenom + ' ' + ind.nom + ' du projet ?',f1, f2])
+    fired = create_label("Retirer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_alert_option, ['', 'Voulez-vous retirer ' + ind.prenom + ' ' + ind.nom + ' du projet ?',[f1, f2]])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -1656,16 +1783,16 @@ def draw_finance(widget, window, screen, i, *arg):
         button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [0])
         lst_button_pret = [button_pret]
 
-        button_resume_pret = create_label("Résumé", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0])
-        button_lst_pret = create_label("Liste des prêts", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.1])
-        button_ask_pret = create_label("Contracter un prêt", 'calibri', 25, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.2])
+        button_resume_pret = create_label("     Résumé", 'calibri', 20, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0])
+        button_lst_pret = create_label("     Liste des prêts", 'calibri', 20, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.1])
+        button_ask_pret = create_label("     Contracter un prêt", 'calibri', 20, (255,255,255), (127, 140, 141), 0, 0, None, draw_finance, [0.2])
 
         if i == 0:
-            button_resume_pret = create_label("Résumé", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0])
+            button_resume_pret = create_label("     Résumé", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0])
         elif i == 0.1:
-            button_lst_pret = create_label("Liste des prêts", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0.1])
+            button_lst_pret = create_label("     Liste des prêts", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.1])
         elif i == 0.2:
-            button_ask_pret = create_label("Contracter un prêt", 'calibri', 25, (255,255,255), (149, 165, 166), 0, 0, None, draw_finance, [0.2])
+            button_ask_pret = create_label("     Contracter un prêt", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.2])
 
             variationInteret = variationInteretTotal(window.donneesF)
 
@@ -1757,7 +1884,10 @@ def draw_finance(widget, window, screen, i, *arg):
     list_tmp = lst_button_pret + [button_bilan, button_compte, button_macro]
     for element in list_tmp:
         element.set_direction('horizontal')
-        element.resize(250, 80)
+        if element.color == (189,195,198) or element.color == focus_color:
+            element.resize(250, 80)
+        else:
+            element.resize(250, 50)
         element.set_padding(10,0,0,0)
         element.set_align('center')
         element.make_pos()
@@ -2008,18 +2138,19 @@ def draw_option(widget, window, screen, *arg):
     frame_tmp1.make_pos()
 
     options = create_button("Options", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
-    save = create_button("Sauvegarder", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
+    save_button = create_button("Sauvegarder", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, save, [])
     f1 = ["Oui", reset_game, []]
     f2 = ["Non", clear_overbody, []]
-    return_opening = create_button("Retourner au menu principal", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment retourner au menu principal?',f1, f2])
+    return_opening = create_button("Retourner au menu principal", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment retourner au menu principal?',[f1, f2]])
     f1 = ["Oui", close_game, []]
     f2 = ["Non", clear_overbody, []]
-    quit = create_button("Quitter", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment quitter le jeu ?',f1, f2])
-    f1 = ["Oui", clear_overbody, []]
+    quit = create_button("Quitter", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment quitter le jeu ?',[f1, f2]])
+    f1 = ["Oui", delsave, []]
     f2 = ["Non", clear_overbody, []]
-    del_save = create_button("Supprimer la sauvegarde", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (231, 76, 60), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment supprimer la sauvegarde ?',f1, f2])
+    msg = 'Supprimer la sauvegarde entraînera une perte définitive des données. Voulez-vous vraiment supprimer la sauvegarde ?'
+    del_save = create_button("Supprimer la sauvegarde", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (231, 76, 60), 0, 0, 500, 60, draw_alert_option, ['', msg,[f1, f2]])
 
-    frame = Frame(80, 40, [frame_tmp1, options, save, return_opening, quit, del_save], None, [])
+    frame = Frame(80, 40, [frame_tmp1, options, save_button, return_opening, quit, del_save], None, [])
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
     frame.resize(1200, 680)
@@ -2030,3 +2161,13 @@ def draw_option(widget, window, screen, *arg):
 
     window.set_body([frame])
     window.display(screen)
+
+def save(widget, window, screen, *arg):
+    window.time_used = round(time.time()) - window.time_start
+    window.last_used = datetime.datetime.now().date()
+    window.save.save(window)
+    draw_alert(widget, window, screen, "", "Partie sauvegardé !", clear_overbody, [])
+
+def delsave(widget, window, screen, *arg):
+    window.save.delete(window.sha)
+    reset_game(widget, window, screen, *arg)
