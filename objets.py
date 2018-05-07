@@ -280,6 +280,8 @@ class Produit(object):
                 prod.age += 1
 
     def fixePrix(produits, produit, valeur) :
+        """ Donne un prix à un produit donné
+        """
         for prod in produits:
             if prod.nom == produit:
                 prod.prix = valeur
@@ -319,6 +321,12 @@ class Operation(object):
         return nom
 
 class Materiau(object):
+    """ Un peu obsolète car il n'y a que le nom des mats.
+
+    Je la garde pour l'instant parce qu'il y a le vérificateur de doublons et
+    ça peut etre utile si l'on veut faire des parties sans tous les mats
+    (Sinon on pourrait juste transposer la liste des noms en une liste de mats).
+    """
 
     # Liste des noms existants
     noms_dispo = readNameFile("./Name_Files/materiaux.txt")
@@ -328,8 +336,6 @@ class Materiau(object):
     def __init__(self):
 
         self.nom = self.genNom()
-
-        self.prix = 1 # TODO
 
     def __repr__(self):
         return "{}".format(

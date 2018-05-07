@@ -95,15 +95,17 @@ class Fournisseur(object):
 
         return loc
 
-    def approvisionnement(transports, materiaux, couts, fournisseur, destination, commande):
+    def approvisionnement(transports, couts, fournisseur, destination, commande, argent):
         """ Créé un cout et créé un objet transport à partir des données d'une
-        commande de materiaux.
+        commande de materiaux. Renvoie l'arfent restant.
         Entrée : le fournisseur (objet)
                  la destination (objet)
                  la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
+                 Les fonds disponibles
+        Sortie : argent restant
         """
 
-        cout_mat       = Fournisseur.coutMateriaux(fournisseur, materiaux, commande)
+        cout_mat       = Fournisseur.coutMateriaux(fournisseur, commande)
         cout_transport = Fournisseur.coutTransport(fournisseur, destination)
         tps_transport  = Fournisseur.tpsTransport(fournisseur, destination)
 
@@ -116,14 +118,48 @@ class Fournisseur(object):
         couts.append(["cout materiaux", cout_mat])
         couts.append(["cout transport", cout_transport])
 
-    def coutMateriaux(fournisseur, materiaux, commande):
+        argent -= (cout_mat+cout_transport)
+
+        return(argent)
+
+    def verifCommande(fournisseur, destination, commande, argent):
+        """ Vérifie que le cout de la commande est inferieur à l'argent restant
+        Entrée : le fournisseur (objet)
+                 la destination (objet)
+                 la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
+                 Les fonds disponibles
+        """
+
+        cout_mat       = Fournisseur.coutMateriaux(fournisseur, commande)
+        cout_transport = Fournisseur.coutTransport(fournisseur, destination)
+
+        if argent >= cout_mat + cout_transport:
+            return(True)
+        else:
+            print("pas assez d'argent") #TODO (Dorian, pop-up error)
+            return(False)
+
+    def coutMateriau(fournisseur, materiau): #TODO
+        """ Retourne le prix du'un materiau, pour un fournisseur donné.
+        """
+        # print(fournisseur)
+        # print(materiau)
+
+        liste = [mat for mat in readLineCSV("materiaux.csv","materiaux",materiau,["pays", "cout unitaire"])]
+
+        for elt in liste:
+            if elt[0] == fournisseur.localisation:
+                # print(elt[1])
+                return float(elt[1])
+
+    def coutMateriaux(fournisseur, commande):
         """ Calcule le cout total des materiaux de la commande.
+        Entrée : la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
         """
         somme = 0
         for com in commande:
-            for mat in materiaux:
-                if com[0] == mat.nom:
-                    somme += com[1] * mat.prix
+            prix_mat = Fournisseur.coutMateriau(fournisseur, com[0])
+            somme += com[1] * prix_mat
 
         return(somme)
 
@@ -413,8 +449,8 @@ class Transport(object):
         self.tps_trajet = tps_trajet # fontion calcul tps trajet
 
     def __repr__(self):
-        return "{} -> {} : {} et {}".format(
-                self.depart, self.arrivee, self.materiaux, self.produits)
+        return "{} -> {}, {} : {} et {}".format(
+                self.depart, self.arrivee, self.tps_trajet, self.materiaux, self.produits)
 
     def updateTempsTrajet(transports):
         for trans in transports:

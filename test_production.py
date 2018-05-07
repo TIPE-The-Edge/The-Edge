@@ -149,7 +149,7 @@ if __name__ == "__main__" :
         while menu != 0: # MENU PRINCIPAL
 
             # commandes
-            print("------ Classe : Commande ------")
+            print("------ Commande en cours ------")
             for mac in machines:
                 if len(mac.commandes) > 0:
                     print("+ " + mac.nom)
@@ -158,16 +158,24 @@ if __name__ == "__main__" :
             print()
 
             # transports
-            print("------ Classe : Transport ------")
+            print("------ Transports en cours ------")
             for trans in transports:
                 print(trans)
             print()
 
             # stocks
-            print("------ Classe : Stock ------")
+            print("------ Etat des Stocks ------")
             for stock in stocks:
                 print(stock)
             print()
+
+            # couts générés
+            print("------ couts ------(dev)")
+            print(couts)
+
+            # argent
+            print("------ argent ------")
+            print(argent)
 
             menu = int(input("menu? \n  0: Next \n  1: Approvisionnement\n  2: Production\n "))
 
@@ -176,39 +184,78 @@ if __name__ == "__main__" :
                     os.system('clear') # works on Linux/Mac
 
                     # materiaux
-                    print("------ Classe : Materiau ------")
-                    for mat in materiaux:
-                        print(mat)
+                    print("------ Classe : Materiau ------ (dev)") # (dev) = pour le programme console uniquement
+                                                                   # L'interface graphique aura une liste déroulante à la place.
+                    for mater in materiaux:
+                        print(mater)
                     print()
 
                     # stocks
-                    print("------ Classe : Stock ------")
+                    print("------ Classe : Stock ------ (dev)")
                     for stock in stocks:
                         print(stock)
                     print()
 
+                    # argent
+                    print("------ argent ------")
+                    print(argent)
+
                     mat = input("materiau? ")
+
                     liste_fournisseurs = Fournisseur.checkMat(fournisseurs, mat)
 
                     os.system('clear') # works on Linux/Mac
 
                     # fournisseurs
                     print("------ Fournisseurs de "+ mat +" ------")
-                    for four in liste_fournisseurs:
-                        print(four)
+                    for fourn in liste_fournisseurs:
+                        print(fourn)
                     print()
 
                     four = input("fournisseur? ")
 
-                    nbr = int(input("combien? "))
-                    
-                    commande = [[mat, nbr]]
                     for fou in fournisseurs:
                         if fou.nom == four:
                             four = fou
-                    Fournisseur.approvisionnement(transports, materiaux, couts, four, stocks[0], commande)
 
-                    menu = int(input("menu? \n  0: Retour \n  1: Acheter\n "))
+                    cout_u     = Fournisseur.coutMateriau(four, mat)
+                    print("cout/unité de " + mat + " = " + str(cout_u))
+
+                    nbr = int(input("combien? "))
+
+                    commande = [[mat, nbr]]
+
+                    desti = stocks[0] # The Edge
+
+
+                    print("cout/unité de " + mat + " = " + str(cout_u))
+
+                    cout_mat   = Fournisseur.coutMateriaux(four, commande)
+                    print("cout total mat = " + str(cout_mat))
+                    print()
+
+                    cout_trans = Fournisseur.coutTransport(four, desti)
+                    tps_trans  = Fournisseur.tpsTransport(four, desti)
+                    print("cout transport = " + str(cout_trans))
+                    print("tps transport = " + str(tps_trans))
+                    print()
+
+                    cout_tot   = cout_mat + cout_trans
+                    print("cout total = " + str(cout_tot))
+                    print()
+
+                    ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
+                                                  # tant qu'un champs est vide)
+
+                    if ok_commande == "ok" and Fournisseur.verifCommande(four, desti, commande, argent):
+                        argent = Fournisseur.approvisionnement(transports, couts, four, desti, commande, argent)
+                        four     = ""
+                        commande = ""
+                        mat      = ""
+                        menu     = 0
+
+                    else:
+                        menu = 1
 
                 menu = 1
 
@@ -233,6 +280,8 @@ if __name__ == "__main__" :
                     for stock in stocks:
                         print(stock)
                     print()
+
+                    prod = input("produit? "    )
 
 
                     mat1 = int(input("nbr mat1? "))
