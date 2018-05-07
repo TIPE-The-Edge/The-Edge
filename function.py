@@ -1217,6 +1217,39 @@ def create_project(widget, window, screen, lst_emp, *arg):
     elif lst_emp == []:
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
+def actionPhase(widget, window, screen, projet, choix) :
+    return(window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix)))
+
+def status(widget, window, screen, projet) :
+    msg_general = ""
+    boutons = []
+    if projet.phase==1 and projet.attente==True:
+        msg_general += "Les résultats de l'étude de marché sont arrivés !\n" 
+        msg_general += "Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :"
+        bouton_1 = ["Jeunes :\n"+projet.produit.appreciation[0][0], actionPhase, [widget, window, screen, projet, "Jeunes"]]
+        bouton_2 = ["Actifs :\n"+projet.produit.appreciation[1][0], actionPhase, [widget, window, screen, projet, "Actifs"]]
+        bouton_3 = ["Seniors :\n"+projet.produit.appreciation[2][0], actionPhase, [widget, window, screen, projet, "Seniors"]]
+        boutons.append(bouton_1)
+        boutons.append(bouton_2)
+        boutons.append(bouton_3)
+    elif projet.phase==2 and projet.attente==True:
+        msg_general += "Vos chercheurs sont près à passer à la phase expérimentale.\n"
+        msg_general += "Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros." 
+        boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+    elif projet.phase==4 :
+        if projet.attente==False :
+            msg_general += "Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final\n"
+            msg_general += "Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros."
+            boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+        else :
+            msg_general += "Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.\n"
+            msg_general += "Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros."
+            boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+    else :
+        msg_general += "En cours."
+
+    return(msg_general, boutons)
+
 def draw_project(widget, window, screen, proj_id, i, *arg):
     projet = get_with_id(window.projets, proj_id)
 

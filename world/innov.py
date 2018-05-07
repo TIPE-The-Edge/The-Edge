@@ -193,7 +193,8 @@ def allProgression(projets, employes, paliers) :
                         depenses.append(couts)
 
                     print("Le projet "+str(proj.nom)+" requiert votre attention !")
-                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, "")
 
             elif proj.phase == 2 :
@@ -201,7 +202,8 @@ def allProgression(projets, employes, paliers) :
                     couts=Projet.progression(proj, employes, paliers, False)
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False)
 
             elif proj.phase == 3 :
@@ -211,14 +213,16 @@ def allProgression(projets, employes, paliers) :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
                         print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                        notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
+                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                        notifications.append(notification)
                         couts = Projet.progression(proj, employes, paliers, False)
                     else :
                         couts = Projet.progression(proj, employes, paliers, None)
 
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notifications.append("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False)
 
         # On ajoute les frais à notre liste de dépense
@@ -254,89 +258,6 @@ def avance(projets, paliers, employes) :
             proj.avancement = paliers[proj.phase -1]
 
     return(projets)
-
-def status(projet, paliers, depenses) :
-    """
-    FONCTION       : Fournis les informations quant au développement 
-                     d'un projet.
-    ENTREES        :
-    SORTIE         :
-    TEST UNITAIRE  : ...
-    """
-    msg_general = ""
-    boutons = []
-
-    if projet.phase==1 and projet.attente==True:
-        # PROVISOIRE
-        print(projet.produit.appreciation)
-        print("Veuillez sélectionner une population cible :\n")
-        count = 1
-        for pop in ["Jeunes", "Actifs", "Seniors"] :
-            print(str(count)+". "+pop)
-            count += 1
-
-        choix = input()
-        if choix in ["Jeunes", "Actifs", "Seniors"] :
-            depenses.append(Projet.progression(projet, employes, paliers, choix))
-
-        # DEFINITIF
-        msg_general += "Les résultats de l'étude de marché sont arrivés !\n" 
-        msg_general += "Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :"
-        bouton_1 = ["Jeunes :\n"+projet.produit.appreciation[0][0], Projet.progression, [projet, employes, paliers, "Jeunes"]]
-        bouton_2 = ["Actifs :\n"+projet.produit.appreciation[1][0], Projet.progression, [projet, employes, paliers, "Actifs"]]
-        bouton_3 = ["Seniors :\n"+projet.produit.appreciation[2][0], Projet.progression, [projet, employes, paliers, "Seniors"]]
-        boutons.append(bouton_1)
-        boutons.append(bouton_2)
-        boutons.append(bouton_3)
-
-    elif projet.phase==2 and projet.attente==True:
-        # PROVISOIRE
-        print("Vos chercheurs sont près à passer à la phase expérimentale.")
-        print("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
-        print("1. Oui \n2. Non \n")
-        choix = int(input())
-        if choix == 1 :
-            depenses.append(Projet.progression(projet, employes, paliers, True))
-
-        # DEFINITIF
-        msg_general += "Vos chercheurs sont près à passer à la phase expérimentale.\n"
-        msg_general += "Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros." 
-        boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
-
-
-    elif projet.phase==4 :
-        if projet.attente==False :
-            # PROVISOIRE
-            print("Vos chercheurs pensent qu'il serait bénéfique de faire tester le prototype par des consommateurs, cela permettrait d'accélérer la création du produit final")
-            print("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
-            print("1. Oui \n2. Non \n")
-            choix = int(input())
-            if choix == 1 :
-                depenses.append(Projet.progression(projet, employes, paliers, True))
-
-            # DEFINITIF
-            msg_general += "Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final\n"
-            msg_general += "Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros."
-            boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
-
-        else :
-            # PROVISOIRE
-            print("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
-            print("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
-            print("1. Oui \n2. Non \n")
-            choix = int(input())
-            if choix == 1 :
-                depenses.append(Projet.progression(projet, employes, paliers, True))
-
-            # DEFINITIF
-            msg_general += "Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.\n"
-            msg_general += "Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros."
-            boutons.append(["Accepter", Projet.progression, [projet, employes, paliers, True]])
-
-    else :
-        msg_general += "Le projet avance bien."
-
-    #return(msg_general, boutons)
 
 def completedProject(projets, produits, employes) :
     """
@@ -745,7 +666,7 @@ class Projet(object):
 
         return(couts)
 
-    def progression(self, employes, paliers, utilisateur) :
+    def progression(self, individus, paliers, utilisateur) :
         """
         FONCTION       : Modélise la progression du projet et
                          selon la phase de développement, appelle
@@ -767,7 +688,7 @@ class Projet(object):
             couts = Projet.phase3(self, paliers[2])
 
         elif self.phase == 4 :
-            couts = Projet.phase4(self, employes, paliers[3], utilisateur)
+            couts = Projet.phase4(self, individus, paliers[3], utilisateur)
 
         return(couts)
 
@@ -917,7 +838,6 @@ class Test(unittest.TestCase) :
         self.assertEqual(test.cible, reponse)
 
 
-
 ####################################
 ###########| PROGRAMME |############
 ####################################
@@ -1007,7 +927,7 @@ if __name__=="__main__" :
                         print()
 
                         # Statut du projet
-                        status(projet, paliers, depenses)
+                        # status(projet, paliers, depenses)
 
                         menu = int(input("menu? \n 0: Retour \n 1: Supprimer \n 2: Ajouter des chercheurs \n 3: Retirer des chercheurs \n"))
 
