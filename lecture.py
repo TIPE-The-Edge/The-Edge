@@ -100,6 +100,31 @@ def normalise(chaine) :
 
     return(chaine)
 
+def equalListElements(liste) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    REMARQUES      :
+    TEST UNITAIRE  : 
+    """
+    #>>> Initialisation des variables locales <<<#
+    sub_liste_0 = liste[0]
+    rep = []
+
+    #>>> Corps de la fonction <<<#
+    for element in sub_liste_0 :
+        exist_in_all = True
+        for sub_liste in liste :
+            if not element in sub_liste :
+                exist_in_all = False
+
+        if exist_in_all == True :
+            rep.append(element)
+
+    return(rep)
+
+
 #------------- Lecture ------------#
 
 def readFileCSV(nom_fichier) :
@@ -181,7 +206,6 @@ def readLineCSV(nom_fichier, parametreEntree, element, parametreSortie) :
     # On retourne notre liste réponse (res).
     return(res)
 
-
 ####################################
 ########| TESTS UNITAIRES |#########
 ####################################
@@ -196,6 +220,16 @@ class Test(unittest.TestCase) :
         
         reponse = [["Je","suis"],["Aydens"]]
         test = nettoie([["nan","Je","nan","suis","\r\n"],["\r\n","Aydens","nan"],["\r\n","nan"]])
+        self.assertEqual(test, reponse)
+
+    def test_equalListElement(self) :
+
+        #>>> Test 1 <<<#
+
+        reponse = [["ecran", "New York", "60.0"]]
+        liste1 = readLineCSV("materiaux.csv", "materiaux", "ecran", ["materiaux", "pays", "cout unitaire"])
+        liste2 = readLineCSV("materiaux.csv", "pays", "New York", ["materiaux", "pays", "cout unitaire"])
+        test = equalListElements([liste1, liste2])
         self.assertEqual(test, reponse)
 
     def test_normalise(self) :
