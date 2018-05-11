@@ -193,7 +193,7 @@ def allProgression(projets, employes, paliers) :
                         depenses.append(couts)
 
                     print("Le projet "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, "")
 
@@ -202,7 +202,7 @@ def allProgression(projets, employes, paliers) :
                     couts=Projet.progression(proj, employes, paliers, False)
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False)
 
@@ -213,7 +213,7 @@ def allProgression(projets, employes, paliers) :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
                         print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                         notifications.append(notification)
                         couts = Projet.progression(proj, employes, paliers, False)
                     else :
@@ -221,7 +221,7 @@ def allProgression(projets, employes, paliers) :
 
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False)
 

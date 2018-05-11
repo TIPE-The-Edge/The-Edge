@@ -48,39 +48,47 @@ AUTRES
 '''
 
 def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action, *arg):
-    if size == None:
-        label =  Label(text, police, fontsize, msg_color, bg_color, x, y, action, *arg)
 
-        frame = Frame(x, y, [label], action, *arg)
+    if type(text) != list:
+        text = [text]
+
+    if size == None:
+        labels = []
+        for element in text:
+            label = Label(element, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+            labels.append(label)
+        frame = Frame(x, y, labels, action, *arg)
 
     else:
-        words = text.split(' ')
         lines = []
 
-        check_words = True
-        for word in words:
-            label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, *arg)
-            if label_word.rect.width > size:
-                check_words = False
-                lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, *arg))
+        for element in text:
+            words = element.split(' ')
 
-        while len(words) > 0 and check_words:
-            i = 0
-            line = words[i]
-            label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+            check_words = True
+            for word in words:
+                label_word = Label(word, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+                if label_word.rect.width > size:
+                    check_words = False
+                    lines.append(Label('error', police, fontsize, msg_color, bg_color, x, y, action, *arg))
 
-            while label.rect.width <= size:
-                i += 1
-                if i >= len(words):
-                    old_line = line
-                    break
-                else:
-                    old_line = line
-                    line += ' ' + words[i]
-                    label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
-            words = words[i:]
-            label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
-            lines.append(label)
+            while len(words) > 0 and check_words:
+                i = 0
+                line = words[i]
+                label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+
+                while label.rect.width <= size:
+                    i += 1
+                    if i >= len(words):
+                        old_line = line
+                        break
+                    else:
+                        old_line = line
+                        line += ' ' + words[i]
+                        label = Label(line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+                words = words[i:]
+                label = Label(old_line, police, fontsize, msg_color, bg_color, x, y, action, *arg)
+                lines.append(label)
 
         frame = Frame(x, y, lines, action, *arg)
 
@@ -1217,36 +1225,36 @@ def create_project(widget, window, screen, lst_emp, *arg):
     elif lst_emp == []:
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
-def actionPhase(widget, window, screen, projet, choix) :
+def actionPhase(widget, window, screen, projet, choix , *arg) :
     return(window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix)))
 
-def status(widget, window, screen, projet) :
-    msg_general = ""
+def status(widget, window, screen, projet, *arg) :
+    msg_general = []
     boutons = []
     if projet.phase==1 and projet.attente==True:
-        msg_general += "Les résultats de l'étude de marché sont arrivés !\n" 
-        msg_general += "Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :"
-        bouton_1 = ["Jeunes :\n"+projet.produit.appreciation[0][0], actionPhase, [widget, window, screen, projet, "Jeunes"]]
-        bouton_2 = ["Actifs :\n"+projet.produit.appreciation[1][0], actionPhase, [widget, window, screen, projet, "Actifs"]]
-        bouton_3 = ["Seniors :\n"+projet.produit.appreciation[2][0], actionPhase, [widget, window, screen, projet, "Seniors"]]
+        msg_general.append("Les résultats de l'étude de marché sont arrivés !")
+        msg_general.append("Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :")
+        bouton_1 = [["Jeunes :", projet.produit.appreciation[0][0]], actionPhase, [projet, "Jeunes"]]
+        bouton_2 = [["Actifs :", projet.produit.appreciation[1][0]], actionPhase, [projet, "Actifs"]]
+        bouton_3 = [["Seniors :", projet.produit.appreciation[2][0]], actionPhase, [projet, "Seniors"]]
         boutons.append(bouton_1)
         boutons.append(bouton_2)
         boutons.append(bouton_3)
     elif projet.phase==2 and projet.attente==True:
-        msg_general += "Vos chercheurs sont près à passer à la phase expérimentale.\n"
-        msg_general += "Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros." 
-        boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+        msg_general.append("Vos chercheurs sont près à passer à la phase expérimentale.")
+        msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
+        boutons.append(["Accepter", actionPhase, [projet, True]])
     elif projet.phase==4 :
         if projet.attente==False :
-            msg_general += "Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final\n"
-            msg_general += "Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros."
-            boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+            msg_general.append("Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final")
+            msg_general.append("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
+            boutons.append(["Accepter", actionPhase, [projet, True]])
         else :
-            msg_general += "Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.\n"
-            msg_general += "Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros."
-            boutons.append(["Accepter", actionPhase, [widget, window, screen, projet, True]])
+            msg_general.append("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
+            msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
+            boutons.append(["Accepter", actionPhase, [projet, True]])
     else :
-        msg_general += "En cours."
+        msg_general = "En cours."
 
     return(msg_general, boutons)
 
@@ -1331,6 +1339,39 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         frame_tmp2.make_pos()
         frame_labels.append(frame_tmp2)
 
+
+        status_msg, status_button = status(widget, window, screen, projet)
+        label_status_msg = create_label(status_msg, 'font/colvetica/colvetica.ttf', 30, (52, 73, 95), (236,240,241), 0, 0, 1280//2, None, [])
+
+        buttons = []
+        for element in status_button:
+            button = create_button(element[0], 'font/colvetica/colvetica.ttf', 30, (255, 255, 255), (230, 126, 34), 0, 0, 'auto', 'auto', element[1], element[2])
+            button.set_padding(30,30,10,10)
+            button.make_pos()
+            buttons.append(button)
+
+        frame_button = Frame(0, 0, buttons, None, [])
+        frame_button.set_direction('horizontal')
+        frame_button.set_items_pos('auto')
+        frame_button.set_marge_items(20)
+        frame_button.resize('auto', 'auto')
+        frame_button.set_bg_color((236, 240, 241))
+        frame_button.make_pos()
+
+        label_status = create_label("Status :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        frame_labels.append(label_status)
+
+        frame_status = Frame(0, 0, [label_status_msg, frame_button], None, [])
+        frame_status.set_direction('vertical')
+        frame_status.set_items_pos('auto')
+        frame_status.resize(1280-330-50, 'auto')
+        frame_status.set_align('center')
+        frame_status.set_marge_items(20)
+        frame_status.set_padding(0,0,20,20)
+        frame_status.set_bg_color((236, 240, 241))
+        frame_status.make_pos()
+        frame_labels.append(frame_status)
+
         frame_right = Frame(330, 40, [title] + frame_labels, None, [])
         frame_right.set_direction('vertical')
         frame_right.set_items_pos('auto')
@@ -1371,7 +1412,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
             if ind.projet == None:
                 lst_ind.append(ind)
 
-        button_add = create_label( 'Ajouter des participants', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_add_to_project, [lst_ind, [], projet.id])
+        button_add = create_label('Ajouter des participants', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, draw_add_to_project, [lst_ind, [], projet.id])
         button_add.set_direction('vertical')
         button_add.resize(950,'auto')
         button_add.set_align('center')
