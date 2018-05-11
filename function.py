@@ -1226,7 +1226,9 @@ def create_project(widget, window, screen, lst_emp, *arg):
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
 def actionPhase(widget, window, screen, projet, choix , *arg) :
-    return(window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix)))
+    window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix))
+    draw_alert(widget, window, screen, '', 'Mets un message stp', clear_overbody, [])
+    draw_project(widget, window, screen, projet.id, 0)
 
 def status(widget, window, screen, projet, *arg) :
     msg_general = []
@@ -1234,9 +1236,9 @@ def status(widget, window, screen, projet, *arg) :
     if projet.phase==1 and projet.attente==True:
         msg_general.append("Les résultats de l'étude de marché sont arrivés !")
         msg_general.append("Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :")
-        bouton_1 = [["Jeunes :", projet.produit.appreciation[0][0]], actionPhase, [projet, "Jeunes"]]
-        bouton_2 = [["Actifs :", projet.produit.appreciation[1][0]], actionPhase, [projet, "Actifs"]]
-        bouton_3 = [["Seniors :", projet.produit.appreciation[2][0]], actionPhase, [projet, "Seniors"]]
+        bouton_1 = [["Jeunes :", 'test'], actionPhase, [projet, "Jeunes"]]
+        bouton_2 = [["Actifs :", 'test'], actionPhase, [projet, "Actifs"]]
+        bouton_3 = [["Seniors :", 'test'], actionPhase, [projet, "Seniors"]]
         boutons.append(bouton_1)
         boutons.append(bouton_2)
         boutons.append(bouton_3)
@@ -1353,7 +1355,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         frame_button = Frame(0, 0, buttons, None, [])
         frame_button.set_direction('horizontal')
         frame_button.set_items_pos('auto')
-        frame_button.set_marge_items(20)
+        frame_button.set_marge_items(50)
         frame_button.resize('auto', 'auto')
         frame_button.set_bg_color((236, 240, 241))
         frame_button.make_pos()
@@ -1366,7 +1368,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         frame_status.set_items_pos('auto')
         frame_status.resize(1280-330-50, 'auto')
         frame_status.set_align('center')
-        frame_status.set_marge_items(20)
+        frame_status.set_marge_items(50)
         frame_status.set_padding(0,0,20,20)
         frame_status.set_bg_color((236, 240, 241))
         frame_status.make_pos()
