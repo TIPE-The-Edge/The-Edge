@@ -1,0 +1,153 @@
+materiaux,pays,cout unitaire,"
+"
+
+processeur,Los Angeles,100,"
+"
+
+ecran,New York,60,"
+"
+
+ecran,Hong Kong,55,"
+"
+
+diode,Amsterdam,0.40,"
+"
+
+diode,Los Angeles,0.38,"
+"
+
+diode,Paris,0.41,"
+"
+
+resistance,Berlin,0.04,"
+"
+
+resistance,Hong Kong,0.03,"
+"
+
+clavier,Berlin,10,"
+"
+
+vis,Paris,5,"
+"
+
+vis,Berlin,6,"
+"
+
+vis,Amsterdam,5,"
+"
+
+vis,New York,7,"
+"
+
+vis,Hong Kong,4,"
+"
+
+transistor,Amsterdam,1,"
+"
+
+batterie,Hong Kong,35,"
+"
+
+batterie,Los Angeles,40,"
+"
+
+micro,New York,8,"
+"
+
+micro,Hong Kong,7,"
+"
+
+port usb,Hong Kong,2,"
+"
+
+port usb,Amsterdam,3,"
+"
+
+souris,Berlin,5,"
+"
+
+carte mere,Hong Kong,80,"
+"
+
+carte mere,Los Angeles,75,"
+"
+
+interrupteur,Amsterdam,4,"
+"
+
+clef usb,New York,25,"
+"
+
+clef usb,Hong Kong,23,"
+"
+
+clef usb,Berlin,26,"
+"
+
+disque dur,Hong Kong,55,"
+"
+
+ventilateur,Los Angeles,10.55,"
+"
+
+cable,Hong Kong,25,"
+"
+
+cable,Paris,26,"
+"
+
+cable,New York,22,"
+"
+
+boitier,Berlin,45,"
+"
+
+boitier,Amsterdam,45,"
+"
+
+verre,Berlin,33,"
+"
+
+couteau suisse,Amsterdam,110,"
+"
+
+gros bouton rouge,Hong Kong,13,"
+"
+
+gros bouton rouge,Paris,15,"
+"
+
+carte graphique,Los Angeles,250,"
+"
+
+graveur blueray,Hong Kong,150,"
+"
+
+graveur blueray,Paris,170,"
+"
+
+objectif photo,Hong Kong,160,"
+"
+
+port audio,Paris,12,"
+"
+
+port audio,New York,12,"
+"
+
+laser,Berlin,30.66,"
+"
+
+circuit imprime,Paris,25,"
+"
+
+circuit imprime,New York,24,"
+"
+
+memoire ram,Hong Kong,90,"
+"
+
+radiateur,Paris,150,"
+"
+

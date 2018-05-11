@@ -17,7 +17,7 @@ from math import *
 
 from world.objets import *
 from world.outils import *
-#from world.lecture import *
+from world.lecture import *
 ####################################
 
 
