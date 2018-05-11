@@ -38,6 +38,7 @@ from world.function import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
+from world.lecture import *
 from world.contracterPret import *
 from lib.save import *
 
@@ -1236,9 +1237,9 @@ def status(widget, window, screen, projet, *arg) :
     if projet.phase==1 and projet.attente==True:
         msg_general.append("Les résultats de l'étude de marché sont arrivés !")
         msg_general.append("Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :")
-        bouton_1 = [["Jeunes :", 'test'], actionPhase, [projet, "Jeunes"]]
-        bouton_2 = [["Actifs :", 'test'], actionPhase, [projet, "Actifs"]]
-        bouton_3 = [["Seniors :", 'test'], actionPhase, [projet, "Seniors"]]
+        bouton_1 = [["Jeunes :", projet.produit.appreciation[0][0][0]], actionPhase, [projet, "Jeunes"]]
+        bouton_2 = [["Actifs :", projet.produit.appreciation[1][0][0]], actionPhase, [projet, "Actifs"]]
+        bouton_3 = [["Seniors :", projet.produit.appreciation[2][0][0]], actionPhase, [projet, "Seniors"]]
         boutons.append(bouton_1)
         boutons.append(bouton_2)
         boutons.append(bouton_3)
