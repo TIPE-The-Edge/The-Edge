@@ -335,7 +335,7 @@ class Window():
     def set_var(self):
         self.time_used = 0
         self.time_start = 0
-        self.paliers = [80, 100, 100, 100]
+        self.paliers = [80, 100, 100, 100, 100]
 
         self.individus    = []
         self.produits     = []

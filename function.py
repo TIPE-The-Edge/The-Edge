@@ -620,7 +620,7 @@ def next_tour(widget, window, screen, *arg):
     #>>> partie RD
     window.projets = avance(window.projets, window.paliers, window.individus)
     # Il faut faire apparaitre les nootifications.
-    window.projets, frais_RD, notifications = allProgression(window.projets, window.individus, window.paliers)
+    window.projets, frais_RD, notifications = allProgression(window.projets, window.individus, window.paliers, window.produits)
     for i in range(len(frais_RD)) :
         window.depenses.append(frais_RD[i])
     completedProject(window.projets, window.produits, window.individus)
@@ -1227,8 +1227,8 @@ def create_project(widget, window, screen, lst_emp, *arg):
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
 def actionPhase(widget, window, screen, projet, choix , *arg) :
-    window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix))
-    draw_alert(widget, window, screen, '', 'Mets un message stp', clear_overbody, [])
+    window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits))
+    draw_alert(widget, window, screen, 'Bravo', 'Le projet passe à la phase suivante', clear_overbody, [])
     draw_project(widget, window, screen, projet.id, 0)
 
 def status(widget, window, screen, projet, *arg) :
@@ -1248,14 +1248,20 @@ def status(widget, window, screen, projet, *arg) :
         msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
         boutons.append(["Accepter", actionPhase, [projet, True]])
     elif projet.phase==4 :
-        if projet.attente==False :
+        if projet.attente==False and projet.essai==False :
             msg_general.append("Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final")
             msg_general.append("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
             boutons.append(["Accepter", actionPhase, [projet, True]])
-        else :
+        elif projet.attente==True:
             msg_general.append("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
             msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
             boutons.append(["Accepter", actionPhase, [projet, True]])
+        else :
+            msg_general = "En cours."
+
+    elif projet.phase==5 :
+        msg_general = "Ce projet vient d'être achevé. Vous aurez accès à votre nouveau produit au prochain tour."
+
     else :
         msg_general = "En cours."
 

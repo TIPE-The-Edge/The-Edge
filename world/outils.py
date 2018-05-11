@@ -231,8 +231,10 @@ def nomPhase(phase) :
         nom = 'Conception'
     elif phase==3 :
         nom = 'Construction du prototype'
-    else :
+    elif phase==4 :
         nom = 'Tests de validation'
+    else :
+        nom = 'Achevé'
     #>>> Sortie <<<#
     return(nom)
 

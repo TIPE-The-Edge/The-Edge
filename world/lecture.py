@@ -141,7 +141,7 @@ def readFileCSV(nom_fichier) :
     #>>> Initialisation des variables locales <<<#
 
     # On charge le dataset que l'utilisateur entre.
-    fichier_donnees = pd.read_csv("./Banque/"+nom_fichier)
+    fichier_donnees = pd.read_csv("./world/Banque/"+nom_fichier)
     # On récupère les paramètres du graphique
     parametres=[ligne for ligne in fichier_donnees]
     del parametres[-1]

@@ -167,7 +167,7 @@ def delChercheurs(projet, employes, identifiant) :
 
     return(projet, employes)
 
-def allProgression(projets, employes, paliers) :
+def allProgression(projets, employes, paliers, produits) :
     """
     FONCTION       : Fait progresser tous les projets de la liste de projets.
     ENTREES        : Une liste de projets (Projet/Ameliore list).
@@ -178,6 +178,8 @@ def allProgression(projets, employes, paliers) :
     depenses = []
     # Initialisation des notifications
     notifications = []
+    # Initialisation des couts
+    couts=['', 0]
 
     for proj in projets :
         if proj.id < 0 :
@@ -185,29 +187,29 @@ def allProgression(projets, employes, paliers) :
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
-                    couts = Projet.progression(proj, employes, paliers, "")
+                    couts = Projet.progression(proj, employes, paliers, "", produits)
 
                 else  :
                     if proj.produit.appreciation==[] :
-                        couts = Projet.progression(proj, employes, paliers, "")
+                        couts = Projet.progression(proj, employes, paliers, "", produits)
                         depenses.append(couts)
 
                     print("Le projet "+str(proj.nom)+" requiert votre attention !")
                     notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
-                    couts = Projet.progression(proj, employes, paliers, "")
+                    couts = Projet.progression(proj, employes, paliers, "", produits)
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
-                    couts=Projet.progression(proj, employes, paliers, False)
+                    couts=Projet.progression(proj, employes, paliers, False, produits)
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
                     notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
-                    couts = Projet.progression(proj, employes, paliers, False)
+                    couts = Projet.progression(proj, employes, paliers, False, produits)
 
             elif proj.phase == 3 :
-                couts = Projet.progression(proj, employes, paliers, None)
+                couts = Projet.progression(proj, employes, paliers, None, produits)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
@@ -215,15 +217,15 @@ def allProgression(projets, employes, paliers) :
                         print("Le projet : "+str(proj.nom)+" requiert votre attention !")
                         notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                         notifications.append(notification)
-                        couts = Projet.progression(proj, employes, paliers, False)
+                        couts = Projet.progression(proj, employes, paliers, False, produits)
                     else :
-                        couts = Projet.progression(proj, employes, paliers, None)
+                        couts = Projet.progression(proj, employes, paliers, None, produits)
 
                 else :
                     print("Le projet : "+str(proj.nom)+" requiert votre attention !")
                     notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
-                    couts = Projet.progression(proj, employes, paliers, False)
+                    couts = Projet.progression(proj, employes, paliers, False, produits)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
@@ -403,7 +405,7 @@ class Prototype(object):
             # Initialise le cout moyen du matériaux
             couts=0
             # On récupère les données concernant les prix
-            recup = readLineCSV("materiaux.csv", "materiaux", mat.nom, ["cout_unitaire"])
+            recup = readLineCSV("materiaux.csv", "materiaux", mat.nom, ["cout unitaire"])
             # On fait une moyenne de ces prix
             for prix in recup :
                 couts += float(prix[0])
@@ -610,7 +612,7 @@ class Projet(object):
 
         return(couts)
 
-    def verifPhase4(self, utilisateur) :
+    def verifPhase4(self, utilisateur, produits) :
         """
         FONCTION       : Récupère une entrée utilisateur, si
                          celle-ci est True alors on déduit les
@@ -635,10 +637,12 @@ class Projet(object):
                                    self.produit.operations, self.produit.cible)
             # Le projet est fini.
             self.phase += 1
+        else :
+            self.attente=True
 
         return(couts)
 
-    def phase4(self, employes, palier, utilisateur) :
+    def phase4(self, employes, palier, utilisateur, produits) :
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 4. Proposition de mise à l'essai
@@ -649,7 +653,7 @@ class Projet(object):
         """
         couts = [self.nom, 0]
         if self.avancement == palier :
-            couts = Projet.verifPhase4(self, utilisateur)
+            couts = Projet.verifPhase4(self, utilisateur, produits)
 
         elif utilisateur==True and self.essai == False :
 
@@ -666,7 +670,7 @@ class Projet(object):
 
         return(couts)
 
-    def progression(self, individus, paliers, utilisateur) :
+    def progression(self, individus, paliers, utilisateur, produits) :
         """
         FONCTION       : Modélise la progression du projet et
                          selon la phase de développement, appelle
@@ -688,7 +692,7 @@ class Projet(object):
             couts = Projet.phase3(self, paliers[2])
 
         elif self.phase == 4 :
-            couts = Projet.phase4(self, individus, paliers[3], utilisateur)
+            couts = Projet.phase4(self, individus, paliers[3], utilisateur, produits)
 
         return(couts)
 
@@ -867,7 +871,7 @@ if __name__=="__main__" :
 
         if menu == 0 : # Fin de tour
             projets = avance(projets, paliers, employes)
-            projets, frais_RD, notifications = allProgression(projets, employes, paliers)
+            projets, frais_RD, notifications = allProgression(projets, employes, paliers, produits)
             for i in range(len(frais_RD)) :
                 depenses.append(frais_RD[i])
 
