@@ -6,10 +6,10 @@ Patrick
 Nicolas
 Bob
 Pierre
-Eric
-Frederic
+Éric
+Frédéric
 Laurent
-Stephane
+Stéphane
 Pedro
 Martial
 Mamadou
@@ -18,12 +18,12 @@ Johnny
 Olivier
 Bernard
 Thomas
-Sebastien
+Sébastien
 Pablo
-Dede
+Dédé
 Adrien
 Juan
-Francois
+François
 Dorian
 Zacharie
 Kim
@@ -31,7 +31,7 @@ Emmanuel
 Youssef
 Maxime
 Mohamed
-Noe
+Noé
 Antoine
 Franck
 Jean-Pierre
@@ -39,4 +39,4 @@ Erwann
 Gilles
 Igor
 Fabrice
-Louis-Clement
+Louis-Clément
