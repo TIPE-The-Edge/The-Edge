@@ -1,1 +1,7 @@
 *.pyc
+
+# exclude everything
+save/*
+
+# exception to the rule
+!save/.gitkeep
