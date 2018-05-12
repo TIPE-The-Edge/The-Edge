@@ -36,36 +36,9 @@ class Save():
         self.last_used = None
 
     def save(self, window):
-        self.individus    = window.individus
-        self.produits     = window.produits
-        self.operations   = window.operations
-        self.materiaux    = window.materiaux
-        self.formations   = window.formations
-        self.populations  = window.populations
-        self.fournisseurs = window.fournisseurs
-        self.machines     = window.machines
-        self.transports   = window.transports
-        self.stocks       = window.stocks
-        self.candidats    = window.candidats
-        self.departs      = window.departs
-        self.couts        = window.couts
 
-        self.depenses = window.depenses
-        self.projets = window.projets
-        self.produits = window.produits
-
-        self.temps = window.temps
-        self.lesRH = window.lesRH
-        self.month = window.month
-        self.argent = window.argent
-
-        self.donneesF = window.donneesF
-
-        self.sha = window.sha
-        self.user_name = window.user_name
-        self.date_creation = window.date_creation
-        self.total_time = window.total_time + window.time_used
-        self.last_used = window.last_used
+        for attr, value in self.__dict__.items():
+            setattr(self, attr, getattr(window, attr))
 
         with open('./save/' + window.sha, 'wb') as f:
             pickle.dump(self, f)
@@ -73,41 +46,19 @@ class Save():
     def load(self, window, file):
 
         with open('./save/' + file, 'rb') as f:
-            self = pickle.load(f)
+            save = pickle.load(f)
 
-        window.individus    = self.individus
-        window.produits     = self.produits
-        window.operations   = self.operations
-        window.materiaux    = self.materiaux
-        window.formations   = self.formations
-        window.populations  = self.populations
-        window.fournisseurs = self.fournisseurs
-        window.machines     = self.machines
-        window.transports   = self.transports
-        window.stocks       = self.stocks
-        window.candidats    = self.candidats
-        window.departs      = self.departs
-        window.couts        = self.couts
-
-        window.depenses = self.depenses
-        window.projets = self.projets
-        window.produits = self.produits
-
-        window.temps = self.temps
-        window.lesRH = self.lesRH
-        window.month = self.month
-        window.argent = self.argent
-
-        window.donneesF = self.donneesF
-
-        window.sha = self.sha
-        window.user_name = self.user_name
-        window.date_creation = self.date_creation
-        window.total_time = self.total_time
-        window.last_used = self.last_used
+        # FIXME: reference problem 
+        for attr, value in save.__dict__.items():
+            setattr(window, attr, getattr(save, attr))
+            # setattr(self, attr, getattr(save, attr))
 
     def isSaved(self, window):
-        pass
+        for attr, value in self.__dict__.items():
+            if value != getattr(window, attr):
+                print('YES')
+                return False
+        return True
 
     def getSave(self, file):
         with open('./save/' + file, 'rb') as f:
@@ -124,7 +75,7 @@ class Save():
         f = open("savelist.txt", "r")
         tab_f = f.readlines()
         tab_save_info = []
-        for i in range(len(tab_f)):
+        for i in range(1,len(tab_f)):
             tab_f[i] = tab_f[i][:-1]
 
             with open('save/' + tab_f[i], 'rb') as f:

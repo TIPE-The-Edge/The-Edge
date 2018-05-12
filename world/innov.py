@@ -221,9 +221,9 @@ def allProgression(projets, employes, paliers, produits) :
 
 def genNotif(projets, paliers) :
     """
-    FONCTION       : 
-    ENTREES        : 
-    SORTIE         : 
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
     TEST UNITAIRE  : ...
     """
     notifications = []
@@ -232,27 +232,26 @@ def genNotif(projets, paliers) :
         if proj.id >= 0 :
             if proj.phase == 1 :
                 if proj.avancement>=paliers[0] :
-
-                    print("Le projet "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    # print("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
 
             elif proj.phase == 2 :
                 if proj.avancement>=paliers[1] :
-                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
-                        print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                        # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                        notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                         notifications.append(notification)
 
                 else :
-                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+ " a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
 
     return(notifications)

@@ -400,14 +400,31 @@ def create_game(widget, window, screen, *arg):
 
     start_game(window, screen)
 
-def reset_game(widget, window, screen, *arg):
-    window.set_window()
-    window.set_var()
-    window.draw_opening()
-    window.display(screen)
+def check_save(widget, window, screen, tosave, callback, *arg):
+    if tosave:
+        save(widget, window, screen, *arg)
 
-def close_game(widget, window, screen, *arg):
-    window.run = False
+    if window.save.isSaved(window):
+        callback(widget, window, screen, True)
+    else:
+        f1 = ["Oui", check_save, [True, callback]]
+        f2 = ["Non", callback, [True]]
+        draw_alert_option(widget, window, screen, "", ["La partie n'as pas été sauvegardé.", "Voulez-vous sauvegarder la partie ?"], [f1, f2])
+
+def reset_game(widget, window, screen, force, *arg):
+    if force:
+        window.set_window()
+        window.set_var()
+        window.draw_opening()
+        window.display(screen)
+    else:
+        check_save(widget, window, screen, False, reset_game, *arg)
+
+def close_game(widget, window, screen, force, *arg):
+    if force:
+        window.run = False
+    else:
+        check_save(widget, window, screen, False, close_game, *arg)
 
 '''INCOMPLET'''
 def draw_load_game(widget, window, screen, *arg):
@@ -542,7 +559,6 @@ def start_game(window, screen):
     window.time_start = round(time.time())
     window.draw_info()
     window.draw_nav_button()
-    window.draw_button_info('Aide', 'Il n\'y en a pas')
     draw_home(None, window, screen)
 
 def get_with_id(group, ind_id):
@@ -566,7 +582,8 @@ def time_convert(time):
     else:
         return str(time) + ' secondes'
 
-
+def do_nothing(*args):
+    pass
 
 '''
 ================================================================================
@@ -584,24 +601,31 @@ def draw_home(widget, window, screen, *arg):
     label.set_align('center')
     label.make_pos()
 
+    notifications = genNotif(window.projets, window.paliers)
     a = []
-    # for nottif in window.candidats:
-    #     employee_info = []
-    #
-    #     employee_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #     employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-    #     employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #     employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-    #
-    #     frame_employee = Frame(0, 0, employee_info, draw_individu, [ind.id])
-    #     frame_employee.set_direction('vertical')
-    #     frame_employee.set_items_pos('auto')
-    #     frame_employee.resize(580, 'auto')
-    #     frame_employee.set_padding(20,0,20,20)
-    #     frame_employee.set_bg_color((236, 240, 241))
-    #     frame_employee.make_pos()
-    #
-    #     a.append(frame_employee)
+    for notif in notifications:
+        notif_content = []
+
+        if notif[0] == 0:
+            notif_content.append(create_label(notif[1], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            notif_content.append(create_label(' ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            notif_content.append(create_label(notif[2], 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            notif_content.append(create_label(' ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+            button_project = create_button("Aller au projet", 'font/colvetica/colvetica.ttf', 25, (255, 255, 255), (230, 126, 34), 0, 0, 'auto', 'auto', draw_project, [notif[3], 0])
+            button_project.set_padding(15,15,10,10)
+            button_project.make_pos()
+            notif_content.append(button_project)
+
+        frame_notif = Frame(0, 0, notif_content, None, [])
+        frame_notif.set_direction('vertical')
+        frame_notif.set_items_pos('auto')
+        frame_notif.resize(580, 'auto')
+        frame_notif.set_padding(20,0,20,20)
+        frame_notif.set_bg_color((236, 240, 241))
+        frame_notif.make_pos()
+
+        a.append(frame_notif)
 
     item_list_notif = Item_list(a, 80, 120, 660, 120, 20, 600, 'notification')
 
@@ -619,16 +643,13 @@ def next_tour(widget, window, screen, *arg):
 
     #>>> partie RD
     window.projets = avance(window.projets, window.paliers, window.individus)
-    # Il faut faire apparaitre les nootifications.
     window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits)
-    notifications = genNotif(window.projets, window.paliers)
+
     for i in range(len(frais_RD)) :
         window.depenses.append(frais_RD[i])
     completedProject(window.projets, window.produits, window.individus)
 
-    # # Affichage des notifications
-    # for notification in notifications :
-    #     draw_alert(widget, window, screen, 'Message', notification, clear_overbody, [])
+    draw_home(widget, window, screen, *arg)
 
     save(widget, window, screen, *arg)
     draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine x", [])
@@ -1013,7 +1034,6 @@ def draw_rd(widget, window, screen, i, *arg):
             project_info = []
 
             project_info.append(create_label(project.nom, 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            project_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 5, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
             label_phase = create_label("Phase :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
             label_phase.resize(200, 'auto')
@@ -2223,10 +2243,10 @@ def draw_option(widget, window, screen, *arg):
 
     options = create_button("Options", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
     save_button = create_button("Sauvegarder", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, save, [])
-    f1 = ["Oui", reset_game, []]
+    f1 = ["Oui", reset_game, [False]]
     f2 = ["Non", clear_overbody, []]
     return_opening = create_button("Retourner au menu principal", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment retourner au menu principal?',[f1, f2]])
-    f1 = ["Oui", close_game, []]
+    f1 = ["Oui", close_game, [False]]
     f2 = ["Non", clear_overbody, []]
     quit = create_button("Quitter", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, draw_alert_option, ['', 'Voulez-vous vraiment quitter le jeu ?',[f1, f2]])
     f1 = ["Oui", delsave, []]
