@@ -176,8 +176,6 @@ def allProgression(projets, employes, paliers, produits) :
     """
     # Initialisation de la liste des dépenses
     depenses = []
-    # Initialisation des notifications
-    notifications = []
     # Initialisation des couts
     couts=['', 0]
 
@@ -194,18 +192,12 @@ def allProgression(projets, employes, paliers, produits) :
                         couts = Projet.progression(proj, employes, paliers, "", produits)
                         depenses.append(couts)
 
-                    print("Le projet "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
-                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, "", produits)
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
                     couts=Projet.progression(proj, employes, paliers, False, produits)
                 else :
-                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
-                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False, produits)
 
             elif proj.phase == 3 :
@@ -214,24 +206,58 @@ def allProgression(projets, employes, paliers, produits) :
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
-                        print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
-                        notifications.append(notification)
                         couts = Projet.progression(proj, employes, paliers, False, produits)
                     else :
                         couts = Projet.progression(proj, employes, paliers, None, produits)
 
                 else :
-                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
-                    notifications.append(notification)
                     couts = Projet.progression(proj, employes, paliers, False, produits)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
             depenses.append(couts)
 
-    return(projets, depenses, notifications)
+    return(projets, depenses)
+
+def genNotif(projets, paliers) :
+    """
+    FONCTION       : 
+    ENTREES        : 
+    SORTIE         : 
+    TEST UNITAIRE  : ...
+    """
+    notifications = []
+
+    for proj in projets :
+        if proj.id >= 0 :
+            if proj.phase == 1 :
+                if proj.avancement>=paliers[0] :
+
+                    print("Le projet "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notifications.append(notification)
+
+            elif proj.phase == 2 :
+                if proj.avancement>=paliers[1] :
+                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notifications.append(notification)
+
+            elif proj.phase == 4 :
+                if proj.avancement<paliers[3] :
+                    if proj.essai==False :
+                        print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                        notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                        notifications.append(notification)
+
+                else :
+                    print("Le projet : "+str(proj.nom)+" requiert votre attention !")
+                    notification = [0, "Projet : Phase terminée", "Le projet"+str(proj.nom)+"a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notifications.append(notification)
+
+    return(notifications)
+
+
 
 def selectProject(projets, identifiant) :
     """

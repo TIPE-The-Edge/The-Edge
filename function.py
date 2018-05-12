@@ -620,7 +620,8 @@ def next_tour(widget, window, screen, *arg):
     #>>> partie RD
     window.projets = avance(window.projets, window.paliers, window.individus)
     # Il faut faire apparaitre les nootifications.
-    window.projets, frais_RD, notifications = allProgression(window.projets, window.individus, window.paliers, window.produits)
+    window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits)
+    notifications = genNotif(window.projets, window.paliers)
     for i in range(len(frais_RD)) :
         window.depenses.append(frais_RD[i])
     completedProject(window.projets, window.produits, window.individus)
