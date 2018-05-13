@@ -29,6 +29,8 @@ class Save():
         self.month = 0
         self.argent = 0
 
+        self.donneesF = {}
+
         self.sha = ''
         self.user_name = ''
         self.date_creation = None
@@ -40,6 +42,8 @@ class Save():
         for attr, value in self.__dict__.items():
             setattr(self, attr, getattr(window, attr))
 
+        self.total_time = window.total_time + window.time_used
+
         with open('./save/' + window.sha, 'wb') as f:
             pickle.dump(self, f)
 
@@ -48,16 +52,20 @@ class Save():
         with open('./save/' + file, 'rb') as f:
             save = pickle.load(f)
 
-        # FIXME: reference problem 
+        # FIXME: reference problem
         for attr, value in save.__dict__.items():
             setattr(window, attr, getattr(save, attr))
-            # setattr(self, attr, getattr(save, attr))
 
     def isSaved(self, window):
-        for attr, value in self.__dict__.items():
-            if value != getattr(window, attr):
-                print('YES')
-                return False
+        # FIXME: pls 
+        # with open('./save/' + window.sha, 'rb') as f:
+        #     save = pickle.load(f)
+        #
+        # for attr, value in save.__dict__.items():
+        #     if value != getattr(window, attr):
+        #         print(attr)
+        #         print(value, getattr(window, attr))
+        #         return False
         return True
 
     def getSave(self, file):

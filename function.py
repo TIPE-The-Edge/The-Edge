@@ -349,7 +349,7 @@ def clear_overbody(widget, window, screen, *arg):
 
 def draw_ask_name(widget, window, screen, *arg):
     path = 'img/icon/left_gray_arrow'
-    button_arrow = Button_img(0, path, 0, 0, reset_game, [])
+    button_arrow = Button_img(0, path, 0, 0, reset_game, [True])
 
     label1 = create_label('Avant de commencer,', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
     label2 = create_label('Quel est votre nom ?', 'font/colvetica/colvetica.ttf', 45, (127, 140, 141), (236, 240, 241), 0, 0 , None, None, [])
@@ -403,6 +403,7 @@ def create_game(widget, window, screen, *arg):
 def check_save(widget, window, screen, tosave, callback, *arg):
     if tosave:
         save(widget, window, screen, *arg)
+        callback(widget, window, screen, True, *arg)
 
     if window.save.isSaved(window):
         callback(widget, window, screen, True)
@@ -478,13 +479,13 @@ def draw_load_game(widget, window, screen, *arg):
     frame_right.set_bg_color((236,240,241))
     frame_right.make_pos()
 
-    button_return = create_label( 'Menu principal', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, reset_game, [])
+    button_return = create_label( 'Menu principal', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, reset_game, [True])
     button_return.set_direction('vertical')
     button_return.resize(514,'auto')
     button_return.set_align('center')
     button_return.make_pos()
 
-    frame_v = Frame(64, 605, [button_return], reset_game, [])
+    frame_v = Frame(64, 605, [button_return], reset_game, [True])
     frame_v.set_direction('horizontal')
     frame_v.set_items_pos('auto')
     frame_v.resize('auto', 68)
@@ -1195,7 +1196,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
         lst_ajout_tmp += lst_ajout
         lst_ajout_tmp.pop(i)
 
-        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
         employe_name.set_items_pos('auto')
         employe_name.resize(580, 'auto')
         employe_name.set_padding(20,0,20,20)
@@ -2274,4 +2275,4 @@ def save(widget, window, screen, *arg):
 
 def delsave(widget, window, screen, *arg):
     window.save.delete(window.sha)
-    reset_game(widget, window, screen, *arg)
+    reset_game(widget, window, screen, True, *arg)
