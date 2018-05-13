@@ -94,7 +94,7 @@ if __name__ == "__main__" :
         # Tests sur le fonctionnement des Commandes et Machines.
             # Produits
     produits.append(Produit(produits, None, [[materiaux[0].nom, 2], [materiaux[1].nom, 1]], [[operations[0].nom, 1], [operations[1].nom, 1]], None))
-    produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5]], [[operations[0].nom, 7]], None))
+    produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5], [materiaux[2].nom, 2]], [[operations[0].nom, 7]], None))
             # Commandes
     # machines[0].commandes.append(Commande([[materiaux[0].nom, 10000], [materiaux[1].nom, 5000]], operations, produits[0]))
     # machines[0].commandes.append(Commande([[materiaux[1].nom, 5000], [materiaux[0].nom, 3000]], operations, produits[1]))
@@ -102,7 +102,9 @@ if __name__ == "__main__" :
     # machines[1].commandes.append(Commande([[materiaux[1].nom, 10000], [materiaux[0].nom, 6000]], operations, produits[1]))
     # machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
             # Machines
-    machines[0].operations_realisables = [ope[0] for ope in produits[0].operations]
+    machines[0].operations_realisables = [ope[0] for ope in produits[0].operations] #ttes les opé du produit 0
+    machines[0].utilisateur = Individu()
+    machines[1].operations_realisables = [produits[0].operations[0][0]] # la premiere opé du prod 0
 
 
     ######## VARIABLES DE JEU ########
@@ -111,7 +113,7 @@ if __name__ == "__main__" :
 
     # init produits
     initProduits(populations, produits)
-    initProduits(machines, produits)
+    #initProduits(machines, produits) # Pas utile?
     initProduits(stocks, produits)
 
     # init materiaux
@@ -202,7 +204,7 @@ if __name__ == "__main__" :
 
                     mat = input("materiau? ")
 
-                    liste_fournisseurs = Fournisseur.checkMat(fournisseurs, mat)
+                    liste_fournisseurs = Fournisseur.listeFour(fournisseurs, mat)
 
                     os.system('clear') # works on Linux/Mac
 
@@ -281,17 +283,46 @@ if __name__ == "__main__" :
                         print(stock)
                     print()
 
-                    prod = input("produit? "    )
+                    # Produit à fabriquer
+                    prod = input("produit? ")
 
+                    # Transforme le nom du produit en l'objet concerné
+                    for prods in produits:
+                        if prods.nom == prod:
+                            prod = prods
 
-                    mat1 = int(input("nbr mat1? "))
-                    mat2 = int(input("nbr mat2? "))
-                    mat_ajustes = Machine.ajusteCommande(machines, machines[0].nom, stocks[0], produits[0], [[materiaux[0].nom, mat1], [materiaux[1].nom, mat2]])
-                    print(mat_ajustes)
-                    input("ok? ")
-                    Machine.genCommande(machines, machines[0].nom, stocks[0], mat_ajustes, operations, produits[0])
+                    # Recherche des machines adéquates
+                    liste_machines = Machine.listeMach(machines, prod)
+                    print(liste_machines)
 
-                    menu = int(input("menu? \n  0: Retour \n  1: Produire\n "))
+                    mach = input("machine? ")
+
+                    nbr_prod = int(input("nbr de " + prod.nom + "? "))
+
+                    # La liste des nombres de materiaux respectifs pour
+                    # la quantité de produits voulue.
+                    liste_mats = Machine.nbrProd_to_NbrMat(prod, nbr_prod)
+                    print(liste_mats)
+
+                    mats_ajustes = Machine.ajusteCommande(stocks[0], prod, liste_mats)
+                    print(mats_ajustes)
+                    # TODO afficher le nbr de produit que ça fera
+
+                    ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
+                                                  # tant qu'un champs est vide)
+
+                    if ok_commande == "ok" and Machine.verifUtilisateur(machines, mach):
+                        Machine.genCommande(machines, operations, mats_ajustes, mach, stocks[0], prod)
+                        menu = 0
+
+                    elif not Machine.verifUtilisateur(machines, mach):
+                        # Affichage console pour les tests, sinon sur interface.
+                        print("la machine n'a pas d'utilisateur") #TODO Dorian
+                        menu = 1
+
+                    else:
+                        menu = 1
+                        
 
                 menu = 2
 

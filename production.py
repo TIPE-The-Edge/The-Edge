@@ -27,6 +27,12 @@ Vérifier le fonctionnement global des fonctions de production. Lier
 """
 
 """ PROBLEMS
+
+J'ai eu un bug avec les transports, avec 2 transports en meme temps (commandés
+    le meme jour). Quand ils sont arrivés, le 2eme n'a pas disparu de la liste
+    des transports, n'a pas été transféré dans le stock et a continué à
+    diminuer en temps de transport avec les jours : -1, -2 etc.
+
 """
 
 """ NOTES
@@ -204,9 +210,9 @@ class Fournisseur(object):
         # Si le trajet n'existe pas dans le fichier de données.
         return(None)
 
-    def checkMat(fournisseurs, materiau):
+    def listeFour(fournisseurs, materiau):
         """ Renvoie la liste des fournisseurs qui vendent le materieau entré.
-        Entrée :
+        Entrée : le nom d'un materiau
         """
 
         # Vérifie dans la base de données quel pays vend le materiau.
@@ -226,15 +232,18 @@ class Machine(object):
 
         # Infos basiques
         self.nom = self.genNom()
-        self.utilisateur = None
+        self.utilisateur = None  # (objet)
 
         # Production
         self.operations_realisables = [] # TODO
         self.commandes = []
 
+        self.materiaux = [[]]
+        #self.produits  = [[]] pas utile?
+
     def __repr__(self):
-        return "{} : {}, {}".format(
-                self.nom, self.operations_realisables, self.materiaux)
+        return "\n --> {} : \n{}".format(
+                self.nom, self.operations_realisables)
 
     def genNom(self):
         nom = random.choice(Machine.noms_dispo)
@@ -247,6 +256,8 @@ class Machine(object):
     def verifOperations(machines, machine, produit):
         """ Vérifie que les opérations nécessaires sont bien dans la liste
         des opérations réalisables par la machine.
+
+        INUTILE?
         """
         for mac in machines:
             if mac.nom == machine: # La machine qui nous interresse.
@@ -257,6 +268,9 @@ class Machine(object):
                 return(True)
 
     def verifUtilisateur(machines, machine):
+        """ Vérifie si une machine a un utilisateur.
+        Entrée : le nom de la machine
+        """
         for mac in machines:
             if mac.nom == machine: # La machine qui nous interresse.
 
@@ -264,6 +278,21 @@ class Machine(object):
                     return(False)
                 else:
                     return(True)
+
+    def nbrProd_to_NbrMat(produit, nombre):
+        """Retourne la liste avec les nombres de materiaux respectifs pour
+        un certain nombre de produits
+        Entrée : le produit (objet)
+                 le nombre désiré
+        Sortie : la liste des nombre de mats [[nom_mat, nbr_mat], ...]
+        """
+
+        liste = []
+
+        for mat in produit.materiaux:
+            liste.append([mat[0], mat[1] * nombre])
+
+        return(liste)
 
     def ajusteUnMatStock(stock, materiau):
         """ Ajuste la quantité d'un materiau en fonction de la quantité
@@ -303,9 +332,8 @@ class Machine(object):
 
         return(new_materiaux)
 
-    def ajusteCommande(machines, machine, stock, produit, materiaux):
-        """ Vérifie que les opérations nécessaires sont bien dans la machine
-        ajuste les materiaux en fonction du stock,
+    def ajusteCommande(stock, produit, materiaux):
+        """ Ajuste les materiaux en fonction du stock,
         ajuste les materiaux donnés dans les bonnes proportions.
         Entree: Liste de machines
                 Nom de la machine
@@ -313,36 +341,50 @@ class Machine(object):
                 Produit (objet)
                 Liste des materiaux entrés [["nom_mat", nbr_mat], ..]
         Sortie: Liste de materiaux ajustée [["nom_mat", nbr_mat], ..]
-
         """
-        if not Machine.verifOperations(machines, machine, produit):
-            # Affichage console pour les tests, sinon sur interface.
-            print("la machine ne peut pas réaliser ttes les opé nécéssaires") #TODO Dorian
-
-        if not Machine.verifUtilisateur(machines, machine):
-            # Affichage console pour les tests, sinon sur interface.
-            print("la machine n'a pas d'utilisateur'") #TODO Dorian
 
         new_materiaux = Machine.ajusteMatStock(stock, materiaux)
         new_materiaux = Machine.ajusteMatProd(produit, new_materiaux)
 
         return(new_materiaux)
 
-    def genCommande(machines, machine, stock, materiaux, operations, produit):
+    def genCommande(machines, operations, liste_materiaux, machine, stock, produit):
+        """
+        Entrée : la liste des materiaux utilisés et leur nombre
+                 le nom de la machine utilisée
+                 le stock contenant les materiaux (objet)
+                 le produit à créer (objet)
+        """
         # Créé la commande.
         for mac in machines:
             if mac.nom == machine:
-                mac.commandes.append(Commande(materiaux, operations, produit))
+                mac.commandes.append(Commande(liste_materiaux, operations, produit))
 
         # Retire les mat du stock.
-        retire(materiaux, stock.materiaux)
+        retire(liste_materiaux, stock.materiaux)
+
+    def listeMach(machines, produit):
+        """ Renvoie la liste des machines qui réalise les opérations nécessaires à un produit.
+        Entrée : Un produit (objet)
+        """
+        liste = []
+
+        for mach in machines:
+            # Verifie que toutes les opérations nécessaires au produit se
+            # trouvent dans les opé réalisables de la machine.
+            verif_all =  all(ope[0] in mach.operations_realisables for ope in produit.operations)
+
+            if verif_all:
+                liste.append(mach)
+
+        return(liste)
 
 class Commande(object): # Commandes faites aux machines
 
     def __init__(self, materiaux, operations, produit):
 
         self.materiaux = materiaux  # Liste de liste [[mat, nbr_mat], ...]
-        self.produit   = produit    # Produit final
+        self.produit   = produit    # Produit final (objet)
 
         # Process
         self.recette          = self.produit.materiaux # Type et nbr de mat par produit
@@ -392,8 +434,8 @@ class Commande(object): # Commandes faites aux machines
 
         x = utilisateur.competence_production
 
-        # mins est l'équivalent en minute de travail que peut fournir
-        mins = int((300/9)*(x**2) - (300/9)*x + 2400) # Polynome du second degré
+        # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
+        mins = int((300/9)*(x**2) - (300/9)*x + MINS_PAR_SEMAINE) # Polynome du second degré
 
         while mins > 0 and len(commandes) > 0:
 
