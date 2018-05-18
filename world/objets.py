@@ -240,7 +240,7 @@ class Produit(object):
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
-
+        self.ventes = 0     # Nombre de ventes
         self.nbr_ameliorations = 0
         # self.concurence = 0 # BONUS
 

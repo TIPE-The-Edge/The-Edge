@@ -109,7 +109,7 @@ def progres(individus, nom_projet) :
     for ind in individus :
         if ind.projet==nom_projet :
             chercheurs.append(ind)
-            
+
     return(compRecherche(chercheurs)+(compGroupe(chercheurs)/100)*compRecherche(chercheurs))
 
 
@@ -205,7 +205,7 @@ def existProjet(projets, nom) :
     SORTIE         : Un booléen indiquant si le nom a déjà été utilisé
                      (bool).
     """
-    
+
     for proj in projets :
         if proj.nom == nom :
             return(True)
@@ -214,7 +214,7 @@ def existProjet(projets, nom) :
 
 
 
-def nomPhase(phase) :
+def nomPhase(phase, identifiant) :
     """
     FONCTION       :
     ENTREES        :
@@ -226,7 +226,10 @@ def nomPhase(phase) :
 
     #>>> Corps de la fonction <<<#
     if phase==1 :
-        nom = 'Etude de marché'
+        if identifiant<0 :
+            nom = 'Développement'
+        else :
+            nom = 'Étude de marché'
     elif phase==2 :
         nom = 'Conception'
     elif phase==3 :

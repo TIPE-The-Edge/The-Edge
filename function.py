@@ -52,6 +52,9 @@ def create_label(text, police, fontsize, msg_color, bg_color, x, y, size, action
 
     if type(text) != list:
         text = [text]
+    else:
+        for i in range(len(text)):
+            text[i] = str(text[i])
 
     if size == None:
         labels = []
@@ -112,7 +115,10 @@ def create_label_value(labels, font1, font2, size1, size2, color1, color2, color
         label = create_label(element[0] + ' : ', font1, size1, color1, color_bg1, 0, 0, size, None, [])
         label.resize(width1, 'auto')
         label.make_pos()
-        value = create_label(str(element[1]), font2, size2, color2, color_bg2, 0, 0, None, None, [])
+        if type(element[1]) != list:
+            value = create_label(str(element[1]), font2, size2, color2, color_bg2, 0, 0, None, None, [])
+        else:
+            value = create_label(element[1], font2, size2, color2, color_bg2, 0, 0, None, None, [])
 
         frame_tmp = Frame(0, 0, [label,value], None, [])
         frame_tmp.set_direction('horizontal')
@@ -404,9 +410,6 @@ def check_save(widget, window, screen, tosave, callback, *arg):
     if tosave:
         save(widget, window, screen, *arg)
         callback(widget, window, screen, True, *arg)
-
-    if window.save.isSaved(window):
-        callback(widget, window, screen, True)
     else:
         f1 = ["Oui", check_save, [True, callback]]
         f2 = ["Non", callback, [True]]
@@ -562,10 +565,16 @@ def start_game(window, screen):
     window.draw_nav_button()
     draw_home(None, window, screen)
 
-def get_with_id(group, ind_id):
-    for ind in group:
-        if ind.id == ind_id:
-            return ind
+def get_with_id(group, identifier):
+    for obj in group:
+        if obj.id == identifier:
+            return obj
+    return None
+
+def get_with_name(group, identifier):
+    for obj in group:
+        if obj.nom == identifier:
+            return obj
     return None
 
 def time_convert(time):
@@ -1017,7 +1026,7 @@ def draw_rd(widget, window, screen, i, *arg):
             if ind.projet == None :
                 individus.append(ind)
 
-        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_add_project, [individus, []])
+        button_add_project = Frame(330, 40, [label_add_project, icon_sum], draw_add_project, [individus, [], None])
         button_add_project.set_direction('horizontal')
         button_add_project.set_items_pos('auto')
         button_add_project.resize(950, 80)
@@ -1040,7 +1049,7 @@ def draw_rd(widget, window, screen, i, *arg):
             label_phase.resize(200, 'auto')
             label_phase.set_items_pos('auto')
             label_phase.make_pos()
-            label_phase_value = create_label(nomPhase(project.phase), 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_phase_value = create_label(nomPhase(project.phase, project.id), 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
 
             frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
             frame_tmp1.set_direction('horizontal')
@@ -1105,7 +1114,7 @@ def draw_rd(widget, window, screen, i, *arg):
             product_info.append(create_label(product.nom, 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             product_info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
-            frame_product = Frame(0, 0, product_info, draw_product, [0, 0])
+            frame_product = Frame(0, 0, product_info, draw_product, [product.nom, 0])
             frame_product.set_direction('vertical')
             frame_product.set_items_pos('auto')
             frame_product.resize(930, 'auto')
@@ -1141,7 +1150,7 @@ def draw_rd(widget, window, screen, i, *arg):
     window.draw_button_info('Aide', 'Clique sur un projet pour voir ses caractéristiques ou crée un projet innovant !')
     window.display(screen)
 
-def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
+def draw_add_project(widget, window, screen, lst_ind, lst_ajout, product, *arg):
     items = []
 
     text = 'Liste des employés'
@@ -1165,7 +1174,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
         employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
-        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind]])
+        frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind], product])
         frame_employee.set_direction('vertical')
         frame_employee.set_items_pos('auto')
         frame_employee.resize(580, 'auto')
@@ -1196,7 +1205,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
         lst_ajout_tmp += lst_ajout
         lst_ajout_tmp.pop(i)
 
-        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp])
+        employe_name = create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, draw_add_project, [lst_ind + [ind], lst_ajout_tmp, product])
         employe_name.set_items_pos('auto')
         employe_name.resize(580, 'auto')
         employe_name.set_padding(20,0,20,20)
@@ -1217,7 +1226,10 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, *arg):
     frame_tmp_entry.set_bg_color((236, 240, 241))
     frame_tmp_entry.make_pos()
 
-    button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, create_project, [lst_ajout])
+    if product == None:
+        button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, create_project, [lst_ajout])
+    else:
+        button_submit = create_label('Ajouter le projet', 'font/colvetica/colvetica.ttf', 30, (255,255,255), (230, 126, 34), 0, 0, None, update_product, [lst_ajout, product])
     button_submit.set_padding(20,20,15,15)
     button_submit.set_direction('vertical')
     button_submit.make_pos()
@@ -1248,6 +1260,19 @@ def create_project(widget, window, screen, lst_emp, *arg):
     elif lst_emp == []:
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
+def update_product(widget, window, screen, lst_emp, product, *arg):
+    entry = get_entry(widget, window, screen, *arg)
+    if check_string(widget, window, screen, r"^[a-zA-Z0-9 ]+$", entry['name_project'], "Nom de projet incorrect") and lst_emp != []:
+        window.projets.append(Ameliore(product, entry['name_project']))
+        for ind in lst_emp:
+            addChercheurs(window.projets[-1], window.individus, ind.id)
+        title_msg = 'Bravo !'
+        msg = 'Le projet ' + entry['name_project'] + ' a bien été crée ! Le produit ' + product.nom +' est maintenant en cours d\'amélioration !'
+        draw_rd(widget, window, screen, 0)
+        draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+    elif lst_emp == []:
+        draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
+
 def actionPhase(widget, window, screen, projet, choix , *arg) :
     window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits))
     draw_alert(widget, window, screen, 'Bravo', 'Le projet passe à la phase suivante', clear_overbody, [])
@@ -1256,36 +1281,40 @@ def actionPhase(widget, window, screen, projet, choix , *arg) :
 def status(widget, window, screen, projet, *arg) :
     msg_general = []
     boutons = []
-    if projet.phase==1 and projet.attente==True:
-        msg_general.append("Les résultats de l'étude de marché sont arrivés !")
-        msg_general.append("Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :")
-        bouton_1 = [["Jeunes :", projet.produit.appreciation[0][0][0]], actionPhase, [projet, "Jeunes"]]
-        bouton_2 = [["Actifs :", projet.produit.appreciation[1][0][0]], actionPhase, [projet, "Actifs"]]
-        bouton_3 = [["Seniors :", projet.produit.appreciation[2][0][0]], actionPhase, [projet, "Seniors"]]
-        boutons.append(bouton_1)
-        boutons.append(bouton_2)
-        boutons.append(bouton_3)
-    elif projet.phase==2 and projet.attente==True:
-        msg_general.append("Vos chercheurs sont près à passer à la phase expérimentale.")
-        msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
-        boutons.append(["Accepter", actionPhase, [projet, True]])
-    elif projet.phase==4 :
-        if projet.attente==False and projet.essai==False :
-            msg_general.append("Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final")
-            msg_general.append("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
-            boutons.append(["Accepter", actionPhase, [projet, True]])
-        elif projet.attente==True:
-            msg_general.append("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
-            msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
-            boutons.append(["Accepter", actionPhase, [projet, True]])
-        else :
-            msg_general = "En cours."
 
-    elif projet.phase==5 :
-        msg_general = "Ce projet vient d'être achevé. Vous aurez accès à votre nouveau produit au prochain tour."
-
+    if projet.id < 0 :
+        msg_general.append("Développement en cours.")
     else :
-        msg_general = "En cours."
+        if projet.phase==1 and projet.attente==True:
+            msg_general.append("Les résultats de l'étude de marché sont arrivés !")
+            msg_general.append("Veuillez sélectionner la population que ciblera votre concept de produit pour faire avancer le projet à la phase suivante :")
+            bouton_1 = [["Jeunes :", projet.produit.appreciation[0][0][0]], actionPhase, [projet, "Jeunes"]]
+            bouton_2 = [["Actifs :", projet.produit.appreciation[1][0][0]], actionPhase, [projet, "Actifs"]]
+            bouton_3 = [["Seniors :", projet.produit.appreciation[2][0][0]], actionPhase, [projet, "Seniors"]]
+            boutons.append(bouton_1)
+            boutons.append(bouton_2)
+            boutons.append(bouton_3)
+        elif projet.phase==2 and projet.attente==True:
+            msg_general.append("Vos chercheurs sont près à passer à la phase expérimentale.")
+            msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
+            boutons.append(["Accepter", actionPhase, [projet, True]])
+        elif projet.phase==4 :
+            if projet.attente==False and projet.essai==False :
+                msg_general.append("Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final")
+                msg_general.append("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
+                boutons.append(["Accepter", actionPhase, [projet, True]])
+            elif projet.attente==True:
+                msg_general.append("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
+                msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
+                boutons.append(["Accepter", actionPhase, [projet, True]])
+            else :
+                msg_general.append("En cours.")
+
+        elif projet.phase==5 :
+            msg_general.append("Ce projet vient d'être achevé. Vous aurez accès à votre nouveau produit au prochain tour.")
+
+        else :
+            msg_general.append("En cours.")
 
     return(msg_general, boutons)
 
@@ -1330,7 +1359,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         label_phase.set_items_pos('auto')
         label_phase.make_pos()
 
-        label_phase_value = create_label(nomPhase(projet.phase), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+        label_phase_value = create_label(nomPhase(projet.phase, projet.id), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
 
         frame_tmp1 = Frame(0, 0, [label_phase, label_phase_value], None, [])
         frame_tmp1.set_direction('horizontal')
@@ -1721,7 +1750,10 @@ def add_to_project(widget, window, screen, lst_ind, proj_id):
         draw_alert(widget, window, screen, '', msg, clear_overbody, [])
 
 '''INCOMPLET'''
-def draw_product(widget, window, screen, prod_id, i, *arg):
+def draw_product(widget, window, screen, prod_name, i, *arg):
+
+    prod = get_with_name(window.produits, prod_name)
+
     items = []
 
     path = 'img/icon/right_white_arrow'
@@ -1738,15 +1770,57 @@ def draw_product(widget, window, screen, prod_id, i, *arg):
     frame_back.set_bg_color((149, 165, 166))
     frame_back.make_pos()
 
-    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id, 0])
-    update = create_label("Améliorer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_id,1])
+    attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_product, [prod_name, 0])
+    individus = []
+    for ind in window.individus :
+        if ind.projet == None :
+            individus.append(ind)
+    update = create_label("Améliorer", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_add_project, [individus, [], prod])
 
     focus_color = (41,128,185)
     if i == 0:
-        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,0])
+        attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_name,0])
 
-    elif i == 1:
-        update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_id,1])
+        title = create_label(prod.nom, 'font/colvetica/colvetica.ttf', 50, (44,62,80), (236,240,241), 0, 0, None, None, [])
+        title.set_padding(0,0,0,30)
+        title.make_pos()
+
+        info1, info2, info3, info4, info5 = [], [], [], [], []
+        info1.append(['Matériaux nécessaires', prod.materiaux])
+        info1.append(['Opérations nécessaires', prod.operations])
+        info2.append(['Population cible', prod.cible])
+        if prod.marche==True :
+            info2.append(['Prix de vente', prod.prix])
+            info2.append(['Nombre de vente', prod.ventes])
+            info2.append(['Temps passé sur le marché', prod.age])
+
+        info3.append(["Nombre d'améliorations effectuées", prod.nbr_ameliorations])
+
+        infos = [info1, info2, info3]
+        frame_labels = []
+        for info in infos:
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 400, 'auto')
+            frame_tmp = Frame(0, 0, label_tmp, None, [])
+            frame_tmp.set_items_pos('auto')
+            frame_tmp.set_marge_items(10)
+            frame_tmp.set_direction('vertical')
+            frame_tmp.resize('auto', 'auto')
+            frame_tmp.set_bg_color((236, 240, 241))
+            frame_tmp.make_pos()
+            frame_labels.append(frame_tmp)
+
+        frame_right = Frame(330, 40, [title] + frame_labels, None, [])
+        frame_right.set_direction('vertical')
+        frame_right.set_items_pos('auto')
+        frame_right.set_padding(50,0,50,0)
+        frame_right.set_marge_items(30)
+        frame_right.set_bg_color((236,240,241))
+        frame_right.make_pos()
+
+        items.append(frame_right)
+
+    # elif i == 1:
+        # update = create_label("Améliorer", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_product, [prod_name,1])
 
     list_tmp = [attribute, update]
     for element in list_tmp:
@@ -2168,7 +2242,7 @@ def draw_sales(widget, window, screen, *arg):
     pass
 
 '''INCOMPLET'''
-def draw_sales_product(widget, window, screen, prod_id, i, *arg):
+def draw_sales_product(widget, window, screen, prod_name, i, *arg):
     # ind = get_with_id(window.individus, ind_id)
 
     items = []
@@ -2187,16 +2261,16 @@ def draw_sales_product(widget, window, screen, prod_id, i, *arg):
     frame_back.set_bg_color((149, 165, 166))
     frame_back.make_pos()
 
-    info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id, 0])
+    info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name, 0])
     text_product_kill = "Mettre en vente" #"Arrêter la distribution"
-    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_id,1])
+    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name,1])
 
     focus_color = (41,128,185)
     if i == 0:
-        info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,0])
+        info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,0])
 
     elif i == 1:
-        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_id,1])
+        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,1])
 
     list_tmp = [info_market, make_sale]
     for element in list_tmp:

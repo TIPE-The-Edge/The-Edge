@@ -181,7 +181,7 @@ def allProgression(projets, employes, paliers, produits) :
 
     for proj in projets :
         if proj.id < 0 :
-            couts = Ameliore.progression(proj)
+            couts = Ameliore.progression(proj, paliers[0])
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
@@ -253,10 +253,11 @@ def genNotif(projets, paliers) :
                     # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
                     notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+ " a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
                     notifications.append(notification)
+        else :
+            if proj.avancement>=paliers[0] :
+                notification = [0, "Projet : Amélioration terminée", "Le projet "+str(proj.nom)+" a été achevé."]
 
     return(notifications)
-
-
 
 def selectProject(projets, identifiant) :
     """
@@ -278,7 +279,6 @@ def avance(projets, paliers, employes) :
     TEST UNITAIRE  : ...
     """
     for proj in projets :
-
         # On fait avancer le projet.
         proj.avancement += progres(employes, proj.nom)
         if proj.avancement > paliers[proj.phase -1] :
@@ -818,7 +818,7 @@ class Ameliore() :
 
         return(80)
 
-    def progression(self) :
+    def progression(self, palier) :
         """
         FONCTION       : Modélise le développement de l'amélioration
                          d'un produit.
@@ -828,7 +828,7 @@ class Ameliore() :
         # Initialisation des coûts
         couts = [self.nom, 0]
 
-        if self.avancement >= self.palier :
+        if self.avancement >= palier :
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
             if self.produit.nbr_ameliorations > 1 :
