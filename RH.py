@@ -24,7 +24,12 @@ RH :
 
     Etablir le cout des locaux (location de locaux)
 
-Rajouter les couts dans la liste des couts pour LC.
+Rajouter les couts dans la liste des couts pour LC:
+    Diviser en:
+        locaux
+        salaires
+        charges sociales
+
 
 """
 

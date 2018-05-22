@@ -21,17 +21,12 @@ from lecture import *
 Vérifier le fonctionnement global des fonctions de production. Lier
     l'interface à la fin de la prod. Avec les verifs des machines etc.
 
-    Vérifier ttes les fonctions de commande. certaines ne sont pas bonnes.
-    Vérifier les type des objets à mettre en paramètre.
+Machine :
+    self.operations_realisables (Besoin d'une fonction)
 
 """
 
 """ PROBLEMS
-
-J'ai eu un bug avec les transports, avec 2 transports en meme temps (commandés
-    le meme jour). Quand ils sont arrivés, le 2eme n'a pas disparu de la liste
-    des transports, n'a pas été transféré dans le stock et a continué à
-    diminuer en temps de transport avec les jours : -1, -2 etc.
 
 """
 
@@ -500,9 +495,13 @@ class Transport(object):
 
     def arrivees(transports, stocks):
         """ Si un transport est terminé, ses materiaux et produits sont
-        transférés dans le stock de destination.
+        transférés dans le stock de destination. Et la liste des transports
+        restants est retournée.
         """
+        copy = []
+
         for trans in transports:
+
             if trans.tps_trajet == 0:
 
                 for stock in stocks:
@@ -510,7 +509,10 @@ class Transport(object):
                         ajout(trans.materiaux, stock.materiaux)
                         ajout(trans.produits, stock.produits)
 
-                transports.remove(trans) # Retire le transport de la liste
+            else:
+                copy.append(trans)
+
+        return(copy)
 
 class Stock(object):
 

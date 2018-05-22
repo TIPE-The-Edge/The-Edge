@@ -21,13 +21,6 @@ Population : # de consommateurs
     updateProduits() (voir comment on maj les produits vendus
         et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
-Fournisseur :
-    self.materiaux_vendu (Besoin d'une fonction)
-
-
-Machine :
-    self.operations_realisables (Besoin d'une fonction)
-
 """
 
 

@@ -76,7 +76,7 @@ if __name__ == "__main__" :
         operations.append(Operation())
 
     # materiaux
-    for i in range(0 + preset_prod + preset_fab):
+    for i in range(29):
         materiaux.append(Materiau())
 
     # formations #BONUS
@@ -84,7 +84,7 @@ if __name__ == "__main__" :
     #     formations.append(Formation())
 
     # fournisseurs
-    for i in range(0 + preset_prod):
+    for i in range(6):
         fournisseurs.append(Fournisseur())
 
     # machines
@@ -145,15 +145,12 @@ if __name__ == "__main__" :
 
 
     # Pour tests
-    stocks[0].materiaux[0][1] = 20000
-    stocks[0].materiaux[1][1] = 20000
-    mat1 = int(input("nbr mat1? "))
-    mat2 = int(input("nbr mat2? "))
-    mat_ajustes = Machine.ajusteCommande(machines, machines[0].nom, stocks[0], produits[0], [[materiaux[0].nom, mat1], [materiaux[1].nom, mat2]])
-    print(mat_ajustes)
-    input("ok? ")
-    Machine.genCommande(machines, machines[0].nom, stocks[0], mat_ajustes, operations, produits[0])
-
+    mat = materiaux[0].nom
+    four = Fournisseur.listeFour(fournisseurs, mat)[0]
+    Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 1]], 10000)
+    Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 2]], 10000)
+    Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 3]], 10000)
+    Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 4]], 10000)
 
     on = 0
     while on != " ": # Boucle de jeu
@@ -166,8 +163,8 @@ if __name__ == "__main__" :
         Individu.updateExpStartUp(individus)
 
         # Transports
-        Transport.arrivees(transports, stocks)
         Transport.updateTempsTrajet(transports)
+        transports = Transport.arrivees(transports, stocks)
 
         # Commandes
         Commande.updateCommandes(machines, stocks[0]) # test commandes
@@ -180,40 +177,46 @@ if __name__ == "__main__" :
             RH.coutsRH(couts, lesRH)
 
 
+        # Pour les tests
+        # mat = materiaux[0].nom
+        # four = Fournisseur.listeFour(fournisseurs, mat)[0]
+        # Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 2]], 10000)
+        # Fournisseur.approvisionnement(transports, couts, four, stocks[0], [[mat, 3]], 10000)
+
         ######## AFFICHAGE ########
 
         # Temps
         print("------------------------ |{} {} {}| ------------------------\n".format(temps.day, temps.strftime("%B"), temps.year))
 
-        # individus
-        print("------ Classe : Individu ------")
-        for ind in individus:
-            print(ind)
-        print()
-
-        # populations
-        print("------ Classe : Population ------")
-        for pop in populations:
-            print(pop)
-        print()
-
-        # produits
-        print("------ Classe : Produit ------")
-        for prod in produits:
-            print(prod)
-        print()
-
-        # opérations
-        print("------ Classe : Operation ------")
-        for ope in operations:
-            print(ope)
-        print()
-
-        # materiaux
-        print("------ Classe : Materiau ------")
-        for mat in materiaux:
-            print(mat)
-        print()
+        # # individus
+        # print("------ Classe : Individu ------")
+        # for ind in individus:
+        #     print(ind)
+        # print()
+        #
+        # # populations
+        # print("------ Classe : Population ------")
+        # for pop in populations:
+        #     print(pop)
+        # print()
+        #
+        # # produits
+        # print("------ Classe : Produit ------")
+        # for prod in produits:
+        #     print(prod)
+        # print()
+        #
+        # # opérations
+        # print("------ Classe : Operation ------")
+        # for ope in operations:
+        #     print(ope)
+        # print()
+        #
+        # # materiaux
+        # print("------ Classe : Materiau ------")
+        # for mat in materiaux:
+        #     print(mat)
+        # print()
 
         # formations #BONUS
         # print("------ Classe : Formation ------")
@@ -227,11 +230,11 @@ if __name__ == "__main__" :
             print(four)
         print()
 
-        # machines
-        print("------ Classe : Machine ------")
-        for mach in machines:
-            print(mach)
-        print()
+        # # machines
+        # print("------ Classe : Machine ------")
+        # for mach in machines:
+        #     print(mach)
+        # print()
 
         # commandes
         print("------ Classe : Commande ------")
@@ -254,18 +257,18 @@ if __name__ == "__main__" :
             print(stock)
         print()
 
-        # candidats
-        print("------ Liste : Candidats ------")
-        for cand in candidats:
-            print(cand)
-            #affichage_individu(cand)
-        print()
-
-        # départs
-        print("------ liste : Départs ------")
-        for dep in departs:
-            print(dep)
-        print()
+        # # candidats
+        # print("------ Liste : Candidats ------")
+        # for cand in candidats:
+        #     print(cand)
+        #     #affichage_individu(cand)
+        # print()
+        #
+        # # départs
+        # print("------ liste : Départs ------")
+        # for dep in departs:
+        #     print(dep)
+        # print()
 
         # couts
         print("------ liste : Coûts ------")
@@ -278,25 +281,6 @@ if __name__ == "__main__" :
         ####################
         print("------------------------ ESPACE TESTS ------------------------\n")
 
-        # lesRH.update(individus, departs, 3, 3)
-        # print(lesRH)
-
-        # Recrutement
-        # idt = int(input("recruter ? "))
-        # RH.recruter(individus, candidats, idt)
-        #
-        # idt = int(input("virer ? "))
-        # RH.licencier(individus, departs, idt)
-        #
-        # candidats.append(Individu())
-
-        # Approvisionnement
-        # mat = input("mat? ")
-        # nbr = int(input("combien? "))
-        # commande = [[mat, nbr]]
-        # Fournisseur.approvisionnement(transports, materiaux, couts, fournisseurs[0].nom, "The Edge", commande)
-
-        # Production
 
 
         # Fin

@@ -134,7 +134,7 @@ if __name__ == "__main__" :
 
         # Transports
         Transport.updateTempsTrajet(transports)
-        Transport.arrivees(transports, stocks)
+        transports = Transport.arrivees(transports, stocks)
 
         # Commandes
         Commande.updateCommandes(machines, stocks[0]) # test commandes
@@ -322,7 +322,7 @@ if __name__ == "__main__" :
 
                     else:
                         menu = 1
-                        
+
 
                 menu = 2
 
