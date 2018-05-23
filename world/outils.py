@@ -219,8 +219,6 @@ def nomPhase(phase, identifiant) :
     FONCTION       :
     ENTREES        :
     SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
     """
     #>>> Initialisation des variables locales <<<#
 
@@ -240,6 +238,23 @@ def nomPhase(phase, identifiant) :
         nom = 'Achevé'
     #>>> Sortie <<<#
     return(nom)
+
+
+def affichMatOper(materiaux) :
+    """
+    FONCTION       :
+    ENTREES        :
+    SORTIE         :
+    REMARQUES      :
+    TEST UNITAIRE  : ("OK"/"...")
+    """
+    #>>> Initialisation des variables locales <<<#
+    affichage = []
+    #>>> Corps de la fonction <<<#
+    for objet in materiaux :
+        affichage.append(objet[0].nom+" : "+str(objet[1]))
+    #>>> Sortie <<<#
+    return(affichage)
 
 
 '''

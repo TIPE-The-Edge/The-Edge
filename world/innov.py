@@ -181,7 +181,7 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations) 
 
     for proj in projets :
         if proj.id < 0 :
-            couts = Ameliore.progression(proj, paliers[0])
+            couts = Ameliore.progression(proj, False)
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
@@ -192,7 +192,7 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations) 
                         couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
                         depenses.append(couts)
 
-                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations )
+                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
@@ -233,29 +233,31 @@ def genNotif(projets, paliers) :
             if proj.phase == 1 :
                 if proj.avancement>=paliers[0] :
                     # print("Le projet "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase, proj.id)+".", proj.id]
                     notifications.append(notification)
 
             elif proj.phase == 2 :
                 if proj.avancement>=paliers[1] :
                     # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase, proj.id)+".", proj.id]
                     notifications.append(notification)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
                         # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                        notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                        notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+" a achevé la phase "+nomPhase(proj.phase, proj.id)+".", proj.id]
                         notifications.append(notification)
 
                 else :
                     # print("Le projet : "+str(proj.nom)+" requiert votre attention !")
-                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+ " a achevé la phase "+nomPhase(proj.phase)+".", proj.id]
+                    notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+ " a achevé la phase "+nomPhase(proj.phase, proj.id)+".", proj.id]
                     notifications.append(notification)
         else :
-            if proj.avancement>=paliers[0] :
-                notification = [0, "Projet : Amélioration terminée", "Le projet "+str(proj.nom)+" a été achevé."]
+            
+            if proj.avancement>=proj.palier and proj.phase != 5 :
+                notification = [0, "Projet : Amélioration terminée", "Le projet "+str(proj.nom)+" a été achevé.", proj.id]
+                notifications.append(notification)
 
     return(notifications)
 
@@ -281,8 +283,12 @@ def avance(projets, paliers, employes) :
     for proj in projets :
         # On fait avancer le projet.
         proj.avancement += progres(employes, proj.nom)
-        if proj.avancement > paliers[proj.phase -1] :
-            proj.avancement = paliers[proj.phase -1]
+        if proj.id < 0 :
+            if proj.avancement > proj.palier :
+                proj.avancement = proj.palier
+        else :
+            if proj.avancement > paliers[proj.phase -1] :
+                proj.avancement = paliers[proj.phase -1]
 
     return(projets)
 
@@ -400,8 +406,9 @@ class Prototype(object):
         REMARQUES      : nb matéiaux entre 3 et 7.
         TEST UNITAIRE  : ...
         """
-        for i in range(random.randint(3, 7)):
-            self.materiaux.append([materiaux[randint(len(materiaux)), randint()]])
+        
+        for i in range(random.randint(3, 6)):
+            self.materiaux.append([materiaux[random.randint(0, (len(materiaux)-1))], random.randint(5, 10)])
 
     def creaOpera(self, operations) :
         """
@@ -415,7 +422,7 @@ class Prototype(object):
         """
 
         for i in range(random.randint(2, 5)):
-            self.operations.append(Operation())
+            self.operations.append([operations[random.randint(0, (len(operations)-1))], random.randint(3, 5)])
 
     def creaCout(self) :
         """
@@ -430,10 +437,10 @@ class Prototype(object):
             # Initialise le cout moyen du matériaux
             couts=0
             # On récupère les données concernant les prix
-            recup = readLineCSV("materiaux.csv", "materiaux", mat.nom, ["cout unitaire"])
+            recup = readLineCSV("materiaux.csv", "materiaux", mat[0].nom, ["cout unitaire"])
             # On fait une moyenne de ces prix
             for prix in recup :
-                couts += float(prix[0])
+                couts += float(prix[0])*mat[1]
             couts = couts/(len(recup))
             # On ajoute le cout moyen du matériaux au cout total
             #| du prototype.
@@ -584,7 +591,7 @@ class Projet(object):
 
         return(couts)
 
-    def phase2(self, palier, utilisateur) :
+    def phase2(self, palier, utilisateur, materiaux, operations) :
         """
         FONCTION       : Modélise le développement du projet à
                          la phase 2.
@@ -604,7 +611,7 @@ class Projet(object):
             self.produit = Prototype(self.produit.appreciation,
                                      self.produit.cible)
 
-            Prototype.develop(self.produit)
+            Prototype.develop(self.produit, materiaux, operations)
 
             couts = Projet.verifPhase2(self, utilisateur)
 
@@ -711,7 +718,7 @@ class Projet(object):
             couts = Projet.phase1(self, paliers[0], utilisateur)
 
         elif self.phase == 2 :
-            couts = Projet.phase2(self, paliers[1], utilisateur)
+            couts = Projet.phase2(self, paliers[1], utilisateur, materiaux, operations)
 
         elif self.phase == 3 :
             couts = Projet.phase3(self, paliers[2])
@@ -816,9 +823,35 @@ class Ameliore() :
         SORTIE         : Une amélioration dont le palier est fixé.
         """
 
-        return(80)
+        return(100)
 
-    def progression(self, palier) :
+    def verif(self, utilisateur) :
+        """
+        FONCTION       : 
+        ENTREES        : 
+        SORTIE         :
+        """
+        # Initialisation des coûts
+        couts = [self.nom, 0]
+        
+        if utilisateur==True :
+            # Dépot d'un brevet (Warning : frais supplémentaires)
+            couts = [self.nom+" | Brevet",50]
+            # On améliore une caractéristique de notre produit
+            self = Ameliore.update(self)
+            if self.produit.nbr_ameliorations > 1 :
+                self.produit.nom = self.produit.nom[:-1] + str(self.produit.nbr_ameliorations+1)
+            else :
+                self.produit.nom = self.produit.nom+" v"+str(self.produit.nbr_ameliorations+1)
+            self.phase = 5
+            self.produit.develop = False
+        else :
+            
+            self.attente=True
+
+        return(couts)
+
+    def progression(self, utilisateur) :
         """
         FONCTION       : Modélise le développement de l'amélioration
                          d'un produit.
@@ -828,15 +861,8 @@ class Ameliore() :
         # Initialisation des coûts
         couts = [self.nom, 0]
 
-        if self.avancement >= palier :
-            # On améliore une caractéristique de notre produit
-            self = Ameliore.update(self)
-            if self.produit.nbr_ameliorations > 1 :
-                self.produit.nom = self.produit.nom[:-1] + str(self.produit.nbr_ameliorations+1)
-            else :
-                self.produit.nom = self.produit.nom+" v"+str(self.produit.nbr_ameliorations+1)
-            self.phase = 5
-            self.produit.develop = False
+        if self.avancement >= self.palier :
+            couts = Ameliore.verif(self, utilisateur)
 
         return(couts)
 
@@ -853,7 +879,7 @@ class Test(unittest.TestCase) :
 
         #>>> Test 1 <<<#
 
-        reponse = ("indifférents",40)
+        reponse = ("indifférents", 40)
         test = appreciation(40)
         self.assertEqual(test, reponse)
 
@@ -872,196 +898,4 @@ class Test(unittest.TestCase) :
 ####################################
 
 if __name__=="__main__" :
-    # On effectue les tests unitaires.
-    # unittest.main()
-
-    #| Provisoire |#
-
-    depenses = []
-    projets = []
-    produits = []
-    produits.append(Produit(produits, [], [], [], ""))
-    employes = [Individu() for i in range(10)]
-
-    # Initialisation des différents paliers
-    paliers = [80, 100, 100, 100]
-
-    # Affichage console
-
-    end = False
-
-    while end == False :
-        os.system("cls")
-        menu = int(input("menu? \n 0: Continue \n 1: R&D \n 2: Exit \n"))
-
-        if menu == 0 : # Fin de tour
-            projets = avance(projets, paliers, employes)
-            projets, frais_RD, notifications = allProgression(projets, employes, paliers, produits)
-            for i in range(len(frais_RD)) :
-                depenses.append(frais_RD[i])
-
-            completedProject(projets, produits, employes)
-            input()
-        elif menu == 1 : # MENU R&D
-            while menu != 0:
-                os.system('cls')
-
-                print("------ Liste : Projets en cours ------")
-                for proj in projets :
-                    print(proj)
-                print()
-
-                menu = int(input("menu? \n 0: Retour \n 1: Ajouter un projet \n 2: Choisir un projet \n 3: Produits \n"))
-
-                if menu == 1 : # Ajouter un projet
-                    # Nom du nouveau projet
-                    nom = str(input("Donner un nom au nouveau projet : "))
-                    projets.append(Projet(nom))
-                    while menu != 0 :
-                        os.system("cls")
-
-                        # Chercheurs disponibles
-                        for emp in employes :
-                            if emp.projet == None :
-                                print(emp)
-                        print()
-
-                        # Affectation des chercheurs :
-                        idt = int(input("affecter qui?"))
-                        addChercheurs(projets[-1], employes, idt)
-
-                        menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
-
-                    menu = 1
-
-                elif menu == 2 : # Projets en cours
-                    idt = int(input("quel projet?"))
-                    projet = selectProject(projets, idt)
-                    while menu != 0 :
-                        os.system("cls")
-                        print("------ Caractéristiques du projet -------")
-                        print()
-                        print(projet.nom+"\n")
-                        print("__________")
-                        print("Actuellement à la phase : "+str(projet.phase)+"\n")
-                        print("Progression : "+str(projet.avancement)+"/"+str(paliers[projet.phase-1])+"\n")
-                        print()
-                        if projet.id<0 :
-                            print("Produit en développement : "+projet.produit.nom+"\n")
-                        print("__________")
-                        print("------ Liste : Chercheurs participant ------")
-                        for emp in employes :
-                            if emp.projet == projet.nom :
-                                print(emp)
-                        print()
-
-                        # Statut du projet
-                        # status(projet, paliers, depenses)
-
-                        menu = int(input("menu? \n 0: Retour \n 1: Supprimer \n 2: Ajouter des chercheurs \n 3: Retirer des chercheurs \n"))
-
-                        if menu == 1 :
-                            confirm = input("Etes-vous sûr de vouloir supprimer ce projet ? (O/N)")
-                            if confirm == "O" :
-                                delProject(projets, employes, projet.id)
-
-                            menu=0
-
-                        elif menu == 2 :
-                            while menu != 0 :
-                                os.system("cls")
-                                # Chercheurs disponibles
-                                for emp in employes :
-                                    if emp.projet == None :
-                                        print(emp)
-                                print()
-
-                                # Affectation des chercheurs :
-                                idt = int(input("affecter qui?"))
-                                addChercheurs(projet, employes, idt)
-
-                                menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
-
-                            menu = 2
-
-                        elif menu == 3 :
-                            while menu != 0 :
-                                os.system("cls")
-                                # Chercheurs participants
-                                for emp in projet.chercheurs :
-                                    if emp.projet == projet.nom :
-                                        print(emp)
-                                print()
-
-                                # Retirer un chercheur
-                                idt = int(input("retirer qui?"))
-                                delChercheurs(projet, employes, idt)
-
-                                menu = int(input("menu? \n 0: Retour \n 1: Retirer un autre chercheur \n"))
-                            menu = 3
-
-                    menu = 2
-
-                elif menu==3 :
-                    while menu!=0 :
-                        os.system("cls")
-                        print("------ Liste : Produit ------")
-                        for prod in produits :
-                            print(prod)
-                        print()
-
-                        menu = int(input("menu? \n 0: Retour \n 1: Choisir un produit\n"))
-
-                        if menu == 1 :
-                            idt = int(input("quel produit?"))
-                            produit = selectProduit(produits, idt)
-                            while menu!=0 :
-                                os.system("cls")
-                                print("------ Caractéristiques du produit -------")
-                                print()
-                                print(produit.nom+"\n")
-                                print("------ Matériaux ------")
-                                for mat in produit.materiaux :
-                                    print(mat)
-                                print()
-                                print("------ Opérations ------")
-                                for oper in produit.operations :
-                                    print(oper)
-                                print()
-                                print("__________")
-                                print("Nombre d'améliorations déjà effectuées: "+str(produit.nbr_ameliorations)+"\n")
-                                print("__________")
-                                print("Temps sur le marché : "+str(produit.age))
-
-                                if prod.develop==False :
-                                    menu = int(input("menu? \n 0: Retour \n 1: Améliorer\n"))
-                                else :
-                                    menu = int(input("menu? \n 0: Retour\n"))
-
-                                if menu==1 :
-                                    # Nom du nouveau projet
-                                    nom = str(input("Donner un nom au nouveau projet : "))
-                                    projets.append(Ameliore(produit, nom))
-                                    produit.develop = True
-                                    while menu != 0 :
-                                        os.system("cls")
-
-                                        # Chercheurs disponibles
-                                        for emp in employes :
-                                            if emp.projet == None :
-                                                print(emp)
-                                        print()
-
-                                        # Affectation des chercheurs :
-                                        idt = int(input("affecter qui?"))
-                                        addChercheurs(projets[-1], employes, idt)
-
-                                        menu = int(input("menu? \n 0: Retour \n 1: Affecter un autre chercheur \n"))
-
-                                    menu = 1
-                            menu = 1
-                    menu = 3
-            menu = 1
-
-        elif menu == 2 :
-            end = True
+    pass

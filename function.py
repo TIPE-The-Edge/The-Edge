@@ -24,7 +24,7 @@ import datetime
 
 # IMPORTS DE FICHIERS
 
-from function import *
+from function import *   # Pourquoi ?
 from widget.button_img import *
 from widget.button_txt import *
 from widget.entry import *
@@ -1066,9 +1066,19 @@ def draw_rd(widget, window, screen, i, *arg):
             label_avancement.set_items_pos('auto')
             label_avancement.make_pos()
 
-            pourcentage = str(int(project.avancement * 100 / window.paliers[project.phase-1]))
+            if project.id < 0 :
+                pourcentage = str(int(project.avancement*100 / project.palier))
+            else :
+                pourcentage = str(int(project.avancement * 100 / window.paliers[project.phase-1]))
+
             label_pourcentage = create_label(pourcentage+'%', 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-            progress_bar = Progress_bar(0, 0, 600, 30, None, [], project.avancement, window.paliers[project.phase-1], (46, 204, 113), (255, 255, 255))
+            
+            if project.id < 0 :
+                progress_bar = Progress_bar(0, 0, 600, 30, None, [], project.avancement, project.palier, (46, 204, 113), (255, 255, 255))
+            else :
+                progress_bar = Progress_bar(0, 0, 600, 30, None, [], project.avancement, window.paliers[project.phase-1], (46, 204, 113), (255, 255, 255))
+
+
             frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
             frame_progress_bar.set_direction('horizontal')
             frame_progress_bar.set_items_pos('auto')
@@ -1274,7 +1284,10 @@ def update_product(widget, window, screen, lst_emp, product, *arg):
         draw_alert(widget, window, screen, "Erreur", "Aucun employé sélectionné", clear_overbody, [])
 
 def actionPhase(widget, window, screen, projet, choix , *arg) :
-    window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations))
+    if projet.id < 0 :
+        window.depenses.append(Ameliore.progression(projet, choix))
+    else :
+        window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations))
     draw_alert(widget, window, screen, 'Bravo', 'Le projet passe à la phase suivante', clear_overbody, [])
     draw_project(widget, window, screen, projet.id, 0)
 
@@ -1283,7 +1296,14 @@ def status(widget, window, screen, projet, *arg) :
     boutons = []
 
     if projet.id < 0 :
-        msg_general.append("Développement en cours.")
+        if projet.attente==True and projet.phase != 5  :
+            msg_general.append("Vous avez amélioré votre produit. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
+            msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
+            boutons.append(["Accepter", actionPhase, [projet, True]])
+        elif projet.phase == 5 :
+            msg_general.append("Ce projet vient d'être achevé. Vous aurez accès à votre nouveau produit au prochain tour.")
+        else :
+            msg_general.append("Développement en cours.")
     else :
         if projet.phase==1 and projet.attente==True:
             msg_general.append("Les résultats de l'étude de marché sont arrivés !")
@@ -1377,9 +1397,18 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         label_avancement.set_items_pos('auto')
         label_avancement.make_pos()
 
-        pourcentage = str(int(projet.avancement * 100 / window.paliers[projet.phase-1]))
+        if projet.id < 0 :
+            pourcentage = str(int(projet.avancement*100 / projet.palier))
+        else :
+            pourcentage = str(int(projet.avancement * 100 / window.paliers[projet.phase-1]))
+
         label_pourcentage = create_label(pourcentage+'%', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-        progress_bar = Progress_bar(0, 0, 600, 20, None, [], projet.avancement, window.paliers[projet.phase-1], (46, 204, 113), (255, 255, 255))
+
+        if projet.id < 0 :
+            progress_bar = Progress_bar(0, 0, 600, 30, None, [], projet.avancement, projet.palier, (46, 204, 113), (255, 255, 255))
+        else :
+            progress_bar = Progress_bar(0, 0, 600, 30, None, [], projet.avancement, window.paliers[projet.phase-1], (46, 204, 113), (255, 255, 255))
+
         frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
         frame_progress_bar.set_direction('horizontal')
         frame_progress_bar.set_items_pos('auto')
@@ -1786,8 +1815,8 @@ def draw_product(widget, window, screen, prod_name, i, *arg):
         title.make_pos()
 
         info1, info2, info3, info4, info5 = [], [], [], [], []
-        info1.append(['Matériaux nécessaires', prod.materiaux])
-        info1.append(['Opérations nécessaires', prod.operations])
+        info1.append(['Matériaux nécessaires', affichMatOper(prod.materiaux)])
+        info1.append(['Opérations nécessaires', affichMatOper(prod.operations)])
         info2.append(['Population cible', prod.cible])
         if prod.marche==True :
             info2.append(['Prix de vente', prod.prix])

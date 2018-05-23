@@ -339,8 +339,8 @@ class Window():
 
         self.individus    = []
         self.produits     = []
-        self.operations   = []
-        self.materiaux    = []
+        self.operations   = [Operation(), Operation(), Operation(), Operation(), Operation()]
+        self.materiaux    = [Materiau(), Materiau(), Materiau(), Materiau(), Materiau(), Materiau(), Materiau()]
         self.formations   = []
         self.populations  = []
         self.fournisseurs = []
