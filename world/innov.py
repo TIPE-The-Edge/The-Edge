@@ -167,7 +167,7 @@ def delChercheurs(projet, employes, identifiant) :
 
     return(projet, employes)
 
-def allProgression(projets, employes, paliers, produits) :
+def allProgression(projets, employes, paliers, produits, materiaux, operations) :
     """
     FONCTION       : Fait progresser tous les projets de la liste de projets.
     ENTREES        : Une liste de projets (Projet/Ameliore list).
@@ -185,33 +185,33 @@ def allProgression(projets, employes, paliers, produits) :
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
-                    couts = Projet.progression(proj, employes, paliers, "", produits)
+                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
 
                 else  :
                     if proj.produit.appreciation==[] :
-                        couts = Projet.progression(proj, employes, paliers, "", produits)
+                        couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
                         depenses.append(couts)
 
-                    couts = Projet.progression(proj, employes, paliers, "", produits)
+                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations )
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
-                    couts=Projet.progression(proj, employes, paliers, False, produits)
+                    couts=Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
                 else :
-                    couts = Projet.progression(proj, employes, paliers, False, produits)
+                    couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
 
             elif proj.phase == 3 :
-                couts = Projet.progression(proj, employes, paliers, None, produits)
+                couts = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
-                        couts = Projet.progression(proj, employes, paliers, False, produits)
+                        couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
                     else :
-                        couts = Projet.progression(proj, employes, paliers, None, produits)
+                        couts = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations)
 
                 else :
-                    couts = Projet.progression(proj, employes, paliers, False, produits)
+                    couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
@@ -390,7 +390,7 @@ class Prototype(object):
         # Le coût de fabrication
         self.cout = 0
 
-    def creaMater(self) :
+    def creaMater(self, materiaux) :
         """
         FONCTION       : Defini les materiaux necessaires
                          a la creation du prototype
@@ -401,9 +401,9 @@ class Prototype(object):
         TEST UNITAIRE  : ...
         """
         for i in range(random.randint(3, 7)):
-            self.materiaux.append(Materiau())
+            self.materiaux.append([materiaux[randint(len(materiaux)), randint()]])
 
-    def creaOpera(self) :
+    def creaOpera(self, operations) :
         """
         FONCTION       : Defini les operations necessaires
                          a la creation du prototype
@@ -439,15 +439,15 @@ class Prototype(object):
             #| du prototype.
             self.cout += couts
 
-    def develop(self) :
+    def develop(self, materiaux, operations) :
         """
         FONCTION       : Défini les matériaux, les opérations ainsi que
                          le coût d'un prototype.
         ENTREES        : Un prototype
         SORTIE         : Le prototype avec des matériaux et des opérations.
         """
-        Prototype.creaMater(self)
-        Prototype.creaOpera(self)
+        Prototype.creaMater(self, materiaux)
+        Prototype.creaOpera(self, operations)
         Prototype.creaCout(self)
 
     def appr_to_uti(self) :
@@ -695,7 +695,7 @@ class Projet(object):
 
         return(couts)
 
-    def progression(self, individus, paliers, utilisateur, produits) :
+    def progression(self, individus, paliers, utilisateur, produits, materiaux, operations) :
         """
         FONCTION       : Modélise la progression du projet et
                          selon la phase de développement, appelle
