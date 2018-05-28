@@ -234,11 +234,10 @@ class Machine(object):
         self.commandes = []
 
         self.materiaux = [[]]
-        #self.produits  = [[]] pas utile?
 
     def __repr__(self):
-        return "\n --> {} : \n{}".format(
-                self.nom, self.operations_realisables)
+        return "\n {} --> {} : \n{}".format(
+                self.utilisateur, self.nom, self.operations_realisables)
 
     def genNom(self):
         nom = random.choice(Machine.noms_dispo)

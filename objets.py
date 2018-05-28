@@ -21,6 +21,11 @@ Population : # de consommateurs
     updateProduits() (voir comment on maj les produits vendus
         et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
+Individu :
+    exp:
+        Mettre à jours les différentes exp quand les individus participent.
+            Par exemple, en R&D augmenter d'1 la val de l'exp pour chaque
+            semaine passée sur un projet.
 """
 
 
@@ -97,7 +102,7 @@ class Individu(object):
         self.competence_recherche = self.genCompetenceRD() # Efficacité à la recherche
         self.competence_direction = self.genCompetenceRD() # Capacité à diriger une équipe
             # Production
-        self.competence_production = 0 #TODO
+        self.competence_production = self.genCompetenceProd() #TODO
 
         # Caractéristique RH
         self.statut  = "CDI" # Pour l'instant, un seul statut
@@ -117,8 +122,8 @@ class Individu(object):
                          # l'entreprise.
 
     def __repr__(self):
-        return "{} - {} {}, {} ans. {}".format(
-                self.id, self.prenom, self.nom, self.age, self.exp_RetD)
+        return "{} - {} {}, {} ans. comp_prod = {}".format(
+                self.id, self.prenom, self.nom, self.age, self.competence_production)
 
     def genNom(self, genre):
         """ Retourne un nom en fonction du genre entré.
@@ -171,6 +176,25 @@ class Individu(object):
         comp_exp = (self.exp_RetD/52) / pas
         # Compétence tirée de l'aleatoire
         comp_rand = random.randint(1, 5)
+
+        return (int(round(comp_exp + comp_rand, 0)))
+
+    def genCompetenceProd(self):
+        """ Génère les valeurs de la compétence Production.
+        """
+
+        # Compétence tirée de l'experience
+        # Fonction telle qu'au bout de 2 semaines d'exp, la compétence
+        # augmente de 1. Et au bout de 3 ans atteint le max possible.
+        a = -1/1716
+        b = 215/429
+        x = self.exp_prod
+        comp_exp = int((a*(x**2) + b*x)**0.5)
+
+        # Compétence tirée de l'aleatoire
+        comp_rand = random.randint(1, 2) # Que jusqu'à 2 car il y a un gros
+                                         # gap entre 2 et 3, ce qui correspond
+                                         # à l'importance de l'expérience.
 
         return (int(round(comp_exp + comp_rand, 0)))
 
@@ -291,7 +315,8 @@ class Operation(object):
         self.nom = self.genNom()
 
         self.consommation = 0  # TODO # Consommation énergétique? -> cout
-        self.duree = 1 # TODO # en minutes
+        self.duree = 1 # en minutes #TODO # Pour le moment à 1. Peut être
+                       # changé plus tard.
 
     def __repr__(self):
         return "{} - {} min(s)".format(

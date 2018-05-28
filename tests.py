@@ -60,7 +60,7 @@ if __name__ == "__main__" :
     preset_fab = 0
 
     # individus # Pour les test uniquement
-    for i in range(1):
+    for i in range(10):
         individus.append(Individu())
 
     # populations
@@ -188,11 +188,11 @@ if __name__ == "__main__" :
         # Temps
         print("------------------------ |{} {} {}| ------------------------\n".format(temps.day, temps.strftime("%B"), temps.year))
 
-        # # individus
-        # print("------ Classe : Individu ------")
-        # for ind in individus:
-        #     print(ind)
-        # print()
+        # individus
+        print("------ Classe : Individu ------")
+        for ind in individus:
+            print(ind)
+        print()
         #
         # # populations
         # print("------ Classe : Population ------")

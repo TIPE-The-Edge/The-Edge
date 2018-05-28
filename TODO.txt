@@ -2,10 +2,13 @@ Maxence :
     Je suis en train de refaire proprement le programme production
     dans test_production.py.
 
-
     Apparement les prix des materiaux sont détaillés dans le csv. Du coup
     l'attribut cout de la classe Materiau est peut etre inutile. Et du coup
     la classe Materiau aussi.
+    Je la garde pour l'instant parce qu'il y a le vérificateur de doublons et
+    ça peut etre utile si l'on veut faire des parties sans tous les mats
+    (Sinon on pourrait juste transposer la liste des noms en une liste de mats).
+    (c moi ki décid wsh :p)
 
     Optimisation possible dans Fournisseur pour le système d'approvisionnement
     (avec toutes les fonctions liées à Fournisseur.approvisionnement() )

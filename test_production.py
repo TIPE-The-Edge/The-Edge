@@ -5,7 +5,7 @@
 # Python 3.4.2
 # Author: Maxence BLANC
 # Last modified : 12/2017
-# Titre du Fichier : fonctions pour les RH
+# Titre du Fichier : programme test pour la partie production
 ########################
 
 # IMPORTS
@@ -16,7 +16,6 @@ import datetime
 # IMPORTS DE FICHIERS
 from outils import *
 from objets import *
-from RH import *
 from production import *
 
 ####################################################
@@ -103,8 +102,15 @@ if __name__ == "__main__" :
     # machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
             # Machines
     machines[0].operations_realisables = [ope[0] for ope in produits[0].operations] #ttes les opé du produit 0
-    machines[0].utilisateur = Individu()
-    machines[1].operations_realisables = [produits[0].operations[0][0]] # la premiere opé du prod 0
+    ind = Individu()
+    ind.competence_production = 10
+    machines[0].utilisateur = ind
+    machines[1].operations_realisables = [ope[0] for ope in produits[0].operations] #ttes les opé du produit 0
+    ind = Individu()
+    ind.competence_production = 1
+    machines[1].utilisateur = ind
+
+
 
 
     ######## VARIABLES DE JEU ########
@@ -122,10 +128,10 @@ if __name__ == "__main__" :
     initMateriaux(stocks, materiaux)
 
     # Pour les tests
-    argent = 10000 #TODO
-
+    argent = 100000 #TODO
     # stocks[0].materiaux[0][1] = 20000
     # stocks[0].materiaux[1][1] = 20000
+    ajout([[materiaux[0].nom, 100000], [materiaux[1].nom, 100000], [materiaux[2].nom, 100000]], stocks[0].materiaux)
 
     on = "1"
     while on != "0":
@@ -302,11 +308,22 @@ if __name__ == "__main__" :
                     # La liste des nombres de materiaux respectifs pour
                     # la quantité de produits voulue.
                     liste_mats = Machine.nbrProd_to_NbrMat(prod, nbr_prod)
+                    print("ce que vous demandez")
                     print(liste_mats)
+                    print()
 
                     mats_ajustes = Machine.ajusteCommande(stocks[0], prod, liste_mats)
+                    print("Apres ajustement")
                     print(mats_ajustes)
-                    # TODO afficher le nbr de produit que ça fera
+                    print()
+
+                    # Affiche le nbr de produit que ça fera
+                    for mat in mats_ajustes:
+                        if mat[0] == prod.materiaux[0][0]:
+                            prod_totaux = round(mat[1]/prod.materiaux[0][1])
+                    print(str(prod_totaux) + " " + str(prod.nom) + " au total")
+
+
 
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
@@ -318,6 +335,7 @@ if __name__ == "__main__" :
                     elif not Machine.verifUtilisateur(machines, mach):
                         # Affichage console pour les tests, sinon sur interface.
                         print("la machine n'a pas d'utilisateur") #TODO Dorian
+                        input()
                         menu = 1
 
                     else:
