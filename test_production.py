@@ -318,9 +318,7 @@ if __name__ == "__main__" :
                     print()
 
                     # Affiche le nbr de produit que ça fera
-                    for mat in mats_ajustes:
-                        if mat[0] == prod.materiaux[0][0]:
-                            prod_totaux = round(mat[1]/prod.materiaux[0][1])
+                    prod_totaux = prodTotaux(prod, mats_ajustes)
                     print(str(prod_totaux) + " " + str(prod.nom) + " au total")
 
 

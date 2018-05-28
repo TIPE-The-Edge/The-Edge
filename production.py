@@ -41,13 +41,20 @@ MINS_PAR_SEMAINE = 2400 # 60 mins * 8 h * 5 jours
 ####################################################
 ###################| FONCTIONS |####################
 ####################################################
-def fonction():
-    """ A quoi sert la fonction. Comment elle marche
-    Entrée :
-    Variables :
-    Sortie :
-    Vérifié par :
+def prodTotaux(produit, liste_mat):
+    """ Indique le nombre de produit que l'on peut produire avec les
+    des materiaux donnés.
+    Entrée : un produit (objet)
+             la liste de materiaux et leur nombre
+    Sortie : le nombre de produit que l'on peut produire avec les
+                materiaux donnés.
     """
+
+    for mat in liste_mat:
+        if mat[0] == produit.materiaux[0][0]:
+            prod_totaux = round(mat[1]/produit.materiaux[0][1])
+
+    return(prod_totaux)
 
 ####################################################
 ###################| CLASSES |######################
