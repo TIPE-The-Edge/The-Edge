@@ -403,12 +403,21 @@ class Prototype(object):
         ENTREES        : Un prototype sans materiaux
         SORTIE         : Le prototype avec des materiaux
                          associes.
-        REMARQUES      : nb matéiaux entre 3 et 7.
+        REMARQUES      : nb matériaux entre 3 et 5.
         TEST UNITAIRE  : ...
         """
         
-        for i in range(random.randint(3, 6)):
-            self.materiaux.append([materiaux[random.randint(0, (len(materiaux)-1))], random.randint(5, 10)])
+        for i in range(random.randint(3, 5)):
+            # On récupère aléatoirement un matériaux
+            new = materiaux[random.randint(0, (len(materiaux)-1))]
+            # Tant que le matériaux qu'on récupère existe dans la liste 
+            # des matériaux du prototype, on en récupère un autre
+            while new in [ m[0] for m in self.materiaux] :
+                new = materiaux[random.randint(0, (len(materiaux)-1))]
+
+            # On ajoute le matériaux ainsi trouvé à la liste des matériaux 
+            # du prototype
+            self.materiaux.append([new, random.randint(1, 5)])
 
     def creaOpera(self, operations) :
         """
@@ -417,12 +426,21 @@ class Prototype(object):
         ENTREES        : Un prototype sans operations
         SORTIE         : Le prototype avec des operations
                          associees.
-        REMARQUES      : nb opérations entre 2 et 5.
+        REMARQUES      : nb opérations entre 2 et 4.
         TEST UNITAIRE  : ...
         """
 
-        for i in range(random.randint(2, 5)):
-            self.operations.append([operations[random.randint(0, (len(operations)-1))], random.randint(3, 5)])
+        for i in range(random.randint(2, 3)):
+            # On récupère aléatoirement une opération
+            new = operations[random.randint(0, (len(operations)-1))]
+            # Tant que l'opérations qu'on récupère existe dans la liste 
+            # des opérations du prototype, on en récupère une autre
+            while new in [o[0] for o in self.operations] :
+                new = operations[random.randint(0, (len(operations)-1))]
+            
+            # On ajoute l'opération ainsi trouvée à la liste des opérations 
+            # du prototype
+            self.operations.append([new, random.randint(3, 5)])
 
     def creaCout(self) :
         """
@@ -759,7 +777,17 @@ class Ameliore() :
         SORTIE         : Une amélioration dont la liste des matériaux
                          du produit est diminué de 1.
         """
-        del self.produit.materiaux[-1]
+
+        if sum([mat[1] for mat in self.produit.materiaux])>len(self.produit.materiaux) :
+
+            mat = self.produit.materiaux[random.randint(0, (len(self.produit.materiaux)-1))]
+
+            while mat[1] < 2 :
+                mat = self.produit.materiaux[random.randint(0, (len(self.produit.materiaux)-1))]
+            
+            mat[1] -= 1 
+
+
         return(self)
 
     def changeOperations(self) :
@@ -769,7 +797,15 @@ class Ameliore() :
         SORTIE         : Une amélioration dont la liste des opérations
                          du produit est diminué de 1.
         """
-        del self.produit.operations[-1]
+        if sum([ope[1] for ope in self.produit.operations])>len(self.produit.operations) :
+
+            ope = self.produit.operations[random.randint(0, (len(self.produit.operations)-1))]
+
+            while ope[1] < 2 :
+                ope = self.produit.operations[random.randint(0, (len(self.produit.operations)-1))]
+            
+            ope[1] -= 1 
+        
         return(self)
 
     def changeUtilite(self) :

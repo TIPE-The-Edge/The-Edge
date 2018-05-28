@@ -299,10 +299,10 @@ class Operation(object):
             # On efface le nom de la liste pour éviter les doublons
             # de noms d'opérations
             Operation.noms_dispo.remove(suffixe)
-            nom = "Opération_"+suffixe
+            nom = "Opération "+suffixe
         except IndexError :
             Operation.indice_nom += 1
-            nom = "Opération_"+str(Operation.indice_nom)
+            nom = "Opération "+str(Operation.indice_nom)
 
         return nom
 
