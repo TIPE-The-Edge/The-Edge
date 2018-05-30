@@ -12,7 +12,6 @@
 import random
 
 # IMPORTS DE FICHIERS
-from world.function import *
 from world.outils import *
 
 
@@ -22,19 +21,17 @@ Population : # de consommateurs
     updateProduits() (voir comment on maj les produits vendus
         et a quelle fréquence) (Adrien quand il sera dans la partie vente)
 
-Fournisseur :
-    self.materiaux_vendu (Besoin d'une fonction)
-
-    approvisionnement()
-
-Machine :
-    self.operations_realisables (Besoin d'une fonction)
-
+Individu :
+    exp:
+        Mettre à jours les différentes exp quand les individus participent.
+            Par exemple, en R&D augmenter d'1 la val de l'exp pour chaque
+            semaine passée sur un projet.
 """
 
 
 """ PROBLEMS
 """
+
 
 """ NOTES
 
@@ -42,6 +39,10 @@ Pour LC :
     Couts générés :
         "cout materiaux"
         "cout transport"
+"""
+
+
+""" BONUS
 
 Formation : # BONUS
     competences (Besoin d'une fonction pour rendre cohérent)
@@ -93,16 +94,19 @@ class Individu(object):
         # Experiences en nombre de semaines
         self.exp_RetD    = self.genExpRD()
         self.exp_startup = 0
+        self.exp_prod    = 0
 
         # Compétences
             # R&D
         self.competence_groupe    = self.genCompetenceRD() # Capacité à travailler en groupe
         self.competence_recherche = self.genCompetenceRD() # Efficacité à la recherche
         self.competence_direction = self.genCompetenceRD() # Capacité à diriger une équipe
+            # Production
+        self.competence_production = self.genCompetenceProd() #TODO
 
         # Caractéristique RH
         self.statut  = "CDI" # Pour l'instant, un seul statut
-        self.role    = "R&D" # Pour l'instant, un seul role
+        self.role    = None  # Roles disponibles : R&D, prod
         self.projet  = None  # Projet en cours
         self.salaire = self.genSalaire() # Salaire brut
 
@@ -118,8 +122,8 @@ class Individu(object):
                          # l'entreprise.
 
     def __repr__(self):
-        return "{} - {} {}, {} ans. {}".format(
-                self.id, self.prenom, self.nom, self.age, self.exp_RetD)
+        return "{} - {} {}, {} ans. comp_prod = {}".format(
+                self.id, self.prenom, self.nom, self.age, self.competence_production)
 
     def genNom(self, genre):
         """ Retourne un nom en fonction du genre entré.
@@ -175,6 +179,25 @@ class Individu(object):
 
         return (int(round(comp_exp + comp_rand, 0)))
 
+    def genCompetenceProd(self):
+        """ Génère les valeurs de la compétence Production.
+        """
+
+        # Compétence tirée de l'experience
+        # Fonction telle qu'au bout de 2 semaines d'exp, la compétence
+        # augmente de 1. Et au bout de 3 ans atteint le max possible.
+        a = -1/1716
+        b = 215/429
+        x = self.exp_prod
+        comp_exp = int((a*(x**2) + b*x)**0.5)
+
+        # Compétence tirée de l'aleatoire
+        comp_rand = random.randint(1, 2) # Que jusqu'à 2 car il y a un gros
+                                         # gap entre 2 et 3, ce qui correspond
+                                         # à l'importance de l'expérience.
+
+        return (int(round(comp_exp + comp_rand, 0)))
+
     def genSalaire(self):
         """ Retourne un salaire en fonction du role et de l'experience.
         """
@@ -206,17 +229,18 @@ class Population(object): # de consommateurs
 
     # Cette classe sera majoritairement paramétrée à la main
 
-    def __init__(self, nom, revenu, nombre):
-        self.nom = nom # (Adrien)
+    def __init__(self, nom, revenu, nombre, esp, ecart):
+        self.nom = nom
 
-        self.revenu = revenu # (Adrien)
-        self.nombre = nombre # (Adrien)
+        self.revenu = revenu
+        self.nombre = nombre
+        self.tps_adoption = [esp, ecart]
 
         self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
     def __repr__(self):
-        return "{} - nombre: {} revenu: {}. {}".format(
-                self.nom, self.nombre, self.revenu, self.materiaux)
+        return "{} - nombre: {} revenu: {}.".format(
+                self.nom, self.nombre, self.revenu)
 
     def ajoutProduit(populations, produit):
         """ Ajoute un nouveau produit aux populations.
@@ -226,11 +250,14 @@ class Population(object): # de consommateurs
             pop.produits.append([produit.nom, 0])
 
 class Produit(object):
+    id = 1
 
     def __init__(self, produits, utilite, materiaux, operations, cible):
 
-        self.nom = self.genNom(produits)
+        self.id = Produit.id
+        Produit.id += 1
 
+        self.nom = self.genNom(produits)
         self.utilite    = utilite    # Par population (0-100)
         self.materiaux  = materiaux  # materiaux et quantités nécessaires
         self.operations = operations # Opérations nécessaires (et quantité = 1)
@@ -240,12 +267,14 @@ class Produit(object):
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit
-        self.ventes = 0     # Nombre de ventes
+
+        self.develop = False # Défini que le produit n'est pas en développement
+
         self.nbr_ameliorations = 0
         # self.concurence = 0 # BONUS
 
     def __repr__(self):
-        return "{} - {}, {}".format(self.nom,
+        return "{}. {} - {}, {}".format(self.id, self.nom,
                                     self.materiaux, self.operations)
 
     def genNom(self, produits):
@@ -268,6 +297,8 @@ class Produit(object):
                 prod.age += 1
 
     def fixePrix(produits, produit, valeur) :
+        """ Donne un prix à un produit donné
+        """
         for prod in produits:
             if prod.nom == produit:
                 prod.prix = valeur
@@ -284,7 +315,8 @@ class Operation(object):
         self.nom = self.genNom()
 
         self.consommation = 0  # TODO # Consommation énergétique? -> cout
-        self.duree = 1 # TODO # en minutes
+        self.duree = 1 # en minutes #TODO # Pour le moment à 1. Peut être
+                       # changé plus tard.
 
     def __repr__(self):
         return "{} - {} min(s)".format(
@@ -307,6 +339,12 @@ class Operation(object):
         return nom
 
 class Materiau(object):
+    """ Un peu obsolète car il n'y a que le nom des mats.
+
+    Je la garde pour l'instant parce qu'il y a le vérificateur de doublons et
+    ça peut etre utile si l'on veut faire des parties sans tous les mats
+    (Sinon on pourrait juste transposer la liste des noms en une liste de mats).
+    """
 
     # Liste des noms existants
     noms_dispo = readNameFile("./world/Name_Files/materiaux.txt")
@@ -316,8 +354,6 @@ class Materiau(object):
     def __init__(self):
 
         self.nom = self.genNom()
-
-        self.prix = 1 # TODO
 
     def __repr__(self):
         return "{}".format(

@@ -24,7 +24,6 @@ import datetime
 
 # IMPORTS DE FICHIERS
 
-from function import *   # Pourquoi ?
 from widget.button_img import *
 from widget.button_txt import *
 from widget.entry import *
@@ -34,12 +33,14 @@ from widget.label import *
 from widget.progress_bar import *
 from widget.frame import *
 from widget.rectangle import *
+
 from world.function import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
-from world.lecture import *
 from world.contracterPret import *
+from world.production import *
+
 from lib.save import *
 
 '''
@@ -145,6 +146,8 @@ def create_button(text, police, fontsize, msg_color, bg_color, x, y, width, heig
     frame_tmp.set_align('center')
     frame_tmp.set_bg_color(bg_color)
     frame_tmp.make_pos()
+
+    frame_tmp.type = 'button'
 
     return frame_tmp
 
@@ -595,6 +598,12 @@ def time_convert(time):
 def do_nothing(*args):
     pass
 
+def draw_shadow(widget, window, screen, *arg):
+    hover = Rectangle(widget.rect.x, widget.rect.y, widget.rect.width, widget.rect.height, (255,255,255), 50, None, [])
+    window.hover = [hover]
+    window.display(screen)
+
+
 '''
 ================================================================================
 HOME
@@ -657,7 +666,7 @@ def next_tour(widget, window, screen, *arg):
 
     for i in range(len(frais_RD)) :
         window.depenses.append(frais_RD[i])
-    completedProject(window.projets, window.produits, window.individus)
+    completedProject(window.projets, window.produits, window.individus, window.magasins)
 
     draw_home(widget, window, screen, *arg)
 
@@ -1072,7 +1081,7 @@ def draw_rd(widget, window, screen, i, *arg):
                 pourcentage = str(int(project.avancement * 100 / window.paliers[project.phase-1]))
 
             label_pourcentage = create_label(pourcentage+'%', 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-            
+
             if project.id < 0 :
                 progress_bar = Progress_bar(0, 0, 600, 30, None, [], project.avancement, project.palier, (46, 204, 113), (255, 255, 255))
             else :
@@ -2252,11 +2261,14 @@ def get_pret(widget, window, screen, type_pret, taux_interet, *arg):
     for i in range(len(duree)):
         duree[i] = int(duree[i].split()[0])
 
-    montant_max = montantPret(dureePretMois(type_pret.lower() ,int(entry['duree'])))
-    if duree[0] <= int(entry['duree']) <= duree[1] and 0 <= int(entry['montant']) <= montant_max:
-        draw_get_pret(widget, window, screen, type_pret, taux_interet, entry['duree'], entry['montant'])
+    if entry['duree'] == '' or entry['montant'] == '':
+        draw_alert(widget, window, screen, "Erreur", "Certains champs sont invalides", clear_overbody, [])
     else:
-        draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
+        montant_max = montantPret(dureePretMois(type_pret.lower() ,int(entry['duree'])))
+        if duree[0] <= int(entry['duree']) <= duree[1] and 0 <= int(entry['montant']) <= montant_max:
+            draw_get_pret(widget, window, screen, type_pret, taux_interet, entry['duree'], entry['montant'])
+        else:
+            draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
 
 

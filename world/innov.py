@@ -18,6 +18,7 @@ from math import *
 from world.objets import *
 from world.outils import *
 from world.lecture import *
+from world.production import *
 ####################################
 
 
@@ -254,7 +255,7 @@ def genNotif(projets, paliers) :
                     notification = [0, "Projet : Phase terminée", "Le projet "+str(proj.nom)+ " a achevé la phase "+nomPhase(proj.phase, proj.id)+".", proj.id]
                     notifications.append(notification)
         else :
-            
+
             if proj.avancement>=proj.palier and proj.phase != 5 :
                 notification = [0, "Projet : Amélioration terminée", "Le projet "+str(proj.nom)+" a été achevé.", proj.id]
                 notifications.append(notification)
@@ -292,7 +293,7 @@ def avance(projets, paliers, employes) :
 
     return(projets)
 
-def completedProject(projets, produits, employes) :
+def completedProject(projets, produits, employes, magasins) :
     """
     FONCTION       :
     ENTREES        :
@@ -304,6 +305,7 @@ def completedProject(projets, produits, employes) :
         if proj.phase == 5 :
             if proj.id > 0 :
                 produits.append(proj.produit)
+                magasins.append(Machine(proj.produit.operations))
             delProject(projets, employes, proj.id)
 
 ####################################
@@ -406,16 +408,16 @@ class Prototype(object):
         REMARQUES      : nb matériaux entre 3 et 5.
         TEST UNITAIRE  : ...
         """
-        
+
         for i in range(random.randint(3, 5)):
             # On récupère aléatoirement un matériaux
             new = materiaux[random.randint(0, (len(materiaux)-1))]
-            # Tant que le matériaux qu'on récupère existe dans la liste 
+            # Tant que le matériaux qu'on récupère existe dans la liste
             # des matériaux du prototype, on en récupère un autre
             while new in [ m[0] for m in self.materiaux] :
                 new = materiaux[random.randint(0, (len(materiaux)-1))]
 
-            # On ajoute le matériaux ainsi trouvé à la liste des matériaux 
+            # On ajoute le matériaux ainsi trouvé à la liste des matériaux
             # du prototype
             self.materiaux.append([new, random.randint(1, 5)])
 
@@ -433,12 +435,12 @@ class Prototype(object):
         for i in range(random.randint(2, 3)):
             # On récupère aléatoirement une opération
             new = operations[random.randint(0, (len(operations)-1))]
-            # Tant que l'opérations qu'on récupère existe dans la liste 
+            # Tant que l'opérations qu'on récupère existe dans la liste
             # des opérations du prototype, on en récupère une autre
             while new in [o[0] for o in self.operations] :
                 new = operations[random.randint(0, (len(operations)-1))]
-            
-            # On ajoute l'opération ainsi trouvée à la liste des opérations 
+
+            # On ajoute l'opération ainsi trouvée à la liste des opérations
             # du prototype
             self.operations.append([new, random.randint(3, 5)])
 
@@ -784,8 +786,8 @@ class Ameliore() :
 
             while mat[1] < 2 :
                 mat = self.produit.materiaux[random.randint(0, (len(self.produit.materiaux)-1))]
-            
-            mat[1] -= 1 
+
+            mat[1] -= 1
 
 
         return(self)
@@ -803,9 +805,9 @@ class Ameliore() :
 
             while ope[1] < 2 :
                 ope = self.produit.operations[random.randint(0, (len(self.produit.operations)-1))]
-            
-            ope[1] -= 1 
-        
+
+            ope[1] -= 1
+
         return(self)
 
     def changeUtilite(self) :
@@ -863,13 +865,13 @@ class Ameliore() :
 
     def verif(self, utilisateur) :
         """
-        FONCTION       : 
-        ENTREES        : 
+        FONCTION       :
+        ENTREES        :
         SORTIE         :
         """
         # Initialisation des coûts
         couts = [self.nom, 0]
-        
+
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
             couts = [self.nom+" | Brevet",50]
@@ -882,7 +884,7 @@ class Ameliore() :
             self.phase = 5
             self.produit.develop = False
         else :
-            
+
             self.attente=True
 
         return(couts)

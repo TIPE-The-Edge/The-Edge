@@ -35,11 +35,14 @@ from widget.label import *
 from widget.progress_bar import *
 from widget.frame import *
 from widget.rectangle import *
+
 from world.function import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
 from world.contracterPret import *
+from world.production import *
+
 from lib.save import *
 
 
@@ -129,12 +132,15 @@ class Window():
                         if uppest_item != None:
                             uppest_item.do(self,screen)
 
-                # if uppest_item != None:
-                #     if uppest_item.type == "button_img":
-                #         draw_shadow(self, screen, uppest_item)
-                #     elif len(self.overbody) == 1:
-                #         self.set_overbody([])
-                #         self.display(screen)
+                if uppest_item != None:
+                    if uppest_item.type == "button" or uppest_item.type == 'button_img':
+                        draw_shadow(uppest_item, self, screen)
+                    elif len(self.hover) == 1:
+                        self.hover = []
+                        self.display(screen)
+                else:
+                    self.hover = []
+                    self.display(screen)
 
 
             # update display
@@ -149,6 +155,8 @@ class Window():
         draw_part(self, self.body, screen)
 
         draw_part(self, self.body_tmp, screen)
+
+        draw_part(self, self.hover, screen)
 
         draw_part(self, self.info_bar, screen)
 
@@ -317,6 +325,13 @@ class Window():
 
         for i in range (5):
             self.candidats.append(Individu())
+
+        for i in range(29):
+            self.materiaux.append(Materiau())
+
+        for i in range(6):
+            self.operations.append(Operation())
+
         self.lesRH = RH()
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
@@ -329,8 +344,10 @@ class Window():
             "capital": 30000,
             "report à nouveau": 15000
             }
-        print(self.sha)
-        print(self.user_name)
+
+
+
+
 
     def set_var(self):
         self.time_used = 0
@@ -339,8 +356,9 @@ class Window():
 
         self.individus    = []
         self.produits     = []
-        self.operations   = [Operation(), Operation(), Operation(), Operation(), Operation()]
-        self.materiaux    = [Materiau(), Materiau(), Materiau(), Materiau(), Materiau(), Materiau(), Materiau()]
+        self.magasins     = []
+        self.operations   = []
+        self.materiaux    = []
         self.formations   = []
         self.populations  = []
         self.fournisseurs = []
@@ -379,6 +397,7 @@ class Window():
         self.button_info = []
         self.body = []
         self.body_tmp = []
+        self.hover = []
         self.num_window = 0
         self.run = True
 
