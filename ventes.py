@@ -204,7 +204,7 @@ def demande(acheteurs, produit, tps_adoption) :
     # Nombre de demandes (Initialisation)
     demandes = 0
     # Le temps du produit sur le marché
-    num_tour = produit.age
+    num_tour = int(produit.age/4)
     # Le temps d'adoption de la population
     [esp, ecart] = tps_adoption
 
@@ -216,6 +216,9 @@ def demande(acheteurs, produit, tps_adoption) :
         demandes = int(acheteurs*(0.135)/(ecart))
     else :
         demandes=int(acheteurs*(0.34)/(ecart))
+
+    # On passe la demande au mois à une demande en semaine
+    demandes = int(demandes/4)
 
     #>>> Sortie <<<#
     return(demandes)
