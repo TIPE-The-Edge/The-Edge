@@ -147,7 +147,15 @@ def create_button(text, police, fontsize, msg_color, bg_color, x, y, width, heig
     frame_tmp.set_bg_color(bg_color)
     frame_tmp.make_pos()
 
-    frame_tmp.type = 'button'
+    # frame_tmp.type = 'button'
+    #
+    # items = []
+    # items += frame_tmp.items
+    # i = 1
+    # for item in items:
+    #     item.type = 'button'
+    #     items[i:i] = item.items
+    #     i += 1
 
     return frame_tmp
 
@@ -599,9 +607,10 @@ def do_nothing(*args):
     pass
 
 def draw_shadow(widget, window, screen, *arg):
-    hover = Rectangle(widget.rect.x, widget.rect.y, widget.rect.width, widget.rect.height, (255,255,255), 50, None, [])
-    window.hover = [hover]
-    window.display(screen)
+    pass
+    # hover = Rectangle(widget.rect.x, widget.rect.y, widget.rect.width, widget.rect.height, (255,255,255), 50, None, [])
+    # window.hover = [hover]
+    # window.display(screen)
 
 
 '''
@@ -2008,6 +2017,101 @@ def draw_finance(widget, window, screen, i, *arg):
             button_resume_pret = create_label("     Résumé", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0])
         elif i == 0.1:
             button_lst_pret = create_label("     Liste des prêts", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.1])
+
+            prets = []
+
+            for pret in range(0,5):
+                pret_info = []
+
+                pret_info.append(create_label('Nom du pret', 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+                info1, info2 = [], []
+                info1.append(['Capital emprunté', '1'])
+                info1.append(['Total', '1'])
+                info1.append(['Début', '1'])
+                info2.append(['Intérêt', '1'])
+                info2.append(['Mensualité', '1'])
+                info2.append(['Fin', '1'])
+
+                infos1 = [info1]
+                infos2 = [info2]
+                frame_labels1, frame_labels2 = [], []
+                for info in infos1:
+                    label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 30, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 200, 'auto')
+                    frame_tmp = Frame(0, 0, label_tmp, None, [])
+                    frame_tmp.set_items_pos('auto')
+                    frame_tmp.set_marge_items(10)
+                    frame_tmp.set_direction('vertical')
+                    frame_tmp.resize(465, 'auto')
+                    frame_tmp.set_bg_color((236, 240, 241))
+                    frame_tmp.make_pos()
+                    frame_labels1.append(frame_tmp)
+
+                for info in infos2:
+                    label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 30, 30, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 200, 'auto')
+                    frame_tmp = Frame(0, 0, label_tmp, None, [])
+                    frame_tmp.set_items_pos('auto')
+                    frame_tmp.set_marge_items(10)
+                    frame_tmp.set_direction('vertical')
+                    frame_tmp.resize('auto', 'auto')
+                    frame_tmp.set_bg_color((236, 240, 241))
+                    frame_tmp.make_pos()
+                    frame_labels2.append(frame_tmp)
+
+                frame_tmp1 = Frame(0, 0, frame_labels1 + frame_labels2, None, [])
+                frame_tmp1.set_direction('horizontal')
+                frame_tmp1.set_items_pos('auto')
+                frame_tmp1.resize('auto', 'auto')
+                # frame_tmp1.set_align('center')
+                frame_tmp1.set_marge_items(0)
+                frame_tmp1.set_bg_color((236, 240, 241))
+                frame_tmp1.make_pos()
+                pret_info.append(frame_tmp1)
+
+
+                label_avancement = create_label("Avancement :", 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+                label_avancement.resize(200, 'auto')
+                label_avancement.set_items_pos('auto')
+                label_avancement.make_pos()
+
+                pourcentage = str(int(50*100 / 100))
+                label_pourcentage = create_label(pourcentage+'%', 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+                progress_bar = Progress_bar(0, 0, 600, 30, None, [], 50, 100, (46, 204, 113), (255, 255, 255))
+
+                frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
+                frame_progress_bar.set_direction('horizontal')
+                frame_progress_bar.set_items_pos('auto')
+                frame_progress_bar.set_align('center')
+                frame_progress_bar.set_marge_items(20)
+                frame_progress_bar.set_bg_color((236, 240, 241))
+                frame_progress_bar.make_pos()
+
+                frame_tmp2 = Frame(0, 0, [label_avancement, frame_progress_bar], None, [])
+                frame_tmp2.set_direction('horizontal')
+                frame_tmp2.set_items_pos('auto')
+                frame_tmp2.resize('auto', 'auto')
+                frame_tmp2.set_align('center')
+                frame_tmp2.set_marge_items(10)
+                frame_tmp2.set_padding(0,0,0,0)
+                frame_tmp2.set_bg_color((236, 240, 241))
+                frame_tmp2.make_pos()
+                pret_info.append(frame_tmp2)
+
+
+                frame_pret = Frame(0, 0, pret_info, None, [])
+                frame_pret.set_direction('vertical')
+                frame_pret.set_items_pos('auto')
+                frame_pret.resize(930, 'auto')
+                frame_pret.set_marge_items(20)
+                frame_pret.set_padding(20,0,20,20)
+                frame_pret.set_bg_color((236, 240, 241))
+                frame_pret.make_pos()
+
+                prets.append(frame_pret)
+
+            item_list_pret = Item_list(prets, 330, 40, 1260, 40, 20, 680, 'prêt')
+
+            items.append(item_list_pret)
         elif i == 0.2:
             button_ask_pret = create_label("     Contracter un prêt", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.2])
 

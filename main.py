@@ -348,7 +348,6 @@ class Window():
 
 
 
-
     def set_var(self):
         self.time_used = 0
         self.time_start = 0
