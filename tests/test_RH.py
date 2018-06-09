@@ -89,7 +89,7 @@ if __name__ == "__main__" :
 
         if (temps.month != month): # Ajoute les couts de RH tous les mois
             month = temps.month
-            RH.coutsRH(couts, lesRH)
+            argent = RH.coutsRH(couts, lesRH)
 
             # MaJ des candidats chaque mois
             candidats = []
@@ -106,6 +106,11 @@ if __name__ == "__main__" :
 
         menu = 1
         while menu != 0: # MENU PRINCIPAL
+
+            print("argent")
+            print(argent)
+            print()
+
             menu = int(input("menu? \n  0: Continue \n  1: RH\n "))
 
             if menu == 1: # MENU RH

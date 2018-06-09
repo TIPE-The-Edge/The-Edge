@@ -12,8 +12,9 @@
 # import random
 
 # IMPORTS DE FICHIERS
-from world.outils import *
-from world.lecture import *
+from outils import *
+from lecture import *
+import random
 
 """ TO DO LIST
 
@@ -77,7 +78,7 @@ def listeMat(stock, produit):
 class Fournisseur(object):
 
     # Liste des noms existants
-    noms_dispo = readNameFile("./world/Name_Files/fournisseurs.txt")
+    noms_dispo = readNameFile("Name_Files/fournisseurs.txt")
 
     # Localisations
     localisations = ["Paris",
@@ -161,17 +162,13 @@ class Fournisseur(object):
             print("pas assez d'argent") #TODO (Dorian, pop-up error)
             return(False)
 
-    def coutMateriau(fournisseur, materiau): #TODO
+    def coutMateriau(fournisseur, materiau):
         """ Retourne le prix du'un materiau, pour un fournisseur donné.
         """
-        # print(fournisseur)
-        # print(materiau)
-
         liste = [mat for mat in readLineCSV("materiaux.csv","materiaux",materiau,["pays", "cout unitaire"])]
 
         for elt in liste:
             if elt[0] == fournisseur.localisation:
-                # print(elt[1])
                 return float(elt[1])
 
     def coutMateriaux(fournisseur, commande):
@@ -242,7 +239,7 @@ class Fournisseur(object):
 class Machine(object):
 
     # Liste des noms existants
-    noms_dispo = readNameFile("./world/Name_Files/machine.txt")
+    noms_dispo = readNameFile("Name_Files/machine.txt")
 
     def __init__(self, liste_operations):
 

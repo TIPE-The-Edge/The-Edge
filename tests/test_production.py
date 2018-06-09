@@ -56,14 +56,13 @@ if __name__ == "__main__" :
     ######## INITIALISATION DES OBJETS ########
 
     preset_prod = 2
-    preset_fab = 0
 
-    # produits
-    for i in range(0):
-        produits.append(Produit(produits, None, None, None, None))
+    # # produits
+    # for i in range(0):
+    #     produits.append(Produit(produits, None, None, None, None))
 
     # opérations
-    for i in range(0 + preset_prod + preset_fab):
+    for i in range(0 + preset_prod):
         operations.append(Operation())
 
     # materiaux
@@ -74,9 +73,13 @@ if __name__ == "__main__" :
     for i in range(6):
         fournisseurs.append(Fournisseur())
 
+    # Pour les test uniquement
+    produits.append(Produit(produits, None, [[materiaux[0].nom, 2], [materiaux[1].nom, 1]], [[operations[0].nom, 1], [operations[1].nom, 1]], None))
+    produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5], [materiaux[2].nom, 2]], [[operations[0].nom, 7]], None))
+
     # machines
-    for i in range(0 + preset_prod + preset_fab):
-        machines.append(Machine())
+    for i in range(2):
+        machines.append(Machine([ope[0] for ope in produits[i].operations]))
 
     # commandes # Pour les test uniquement
     # commandes.append(Commande([[materiaux[0], 10], [materiaux[1], 5]], operations, produits[0]))
@@ -91,24 +94,7 @@ if __name__ == "__main__" :
 
     # Créations d'objets supplémentaires # Pour les test uniquement
         # Tests sur le fonctionnement des Commandes et Machines.
-            # Produits
-    produits.append(Produit(produits, None, [[materiaux[0].nom, 2], [materiaux[1].nom, 1]], [[operations[0].nom, 1], [operations[1].nom, 1]], None))
-    produits.append(Produit(produits, None, [[materiaux[0].nom, 3], [materiaux[1].nom, 5], [materiaux[2].nom, 2]], [[operations[0].nom, 7]], None))
-            # Commandes
-    # machines[0].commandes.append(Commande([[materiaux[0].nom, 10000], [materiaux[1].nom, 5000]], operations, produits[0]))
-    # machines[0].commandes.append(Commande([[materiaux[1].nom, 5000], [materiaux[0].nom, 3000]], operations, produits[1]))
-    #
-    # machines[1].commandes.append(Commande([[materiaux[1].nom, 10000], [materiaux[0].nom, 6000]], operations, produits[1]))
-    # machines[1].commandes.append(Commande([[materiaux[1].nom, 6000], [materiaux[0].nom, 12000]], operations, produits[0]))
             # Machines
-    machines[0].operations_realisables = [ope[0] for ope in produits[0].operations] #ttes les opé du produit 0
-    ind = Individu()
-    ind.competence_production = 10
-    machines[0].utilisateur = ind
-    machines[1].operations_realisables = [ope[0] for ope in produits[0].operations] #ttes les opé du produit 0
-    ind = Individu()
-    ind.competence_production = 1
-    machines[1].utilisateur = ind
 
 
 
@@ -297,11 +283,28 @@ if __name__ == "__main__" :
                         if prods.nom == prod:
                             prod = prods
 
+                    os.system('clear') # works on Linux/Mac
+
                     # Recherche des machines adéquates
                     liste_machines = Machine.listeMach(machines, prod)
+                    print("Machines dispos : ")
                     print(liste_machines)
+                    print()
 
                     mach = input("machine? ")
+
+                    os.system('clear') # works on Linux/Mac
+
+                    # Sélection des materiaux correspondants présents dans le stock
+                    liste_mat_stock = listeMat(stocks[0], prod)
+                    print("Materiaux dispos : ")
+                    print(liste_mat_stock)
+                    print()
+
+                    # Affichage de la composition du produit
+                    print("Composition du produit :")
+                    print(prod.materiaux)
+                    print()
 
                     nbr_prod = int(input("nbr de " + prod.nom + "? "))
 
@@ -320,8 +323,6 @@ if __name__ == "__main__" :
                     # Affiche le nbr de produit que ça fera
                     prod_totaux = prodTotaux(prod, mats_ajustes)
                     print(str(prod_totaux) + " " + str(prod.nom) + " au total")
-
-
 
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
