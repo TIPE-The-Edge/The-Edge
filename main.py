@@ -158,6 +158,8 @@ class Window():
 
         draw_part(self, self.hover, screen)
 
+        if self.sha != '':
+            self.draw_info()
         draw_part(self, self.info_bar, screen)
 
         if self.nav != []:
@@ -242,7 +244,7 @@ class Window():
 
         items = []
 
-        icons_name = ['Home', 'Ressources Humaines', 'Recherche & Développement', 'Production', 'Finances', 'Ventes', 'Options']
+        icons_name = ['Accueil', 'Ressources Humaines', 'Recherche & Développement', 'Production', 'Finances', 'Ventes', 'Options']
         for i in range(len(icons_name)):
             if i == self.num_window:
                 color = (46, 204, 113)
@@ -300,9 +302,36 @@ class Window():
         self.button_info = [button]
 
     def draw_info(self):
-        info_bar = Info_bar()
+        info1 = []
+        info1.append(['Capital disponible', str(self.argent)+' €'])
+        info1.append(['Date', self.temps.strftime('%d/%m/%y')])
+        info1.append(['Nombre d\'employés', str(len(self.individus))])
 
-        self.info_bar = [info_bar]
+        infos = [info1]
+        frame_labels = []
+        for info in infos:
+            label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'font/colvetica/colvetica.ttf', 30, 30, (236,240,241), (236,240,241), (230,126,34), (230,126,34), 'auto', 'auto')
+            frame_tmp = Frame(0, 0, label_tmp, None, [])
+            frame_tmp.set_items_pos('auto')
+            frame_tmp.set_marge_items(50)
+            frame_tmp.set_direction('horizontal')
+            frame_tmp.set_align('center')
+            frame_tmp.resize('auto', 'auto')
+            frame_tmp.set_bg_color((230,126,34))
+            frame_tmp.make_pos()
+            frame_labels.append(frame_tmp)
+
+        frame_main = Frame(80, 0, frame_labels, None, [])
+        frame_main.set_direction('horizontal')
+        frame_main.set_items_pos('auto')
+        frame_main.set_align('center')
+        frame_main.resize(1200, 40)
+        frame_main.set_padding(20,0,0,0)
+        frame_main.set_bg_color((230,126,34))
+        frame_main.make_pos()
+
+
+        self.info_bar = [frame_main]
 
     def set_body(self, items):
         self.draw_button_info('Aide', 'Pas d\'astuce sur cet onglet !')
@@ -332,6 +361,12 @@ class Window():
         for i in range(6):
             self.operations.append(Operation())
 
+        for i in range(6):
+            self.fournisseurs.append(Fournisseur())
+
+        for i in range(1):
+            self.stocks.append(Stock())
+
         self.lesRH = RH()
         self.temps = datetime.datetime(2018,1,1) # Temps en semaines
         self.month = 1
@@ -344,10 +379,7 @@ class Window():
             "capital": 30000,
             "report à nouveau": 15000
             }
-
-
-
-
+        self.argent = 40000
 
     def set_var(self):
         self.time_used = 0
@@ -377,7 +409,7 @@ class Window():
 
         self.temps = None
         self.lesRH = None
-        self.month = 0
+        self.month = 1
         self.argent = 0
 
         self.sha = ''

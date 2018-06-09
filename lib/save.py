@@ -26,7 +26,7 @@ class Save():
 
         self.temps = None
         self.lesRH = None
-        self.month = 0
+        self.month = 1
         self.argent = 0
 
         self.donneesF = {}
@@ -57,7 +57,7 @@ class Save():
             setattr(window, attr, getattr(save, attr))
 
     def isSaved(self, window):
-        # FIXME: pls 
+        # FIXME: pls
         # with open('./save/' + window.sha, 'rb') as f:
         #     save = pickle.load(f)
         #

@@ -9,7 +9,7 @@
 ########################
 
 # IMPORTS
-# import random
+import random
 
 # IMPORTS DE FICHIERS
 from world.outils import *

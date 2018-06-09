@@ -125,7 +125,7 @@ def create_label_value(labels, font1, font2, size1, size2, color1, color2, color
         frame_tmp.set_direction('horizontal')
         frame_tmp.set_items_pos('auto')
         frame_tmp.set_bg_color(color_bg2)
-        frame_tmp.set_marge_items(50)
+        frame_tmp.set_marge_items(0)
         frame_tmp.resize(width, 'auto')
         frame_tmp.make_pos()
 
@@ -211,7 +211,7 @@ def change_tab(button, window, screen, *arg):
             elif icon.num == 2:
                 draw_rd(None, window, screen, 0)
             elif icon.num == 3:
-                window.set_body([])
+                draw_prod(None, window, screen, 0)
             elif icon.num == 4:
                 draw_finance(None, window, screen, 0)
             elif icon.num == 5:
@@ -564,7 +564,7 @@ def load(widget, window, screen, save_name,*arg):
 
 def start_game(window, screen):
     window.time_start = round(time.time())
-    window.draw_info()
+    # window.draw_info()
     window.draw_nav_button()
     draw_home(None, window, screen)
 
@@ -612,7 +612,7 @@ HOME
 
 '''IMCOMPLET'''
 def draw_home(widget, window, screen, *arg):
-    text = 'Notification'
+    text = 'Notifications'
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 80, 40, None, None, [])
     label.set_direction('horizontal')
     label.set_padding(20,10,10,10)
@@ -659,7 +659,7 @@ def draw_home(widget, window, screen, *arg):
     window.display(screen)
 
 def next_tour(widget, window, screen, *arg):
-
+    window.temps += datetime.timedelta(weeks=1)
     #>>> partie RD
     window.projets = avance(window.projets, window.paliers, window.individus)
     window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits, window.materiaux, window.operations)
@@ -670,8 +670,14 @@ def next_tour(widget, window, screen, *arg):
 
     draw_home(widget, window, screen, *arg)
 
+
+    if (window.temps.month != window.month):
+           window.month = window.temps.month
+           # events
+           # coûts
+
     save(widget, window, screen, *arg)
-    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine x", [])
+    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2018,1,1)).days)/7)), [])
 
 
 
@@ -707,13 +713,13 @@ def draw_rh(widget, window, screen, *arg):
     infos = [info1, info2, info3, info4]
     frame_labels = []
     for info in infos:
-        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (255,255,255), (255,255,255), (189,195,198), (189,195,198), 400, 'auto')
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (52,73,94), (52,73,94), (189,195,199), (189,195,199), 400, 'auto')
         frame_tmp = Frame(0, 0, label_tmp, None, [])
         frame_tmp.set_items_pos('auto')
         frame_tmp.set_marge_items(10)
         frame_tmp.set_direction('vertical')
         frame_tmp.resize('auto', 'auto')
-        frame_tmp.set_bg_color((189,195,198))
+        frame_tmp.set_bg_color((189,195,199))
         frame_tmp.make_pos()
         frame_labels.append(frame_tmp)
 
@@ -730,7 +736,7 @@ def draw_rh(widget, window, screen, *arg):
     frame_v.resize(560, 'auto')
     frame_v.set_align('center')
     frame_v.set_padding(0,0,20,0)
-    frame_v.set_bg_color((189, 195, 198))
+    frame_v.set_bg_color((189,195,199))
     frame_v.make_pos()
 
     frame_left = Frame(80, 40, frame_labels + [frame_v] , None, [])
@@ -739,7 +745,7 @@ def draw_rh(widget, window, screen, *arg):
     frame_left.resize(600, 680)
     frame_left.set_padding(20,20,20,20)
     frame_left.set_marge_items(50)
-    frame_left.set_bg_color((189, 195, 198))
+    frame_left.set_bg_color((189,195,199))
     frame_left.make_pos()
 
     text = 'Liste des employés'
@@ -795,8 +801,8 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
     frame_back_rh.make_pos()
 
     attribute = create_label("Caractéristique", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id, 0])
-    role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,1])
-    formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,2])
+    # role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,1])
+    # formation = create_label("Formation", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, None, draw_employee, [ind_id,2])
 
     f1 = ["Oui", fired_ind, [ind_id]]
     f2 = ["Non", clear_overbody, []]
@@ -845,20 +851,20 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
 
         items.append(frame_right)
 
-    elif i == 1:
-        role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,1])
-        roles = []
-        item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
-        items.append(item_list_role)
+    # elif i == 1:
+    #     role = create_label("Changer de rôle", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,1])
+    #     roles = []
+    #     item_list_role = Item_list(roles, 330, 40, 1260, 40, 20, 680, 'rôle')
+    #     items.append(item_list_role)
 
-    elif i == 2:
-        formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,2])
-        formations = []
-        item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
-        items.append(item_list_formation)
+    # elif i == 2:
+    #     formation = create_label("Formation", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_employee, [ind_id,2])
+    #     formations = []
+    #     item_list_formation = Item_list(formations, 330, 40, 1260, 40, 20, 680, 'formation')
+    #     items.append(item_list_formation)
 
 
-    list_tmp = [attribute, role, formation, fired]
+    list_tmp = [attribute, fired]
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 80)
@@ -1975,8 +1981,628 @@ PRODUCTION
 ================================================================================
 '''
 
+def draw_prod(widget, window, screen, i, *arg):
+    items = []
+    items_tmp = []
+
+    button_statue = create_label("Status", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [0])
+    button_appro = create_label("Approvisionnement", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [1])
+    button_prod = create_label("Production", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [2])
+    button_stock = create_label("Stock", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [3])
+    button_machine = create_label("Machines", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [4])
 
 
+    focus_color = (41,128,185)
+    if i == 0:
+        button_statue = create_label("Status", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [0])
+
+        text = 'Transport en cours'
+        label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label_stock.set_direction('horizontal')
+        label_stock.set_padding(20,10,10,10)
+        label_stock.resize(475, 80)
+        label_stock.set_align('center')
+        label_stock.make_pos()
+
+        a = []
+        for element in window.transports:
+            info = []
+
+            info.append(create_label('test', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            # info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, None, [])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(455, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 330, 120, 785, 120, 20, 640, 'stock')
+        items_tmp.append(item_list)
+        items_tmp.append(label_stock)
+
+        text = 'Production en cours'
+        label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 805, 40, None, None, [])
+        label_stock.set_direction('horizontal')
+        label_stock.set_padding(20,10,10,10)
+        label_stock.resize(475, 80)
+        label_stock.set_align('center')
+        label_stock.make_pos()
+
+        a = []
+        for element in []:
+            info = []
+
+            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, None, [])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(455, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 805, 120, 1260, 120, 20, 640, 'composant')
+        items_tmp.append(item_list)
+        items_tmp.append(label_stock)
+
+    elif i == 1:
+        button_appro = create_label("Approvisionnement", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [1])
+
+        text = 'Choisir un matériau'
+        label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label.set_direction('horizontal')
+        label.set_padding(20,10,10,10)
+        label.resize(950, 80)
+        label.set_align('center')
+        label.make_pos()
+
+        a = []
+        for element in window.materiaux:
+            info = []
+
+            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, draw_choose_fournisseur, [element.nom])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(920, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'matériau')
+        items_tmp.append(item_list)
+        items_tmp.append(label)
+
+    elif i == 2:
+        button_prod = create_label("Production", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [2])
+
+        text = 'Choisir un produit'
+        label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label.set_direction('horizontal')
+        label.set_padding(20,10,10,10)
+        label.resize(950, 80)
+        label.set_align('center')
+        label.make_pos()
+
+        a = []
+        for element in window.produits:
+            info = []
+
+            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, draw_quantity_produit, [element.nom])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(920, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'produit')
+        items_tmp.append(item_list)
+        items_tmp.append(label)
+
+    elif i == 3:
+        button_stock = create_label("Stock", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [3])
+    elif i == 4:
+        button_machine = create_label("Machines", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [4])
+
+        label_magasin = create_label("Acheter une machine", 'font/colvetica/colvetica.ttf', 40, (255,255,255), (52,73,94), 0, 0, None, None, [])
+        label_magasin.set_direction('horizontal')
+        label_magasin.resize(540, 'auto')
+        label_magasin.set_align('center')
+        label_magasin.make_pos()
+
+        path = 'img/icon/grey_sum'
+        icon_sum = Button_img(0, path, 0, 0, None, [])
+
+        button_magasin = Frame(330, 40, [label_magasin, icon_sum], None, [])
+        button_magasin.set_direction('horizontal')
+        button_magasin.set_items_pos('auto')
+        button_magasin.resize(950, 80)
+        button_magasin.set_align('center')
+        button_magasin.set_padding(350,0,0,0)
+        button_magasin.set_marge_items(0)
+        button_magasin.set_bg_color((52,73,94))
+        button_magasin.make_pos()
+
+        items_tmp.append(button_magasin)
+
+
+    list_tmp = [button_statue, button_appro, button_prod, button_stock, button_machine]
+    for element in list_tmp:
+        element.set_direction('horizontal')
+        element.resize(250, 80)
+        element.set_padding(10,0,0,0)
+        element.set_align('center')
+        element.make_pos()
+
+    frame_left = Frame(80, 40, list_tmp, None, [])
+    frame_left.set_direction('vertical')
+    frame_left.set_items_pos('auto')
+    frame_left.resize(250, 680)
+    frame_left.set_marge_items(2)
+    frame_left.set_bg_color((189, 195, 198))
+    frame_left.make_pos()
+
+    items.append(frame_left)
+
+    window.set_body(items)
+    window.set_body_tmp(items_tmp)
+    window.draw_button_info('Aide', '')
+    window.display(screen)
+
+def draw_choose_fournisseur(widget, window, screen, mat, *arg):
+    items = []
+
+    text = 'Choisir un founisseur'
+    label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label.set_direction('horizontal')
+    label.set_padding(20,10,10,10)
+    label.resize(920, 80)
+    label.set_align('center')
+    label.make_pos()
+
+    lst_fourn = Fournisseur.listeFour(window.fournisseurs, mat)
+
+    a = []
+    for element in lst_fourn:
+        info = []
+
+        info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_item = Frame(0, 0, info, draw_quantity_mat, [mat, element.nom])
+        frame_item.set_direction('vertical')
+        frame_item.set_items_pos('auto')
+        frame_item.resize(920, 'auto')
+        frame_item.set_padding(20,0,20,20)
+        frame_item.set_bg_color((236, 240, 241))
+        frame_item.make_pos()
+
+        a.append(frame_item)
+
+    item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'matériau')
+    items.append(item_list)
+    items.append(label)
+
+    window.set_body_tmp(items)
+    window.display(screen)
+
+def draw_quantity_mat(widget, window, screen, mat, fourn, *arg):
+
+    fournisseur = get_with_name(window.fournisseurs, fourn)
+    cout_u = Fournisseur.coutMateriau(fournisseur, mat)
+    max = int(window.argent / cout_u)
+    info1 = []
+    info1.append(['Coût unitaire', str(cout_u) + ' €'])
+
+    infos = [info1]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 40, 30, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 430, 'auto')
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((236, 240, 241))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
+
+    text = 'Choisir la quantité de ' + mat +  ' à acheter'
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label_title.set_direction('horizontal')
+    label_title.set_padding(20,10,10,10)
+    label_title.resize(950, 80)
+    label_title.set_align('center')
+    label_title.make_pos()
+
+    label = create_label('Quantité : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    label_scale = create_label('compris entre 0 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+    frame_label = Frame(0, 0, [label, label_scale], None, [])
+    frame_label.set_direction('vertical')
+    frame_label.set_items_pos('auto')
+    frame_label.resize(420, 'auto')
+    frame_label.set_marge_items(10)
+    frame_label.set_padding(0,0,0,20)
+    frame_label.set_bg_color((236, 240, 241))
+    frame_label.make_pos()
+
+    entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
+    entry.set_entry('0')
+
+    frame_input = Frame(0, 0, [frame_label, entry], None, [])
+    frame_input.set_direction('horizontal')
+    frame_input.set_items_pos('auto')
+    frame_input.resize('auto', 'auto')
+    frame_input.set_marge_items(10)
+    frame_input.set_bg_color((236, 240, 241))
+    frame_input.make_pos()
+
+    newt_button = create_button("Suivant", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, draw_summary_appro, [mat, fourn, max])
+
+    frame_main = Frame(330, 120, frame_labels + [frame_input, newt_button], None, [])
+    frame_main.set_direction('vertical')
+    frame_main.set_items_pos('auto')
+    frame_main.resize('auto', 'auto')
+    frame_main.set_marge_items(20)
+    frame_main.set_padding(20,0,20,0)
+    frame_main.set_bg_color((236, 240, 241))
+    frame_main.make_pos()
+
+    window.set_body_tmp([label_title, frame_main])
+    window.display(screen)
+
+def draw_summary_appro(widget, window, screen, mat, fourn, max, *arg):
+    fournisseur = get_with_name(window.fournisseurs, fourn)
+    entry = get_entry(widget, window, screen, *arg)
+
+    if entry['quantity'] == '':
+        draw_alert(widget, window, screen, "Erreur", "Certains champs sont invalides", clear_overbody, [])
+    else:
+        if 0 <= int(entry['quantity']) <= max:
+            commande = [[mat, int(entry['quantity'])]]
+            founisseur = get_with_name(window.fournisseurs, fourn)
+            total_mat = Fournisseur.coutMateriaux(founisseur, commande)
+            dest = window.stocks[0] # bonus
+            cout_transp = Fournisseur.coutTransport(fournisseur, dest)
+            temps_transp = Fournisseur.tpsTransport(fournisseur, dest)
+
+            text = 'Résumé de la commande'
+            label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+            label_title.set_direction('horizontal')
+            label_title.set_padding(20,10,10,10)
+            label_title.resize(950, 80)
+            label_title.set_align('center')
+            label_title.make_pos()
+
+            info1, info2 = [], []
+            info1.append(['Coût total des matériaux', str(total_mat) + ' €'])
+            info1.append(['Coût du transport', str(cout_transp) + ' €'])
+            info1.append(['Coût total', str(total_mat + cout_transp) + ' €'])
+            info2.append(['Temps transport', str(int(temps_transp))+ ' semaine(s)'])
+
+            infos = [info1, info2]
+            frame_labels = []
+            for info in infos:
+                label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 40, 30, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 385, 'auto')
+                frame_tmp = Frame(0, 0, label_tmp, None, [])
+                frame_tmp.set_items_pos('auto')
+                frame_tmp.set_marge_items(10)
+                frame_tmp.set_direction('vertical')
+                frame_tmp.resize('auto', 'auto')
+                frame_tmp.set_bg_color((236, 240, 241))
+                frame_tmp.make_pos()
+                frame_labels.append(frame_tmp)
+
+            newt_button = create_button("Passez la commande", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, make_appro, [fournisseur, commande, total_mat + cout_transp])
+
+            frame_main = Frame(330, 120, frame_labels + [newt_button], None, [])
+            frame_main.set_direction('vertical')
+            frame_main.set_items_pos('auto')
+            frame_main.resize('auto', 'auto')
+            frame_main.set_marge_items(20)
+            frame_main.set_padding(20,0,20,0)
+            frame_main.set_bg_color((236, 240, 241))
+            frame_main.make_pos()
+
+            window.set_body_tmp([label_title, frame_main])
+            window.display(screen)
+        else:
+            draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
+
+def make_appro(widget, window, screen, fournisseur, commande, cout_total, *arg):
+    if cout_total > window.argent:
+        draw_alert(widget, window, screen, "Erreur", "Vous n'avez pas assez d'argent", clear_overbody, [])
+    else:
+        window.argent = Fournisseur.approvisionnement(window.transports, window.couts, fournisseur, window.stocks[0], commande, window.argent)
+        title_msg = ''
+        msg = 'La commande de ' + str(commande[0][1]) + ' ' + commande[0][0] + ' à ' + fournisseur.nom +  ' a bien été effectuée.'
+        draw_prod(widget, window, screen, 1)
+        draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def draw_quantity_produit(widget, window, screen, produit, *arg):
+    items = []
+
+    text = 'Stock'
+    label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label_stock.set_direction('horizontal')
+    label_stock.set_padding(20,10,10,10)
+    label_stock.resize(475, 80)
+    label_stock.set_align('center')
+    label_stock.make_pos()
+
+    a = []
+    for element in []:
+        info = []
+
+        info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_item = Frame(0, 0, info, None, [element.nom])
+        frame_item.set_direction('vertical')
+        frame_item.set_items_pos('auto')
+        frame_item.resize(455, 'auto')
+        frame_item.set_padding(20,0,20,20)
+        frame_item.set_bg_color((236, 240, 241))
+        frame_item.make_pos()
+
+        a.append(frame_item)
+
+    item_list = Item_list(a, 330, 120, 785, 120, 20, 480, 'stock')
+    items.append(item_list)
+    items.append(label_stock)
+
+    text = 'Composants du produit'
+    label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 805, 40, None, None, [])
+    label_stock.set_direction('horizontal')
+    label_stock.set_padding(20,10,10,10)
+    label_stock.resize(475, 80)
+    label_stock.set_align('center')
+    label_stock.make_pos()
+
+    a = []
+    for element in []:
+        info = []
+
+        info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_item = Frame(0, 0, info, None, [element.nom])
+        frame_item.set_direction('vertical')
+        frame_item.set_items_pos('auto')
+        frame_item.resize(455, 'auto')
+        frame_item.set_padding(20,0,20,20)
+        frame_item.set_bg_color((236, 240, 241))
+        frame_item.make_pos()
+
+        a.append(frame_item)
+
+    item_list = Item_list(a, 805, 120, 1260, 120, 20, 480, 'composant')
+    items.append(item_list)
+    items.append(label_stock)
+
+
+    max = 10
+
+    label = create_label('Quantité à produire: ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    label_scale = create_label('compris entre 0 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+    frame_label = Frame(0, 0, [label, label_scale], None, [])
+    frame_label.set_direction('vertical')
+    frame_label.set_items_pos('auto')
+    frame_label.resize(300, 'auto')
+    frame_label.set_marge_items(10)
+    frame_label.set_padding(0,0,0,20)
+    frame_label.set_bg_color((236, 240, 241))
+    frame_label.make_pos()
+
+    entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
+    entry.set_entry('0')
+
+    frame_input = Frame(0, 0, [frame_label, entry], None, [])
+    frame_input.set_direction('horizontal')
+    frame_input.set_items_pos('auto')
+    frame_input.resize('auto', 'auto')
+    frame_input.set_marge_items(10)
+    frame_input.set_bg_color((236, 240, 241))
+    frame_input.make_pos()
+
+    newt_button = create_button("Suivant", 'font/colvetica/colvetica.ttf', 30, (255, 255, 255), (230, 126, 34), 0, 0, 200, 40, draw_choose_machine, [produit, max])
+
+    frame_main = Frame(330, 600, [frame_input, newt_button], None, [])
+    frame_main.set_direction('horizontal')
+    frame_main.set_items_pos('auto')
+    frame_main.resize('auto', 'auto')
+    frame_main.set_marge_items(120)
+    frame_main.set_padding(20,0,50,0)
+    frame_main.set_align('center')
+    frame_main.set_bg_color((236, 240, 241))
+    frame_main.make_pos()
+    items.append(frame_main)
+
+    window.set_body_tmp(items)
+    window.display(screen)
+
+def draw_choose_machine(widget, window, screen, produit, max, *arg):
+    entry = get_entry(widget, window, screen, *arg)
+
+    if entry['quantity'] == '':
+        draw_alert(widget, window, screen, "Erreur", "Certains champs sont invalides", clear_overbody, [])
+    else:
+        if 0 <= int(entry['quantity']) <= max:
+            items_tmp = []
+
+            text = 'Choisir une machine'
+            label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+            label.set_direction('horizontal')
+            label.set_padding(20,10,10,10)
+            label.resize(950, 80)
+            label.set_align('center')
+            label.make_pos()
+
+            a = []
+            for element in []:
+                info = []
+
+                info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+                frame_item = Frame(0, 0, info, draw_add_machine_user, [produit, entry['quantity'], element.nom])
+                frame_item.set_direction('vertical')
+                frame_item.set_items_pos('auto')
+                frame_item.resize(920, 'auto')
+                frame_item.set_padding(20,0,20,20)
+                frame_item.set_bg_color((236, 240, 241))
+                frame_item.make_pos()
+
+                a.append(frame_item)
+
+            item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'machine')
+            items_tmp.append(item_list)
+            items_tmp.append(label)
+
+            window.set_body_tmp(items_tmp)
+            window.display(screen)
+        else:
+            draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
+
+def draw_add_machine_user(widget, window, screen, produit, quantity, machine, *arg):
+    # TODO: Vérifier si machine a utilisateur
+    items_tmp = []
+    if True:
+
+        text = 'Choisir un utilisatur à ajouter à la machine ' + machine
+        label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label.set_direction('horizontal')
+        label.set_padding(20,10,10,10)
+        label.resize(950, 80)
+        label.set_align('center')
+        label.make_pos()
+
+        a = []
+        for element in []:
+            info = []
+
+            info.append(create_label(element.id, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, add_user_to_machine, [produit, quantity, machine, element.id])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(920, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'machine')
+        items_tmp.append(item_list)
+        items_tmp.append(label)
+    else:
+        add_user_to_machine(widget, window, screen, produit, quantity, machine, None)
+
+    window.set_body_tmp(items_tmp)
+    window.display(screen)
+
+def add_user_to_machine(widget, window, screen, produit, quantity, machine, ind_id, *arg):
+    if ind_id != None:
+        pass
+    draw_summary_prod(widget, window, screen, produit, quantity, machine)
+
+def draw_summary_prod(widget, window, screen, produit, quantity, machine, *arg):
+
+    text = 'Résumé de la commande'
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label_title.set_direction('horizontal')
+    label_title.set_padding(20,10,10,10)
+    label_title.resize(950, 80)
+    label_title.set_align('center')
+    label_title.make_pos()
+
+    info1, info2 = [], []
+    info1.append(['Produit', 'test'])
+    info1.append(['Machine', 'test'])
+    info1.append(['Quantité', 'test'])
+    info2.append(['Temps de production', 'test'])
+
+    infos = [info1, info2]
+    frame_labels = []
+    for info in infos:
+        label_tmp = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 40, 30, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 385, 'auto')
+        frame_tmp = Frame(0, 0, label_tmp, None, [])
+        frame_tmp.set_items_pos('auto')
+        frame_tmp.set_marge_items(10)
+        frame_tmp.set_direction('vertical')
+        frame_tmp.resize('auto', 'auto')
+        frame_tmp.set_bg_color((236, 240, 241))
+        frame_tmp.make_pos()
+        frame_labels.append(frame_tmp)
+
+    newt_button = create_button("Passez la commande", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, make_prod, [])
+
+    frame_main = Frame(330, 120, frame_labels + [newt_button], None, [])
+    frame_main.set_direction('vertical')
+    frame_main.set_items_pos('auto')
+    frame_main.resize('auto', 'auto')
+    frame_main.set_marge_items(20)
+    frame_main.set_padding(20,0,20,0)
+    frame_main.set_bg_color((236, 240, 241))
+    frame_main.make_pos()
+
+    window.set_body_tmp([label_title, frame_main])
+    window.display(screen)
+
+def make_prod(widget, window, screen, *arg):
+    title_msg = ''
+    msg = 'La production de ' + ' a bien été lancée.'
+    draw_prod(widget, window, screen, 1)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 '''
 ================================================================================
 FINANCE
@@ -1988,7 +2614,7 @@ def draw_finance(widget, window, screen, i, *arg):
     items_tmp = []
 
     button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [0])
-    button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [1])
+    button_bilan = create_label("Bilan", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [1])
     button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [2])
     button_macro = create_label("Macroéconomie", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_finance, [3])
 
@@ -2091,7 +2717,7 @@ def draw_finance(widget, window, screen, i, *arg):
         lst_button_pret.append(button_ask_pret)
 
     elif i == 1:
-        button_bilan = create_label("Produit", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
+        button_bilan = create_label("Bilan", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
     elif i == 2:
         button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
     elif i == 3:
