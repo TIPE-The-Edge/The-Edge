@@ -1,0 +1,22 @@
+
+
+##################
+###### TODO ######
+##################
+
+APPROVISIONNEMENT :
+
+TRANSPORT :
+
+STOCK :
+
+PRODUCTION :
+
+    Les machines adéquates sont sélectionnées dès le choix du produit, donc
+        plus besoin de vérifier après.
+
+    Les commandes sont "parfaites", les quantités de materiaux en entrée
+        vont toutes etre utilisées.
+
+    On part du principe (peut etre à étudier) que l'on travaille 8h par jour
+    pendant 5 jours. Soit 2400 mins de travail par semaine.

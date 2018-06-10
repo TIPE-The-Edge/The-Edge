@@ -1,0 +1,29 @@
+processeur
+ecran
+diode
+resistance
+clavier
+vis
+transistor
+batterie
+micro
+port usb
+souris
+carte mere
+interrupteur
+clef usb
+disque dur
+ventilateur
+cable
+boitier
+verre
+couteau suisse
+gros bouton rouge
+carte graphique
+graveur blueray
+objectif photo
+port audio
+laser
+circuit imprime
+memoire ram
+radiateur

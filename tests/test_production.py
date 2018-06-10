@@ -4,7 +4,7 @@
 ########################
 # Python 3.4.2
 # Author: Maxence BLANC
-# Last modified : 06/2018
+# Last modified : 12/2017
 # Titre du Fichier : programme test pour la partie production
 ########################
 
@@ -96,13 +96,7 @@ if __name__ == "__main__" :
         # Tests sur le fonctionnement des Commandes et Machines.
             # Machines
 
-    ind = Individu()
-    ind.competence_production = 10
-    machines[0].utilisateur = ind
 
-    ind = Individu()
-    ind.competence_production = 1
-    machines[1].utilisateur = ind
 
 
     ######## VARIABLES DE JEU ########

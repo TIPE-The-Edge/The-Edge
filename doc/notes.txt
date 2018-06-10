@@ -1,0 +1,81 @@
+﻿Nous rassembllerons ici l'ensemble des informations 
+nécessaires à la compréhension des fichiers de notre
+base de données.
+
+
+// LEGENDE //
+	
+	|→ : un fichier de données
+	|| : aspect de la donnée
+	"" : variable
+	// : le type de la donnée
+
+
+
+// DESCRIPTION //
+
+|→ chomage.csv :
+
+	Paramètres : 
+		- periode         : |"annee"-T"numéro du trimestre"|
+		- taux de chomage : | /float/ | (en %)
+
+|→ composants.csv :
+
+	Paramètres :
+		- produit       : | "nom" |
+		- pays          : | "nom du pays" |
+		- cout_unitaire : | /float/ |
+
+
+|→ croissance.csv :
+
+	Paramètres :
+		- periode    : |"annee"|
+		- croissance : | /float/ | (en %)
+
+
+|→ demographie.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- jeunes  : | /int/ | (nbr de ménages)
+		- actifs  : | /int/ | (nbr de ménages)
+		- seniors : | /int/ | (nbr de ménages)
+
+
+|→ inflation.csv :
+
+	Paramètres :
+		- periode   : |"annee"|
+		- inflation : | /int/ | (A DEFINIR)
+
+
+|→ operation.csv :
+
+	Paramètres :
+		- operation     : | "nom" |
+		- cout_unitaire : | /float/ |
+
+|→ pib.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- pib     : | /int/ | (en millions d'euros)
+
+|→ revenu.csv :
+
+	Paramètres :
+		- periode : |"annee"|
+		- jeunes  : |/int/| (revenu annuel par ménage)
+		- actifs  : |/int/| (revenu annuel par ménage)
+		- seniors : |/int/| (revenu annuel par ménage)
+
+
+|→ transport.csv :
+
+	Paramètres :
+		- trajet   : |"lieu"/"lieu"|
+		- distance : | /int/ | (en km)
+		- cout     : | /int/ | (A DEFINIR)
+		- temps    : | /float/ | (en jour)
