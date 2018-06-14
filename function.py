@@ -2190,7 +2190,24 @@ def draw_prod(widget, window, screen, i, *arg):
 def draw_choose_fournisseur(widget, window, screen, mat, *arg):
     items = []
 
+    path = 'img/icon/left_grayblu_arrow'
+    button_arrow = Button_img(0, path, 0, 0, draw_prod, [1])
+
     text = 'Choisir un founisseur'
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
+    label_title.set_direction('horizontal')
+    label_title.set_padding(10,0,0,0)
+    label_title.resize(870, 80)
+    label_title.set_align('center')
+    label_title.make_pos()
+
+    frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+    frame_head.set_items_pos('auto')
+    frame_head.set_direction('horizontal')
+    frame_head.resize('auto', 'auto')
+    frame_head.set_bg_color((52,73,94))
+    frame_head.make_pos()
+
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
     label.set_direction('horizontal')
     label.set_padding(20,10,10,10)
@@ -2213,7 +2230,7 @@ def draw_choose_fournisseur(widget, window, screen, mat, *arg):
         # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
-        frame_item = Frame(0, 0, info, draw_quantity_mat, [mat, element.nom])
+        frame_item = Frame(0, 0, info, draw_quantity_mat, [mat, element.nom, '0'])
         frame_item.set_direction('vertical')
         frame_item.set_items_pos('auto')
         frame_item.resize(920, 'auto')
@@ -2225,12 +2242,12 @@ def draw_choose_fournisseur(widget, window, screen, mat, *arg):
 
     item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'matériau')
     items.append(item_list)
-    items.append(label)
+    items.append(frame_head)
 
     window.set_body_tmp(items)
     window.display(screen)
 
-def draw_quantity_mat(widget, window, screen, mat, fourn, *arg):
+def draw_quantity_mat(widget, window, screen, mat, fourn, quantity, *arg):
 
     fournisseur = get_with_name(window.fournisseurs, fourn)
     cout_u = Fournisseur.coutMateriau(fournisseur, mat)
@@ -2251,13 +2268,24 @@ def draw_quantity_mat(widget, window, screen, mat, fourn, *arg):
         frame_tmp.make_pos()
         frame_labels.append(frame_tmp)
 
+
+    path = 'img/icon/left_grayblu_arrow'
+    button_arrow = Button_img(0, path, 0, 0, draw_choose_fournisseur, [mat])
+
     text = 'Choisir la quantité de ' + mat +  ' à acheter'
-    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
     label_title.set_direction('horizontal')
-    label_title.set_padding(20,10,10,10)
-    label_title.resize(950, 80)
+    label_title.set_padding(10,0,0,0)
+    label_title.resize(870, 80)
     label_title.set_align('center')
     label_title.make_pos()
+
+    frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+    frame_head.set_items_pos('auto')
+    frame_head.set_direction('horizontal')
+    frame_head.resize('auto', 'auto')
+    frame_head.set_bg_color((52,73,94))
+    frame_head.make_pos()
 
     label = create_label('Quantité : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
     label_scale = create_label('compris entre 0 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
@@ -2272,7 +2300,7 @@ def draw_quantity_mat(widget, window, screen, mat, fourn, *arg):
     frame_label.make_pos()
 
     entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
-    entry.set_entry('0')
+    entry.set_entry(quantity)
 
     frame_input = Frame(0, 0, [frame_label, entry], None, [])
     frame_input.set_direction('horizontal')
@@ -2293,7 +2321,7 @@ def draw_quantity_mat(widget, window, screen, mat, fourn, *arg):
     frame_main.set_bg_color((236, 240, 241))
     frame_main.make_pos()
 
-    window.set_body_tmp([label_title, frame_main])
+    window.set_body_tmp([frame_head, frame_main])
     window.display(screen)
 
 def draw_summary_appro(widget, window, screen, mat, fourn, max, *arg):
@@ -2311,13 +2339,23 @@ def draw_summary_appro(widget, window, screen, mat, fourn, max, *arg):
             cout_transp = Fournisseur.coutTransport(fournisseur, dest)
             temps_transp = Fournisseur.tpsTransport(fournisseur, dest)
 
+            path = 'img/icon/left_grayblu_arrow'
+            button_arrow = Button_img(0, path, 0, 0, draw_quantity_mat, [mat, fourn, entry['quantity']])
+
             text = 'Résumé de la commande'
-            label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+            label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
             label_title.set_direction('horizontal')
-            label_title.set_padding(20,10,10,10)
-            label_title.resize(950, 80)
+            label_title.set_padding(10,0,0,0)
+            label_title.resize(870, 80)
             label_title.set_align('center')
             label_title.make_pos()
+
+            frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+            frame_head.set_items_pos('auto')
+            frame_head.set_direction('horizontal')
+            frame_head.resize('auto', 'auto')
+            frame_head.set_bg_color((52,73,94))
+            frame_head.make_pos()
 
             info1, info2 = [], []
             info1.append(['Coût total des matériaux', str(total_mat) + ' €'])
@@ -2349,7 +2387,7 @@ def draw_summary_appro(widget, window, screen, mat, fourn, max, *arg):
             frame_main.set_bg_color((236, 240, 241))
             frame_main.make_pos()
 
-            window.set_body_tmp([label_title, frame_main])
+            window.set_body_tmp([frame_head, frame_main])
             window.display(screen)
         else:
             draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
@@ -2488,13 +2526,23 @@ def draw_choose_machine(widget, window, screen, produit, max, *arg):
         if 0 <= int(entry['quantity']) <= max:
             items_tmp = []
 
+            path = 'img/icon/left_grayblu_arrow'
+            button_arrow = Button_img(0, path, 0, 0, draw_quantity_produit, [produit])
+
             text = 'Choisir une machine'
-            label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
-            label.set_direction('horizontal')
-            label.set_padding(20,10,10,10)
-            label.resize(950, 80)
-            label.set_align('center')
-            label.make_pos()
+            label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
+            label_title.set_direction('horizontal')
+            label_title.set_padding(10,0,0,0)
+            label_title.resize(870, 80)
+            label_title.set_align('center')
+            label_title.make_pos()
+
+            frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+            frame_head.set_items_pos('auto')
+            frame_head.set_direction('horizontal')
+            frame_head.resize('auto', 'auto')
+            frame_head.set_bg_color((52,73,94))
+            frame_head.make_pos()
 
             a = []
             for element in []:
@@ -2502,7 +2550,7 @@ def draw_choose_machine(widget, window, screen, produit, max, *arg):
 
                 info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
-                frame_item = Frame(0, 0, info, draw_add_machine_user, [produit, entry['quantity'], element.nom])
+                frame_item = Frame(0, 0, info, draw_add_machine_user, [produit, entry['quantity'], element.nom, max])
                 frame_item.set_direction('vertical')
                 frame_item.set_items_pos('auto')
                 frame_item.resize(920, 'auto')
@@ -2514,25 +2562,35 @@ def draw_choose_machine(widget, window, screen, produit, max, *arg):
 
             item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'machine')
             items_tmp.append(item_list)
-            items_tmp.append(label)
+            items_tmp.append(frame_head)
 
             window.set_body_tmp(items_tmp)
             window.display(screen)
         else:
             draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
-def draw_add_machine_user(widget, window, screen, produit, quantity, machine, *arg):
+def draw_add_machine_user(widget, window, screen, produit, quantity, machine, max, *arg):
     # TODO: Vérifier si machine a utilisateur
     items_tmp = []
     if True:
 
+        path = 'img/icon/left_grayblu_arrow'
+        button_arrow = Button_img(0, path, 0, 0, draw_choose_machine, [produit, max])
+
         text = 'Choisir un utilisatur à ajouter à la machine ' + machine
-        label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
-        label.set_direction('horizontal')
-        label.set_padding(20,10,10,10)
-        label.resize(950, 80)
-        label.set_align('center')
-        label.make_pos()
+        label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
+        label_title.set_direction('horizontal')
+        label_title.set_padding(10,0,0,0)
+        label_title.resize(870, 80)
+        label_title.set_align('center')
+        label_title.make_pos()
+
+        frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+        frame_head.set_items_pos('auto')
+        frame_head.set_direction('horizontal')
+        frame_head.resize('auto', 'auto')
+        frame_head.set_bg_color((52,73,94))
+        frame_head.make_pos()
 
         a = []
         for element in []:
@@ -2540,7 +2598,7 @@ def draw_add_machine_user(widget, window, screen, produit, quantity, machine, *a
 
             info.append(create_label(element.id, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
-            frame_item = Frame(0, 0, info, add_user_to_machine, [produit, quantity, machine, element.id])
+            frame_item = Frame(0, 0, info, add_user_to_machine, [produit, quantity, machine, element.id, max])
             frame_item.set_direction('vertical')
             frame_item.set_items_pos('auto')
             frame_item.resize(920, 'auto')
@@ -2552,27 +2610,37 @@ def draw_add_machine_user(widget, window, screen, produit, quantity, machine, *a
 
         item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'machine')
         items_tmp.append(item_list)
-        items_tmp.append(label)
+        items_tmp.append(frame_head)
     else:
         add_user_to_machine(widget, window, screen, produit, quantity, machine, None)
 
     window.set_body_tmp(items_tmp)
     window.display(screen)
 
-def add_user_to_machine(widget, window, screen, produit, quantity, machine, ind_id, *arg):
+def add_user_to_machine(widget, window, screen, produit, quantity, machine, ind_id, max, *arg):
     if ind_id != None:
         pass
-    draw_summary_prod(widget, window, screen, produit, quantity, machine)
+    draw_summary_prod(widget, window, screen, produit, quantity, machine, max)
 
-def draw_summary_prod(widget, window, screen, produit, quantity, machine, *arg):
+def draw_summary_prod(widget, window, screen, produit, quantity, machine, max, *arg):
+
+    path = 'img/icon/left_grayblu_arrow'
+    button_arrow = Button_img(0, path, 0, 0, draw_add_machine_user, [produit, quantity, machine, max])
 
     text = 'Résumé de la commande'
-    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
     label_title.set_direction('horizontal')
-    label_title.set_padding(20,10,10,10)
-    label_title.resize(950, 80)
+    label_title.set_padding(10,0,0,0)
+    label_title.resize(870, 80)
     label_title.set_align('center')
     label_title.make_pos()
+
+    frame_head = Frame(330, 40, [button_arrow, label_title], None, [])
+    frame_head.set_items_pos('auto')
+    frame_head.set_direction('horizontal')
+    frame_head.resize('auto', 'auto')
+    frame_head.set_bg_color((52,73,94))
+    frame_head.make_pos()
 
     info1, info2 = [], []
     info1.append(['Produit', 'test'])
@@ -2604,7 +2672,7 @@ def draw_summary_prod(widget, window, screen, produit, quantity, machine, *arg):
     frame_main.set_bg_color((236, 240, 241))
     frame_main.make_pos()
 
-    window.set_body_tmp([label_title, frame_main])
+    window.set_body_tmp([frame_head, frame_main])
     window.display(screen)
 
 def make_prod(widget, window, screen, *arg):
