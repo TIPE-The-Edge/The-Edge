@@ -376,12 +376,13 @@ class Machine(object):
 
         return(liste)
 
-    def maxMat(stock, recette):
+    def maxMat(mat_stock, recette):
         """ Retourne le nombre max de fois que l'on peut faire la recette
         à partir des ressources du stock.
+        ENTREE: la liste des mat du stock et leur nom (concernés par la recette)
+                la recette
         """
 
-        mat_stock = stock.materiaux
         nombre = mat_stock[0][1] # init
 
         for mat in recette:

@@ -46,6 +46,7 @@ stocks       = []
 candidats    = [] # Individus pouvant etre recrutés
 departs      = [] # Individus quittant l'entreprise [id, nbr semaine qu'il est parti]
 couts        = [] # tous les couts générés
+notifications= []
 
 ####################################################
 ##################| PROGRAMME |#####################
@@ -130,7 +131,7 @@ if __name__ == "__main__" :
 
         # Transports
         Transport.updateTempsTrajet(transports)
-        transports = Transport.arrivees(transports, stocks)
+        transports = Transport.arrivees(transports, stocks, notifications)
 
         # Commandes
         Commande.updateCommandes(machines, individus, stocks[0])
