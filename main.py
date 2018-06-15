@@ -17,6 +17,7 @@ import random
 import os
 import time
 import datetime
+import calendar
 import uuid
 import math
 import re
@@ -368,18 +369,56 @@ class Window():
             self.stocks.append(Stock())
 
         self.lesRH = RH()
-        self.temps = datetime.datetime(2018,1,1) # Temps en semaines
+        self.temps = datetime.datetime(2018,1,1)
+        self.tempsDebut = datetime.datetime(2018, 1, 1)  # Temps en semaines
         self.month = 1
         self.donneesF = {
-            "chiffreAff": [3000,4000,5000],
-            "resultatEx": [500,600,800],
-            "actif": 30000,
-            "disponibilité": 300,
-            "dette": 10000,
-            "capital": 30000,
-            "report à nouveau": 15000
+            ### BILAN ###
+            "amenagement locaux" : 0,
+            "machines" : [[0,0]],
+            "brevets" : 0,
+            "total actif immobilise" : 0,
+
+            "stocks et en-cours" : 0,
+            "avances et acomptes" : 0,
+            "disponibilites" : 0,
+            "total actif circulant" : 0,
+
+            "total actif" : 0,
+
+            "capital" : 0,
+            "reserve legal" : 0,
+            "report à nouveau" : 0,
+            "resultat exercice": [0,0,0],
+            "total capitaux propres" : 0,
+
+            "emprunts" : 0,
+            "dettes fournisseurs" : 0,
+            "dettes sociales" : 0,
+            "dettes fiscales" : 0,
+            "total dettes" : 0,
+
+            "total passif" : 0,
+
+            ### COMPTE DE RESULTAT ###
+            "chiffre affaire" : [0,0,0],
+            "production stockee" : 0,
+            "total produits exploitation" : 0,
+
+            "achats matieres premieres" : 0,
+            "loyer et charges" : 0,
+            "impots" : 0,
+            "salaires" : 0,
+            "charges sociales" : 0,
+            "dotations amortissements" : 0,
+            "total charges exploitation" : 0,
+
+            "interet et charges" : 0,
+
+            "resultat exercice compte": 0
             }
         self.argent = 40000
+        self.TVA = 0
 
         initProduits(self.stocks, self.produits)
 
@@ -389,6 +428,62 @@ class Window():
         # TEMPORAIRE
 
         genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+        self.bilan = {
+            ### BILAN ###
+            "amenagement locaux": 0,
+            "machinesBrut": 0,
+            "machinesAmortissement": 0,
+            "machinesNet": 0,
+            "brevets": 0,
+            "total actif immobilise": 0,
+
+            "stocks et en-cours": 0,
+            "avances et acomptes": 0,
+            "disponibilites": 0,
+            "total actif circulant": 0,
+
+            "total actif": 0,
+
+            "capital": 0,
+            "reserve legal": 0,
+            "report à nouveau": 0,
+            "resultat exercice": [0,0,0],
+            "total capitaux propres": 0,
+
+            "emprunts": 0,
+            "dettes fournisseurs": 0,
+            "dettes sociales": 0,
+            "dettes fiscales": 0,
+            "total dettes": 0,
+
+            "total passif": 0
+        }
+        self.compteResultat = {
+            "chiffre affaire": 0,
+            "production stockee": 0,
+            "total produits exploitation": 0,
+
+            "achats matieres premieres": 0,
+            "loyer et charges": 0,
+            "assurance": 0,
+            "charges externes": 0,
+            "impots": 0,
+            "salaires": 0,
+            "charges sociales": 0,
+            "dotations amortissements": 0,
+            "total charges exploitation": 0,
+
+            "interet et charges": 0,
+            "total resultat financier": 0,
+
+            "retultat exercice compte": 0
+        }
+
+        self.exBilan = {}
+        self.exCompteResultat = {}
+
+        print(self.sha)
+        print(self.user_name)
 
     def set_var(self):
         self.time_used = 0
@@ -415,6 +510,8 @@ class Window():
         self.produits = []
 
         self.donneesF = {}
+        self.listePret = []
+        self.TVA = 0
 
         self.temps = None
         self.lesRH = None

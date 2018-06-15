@@ -3132,7 +3132,7 @@ def draw_get_pret(widget, window, screen, type_pret, taux_interet, duree_entry, 
         frame_tmp.make_pos()
         frame_labels1.append(frame_tmp)
 
-    button_ok = create_button("Ok", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, None, [])
+    button_ok = create_button("Ok", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, create_pret, [montant_entry, taux_interet, interet, total, totalMois, assurance, assuranceMois, dureePretMois(type_pret, int(duree_entry)), lst_interet[0]])
 
     main_frame = Frame(0, 0, frame_labels + [frame_duree, frame_montant, generate_button, frame_bilan] + frame_labels1 + [button_ok], None, [])
     main_frame.set_direction('vertical')
@@ -3165,6 +3165,22 @@ def get_pret(widget, window, screen, type_pret, taux_interet, *arg):
         else:
             draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
+def create_pret(widget, window, screen, donnees, *arg):
+    donnees = {
+        'capital': donnees[0]
+        'taux interet': donnees[1]
+        'interet': donnees[2]
+        'montantPret': donnees[3]
+        'montantMois': donnees[4]
+        'assurance': donnees[5]
+        'assuranceMois': donnees[6]
+        'duree': donnees[7]
+        'type': donnees[8]
+    }
+    window.listePret.append(Pret(window.temps,donnees))
+    draw_finance(widget, window, screen, 0.1, *arg)
+     draw_alert(widget, window, screen, "Bravo! ", "Votre prêt a bien été contracté.", clear_overbody, [])
+    
 
 
 '''

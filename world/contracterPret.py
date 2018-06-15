@@ -10,7 +10,8 @@
 
 # IMPORTS
 import pickle
-
+import datetime
+import calendar
 ####################################################
 ##################| FONCTIONS |#####################
 ####################################################
@@ -25,6 +26,11 @@ def evolutionChiffreAff(chiffreAff,chiffreAffM2,chiffreAffM3):
                 chiffreAffM3: il y a 3 mois
     Sortie : la croissance du chiffre d'affaire
     """
+    if (chiffreAffM2 == 0):
+        chiffreAffM2 = chiffreAff
+    if (chiffreAffM3 == 0):
+        chiffreAffM3 = chiffreAff
+
     moyenne = (chiffreAffM2 + chiffreAffM3)/2
     croissance = ((chiffreAff - moyenne)/moyenne)*100
     return croissance
@@ -47,6 +53,11 @@ def evolutionResultatEx(resultatExercice,resultatExerciceM2,resultatExerciceM3):
                 resultatExerciceM3: il y a 3 mois
     Sortie : la croissance du résultat de l'exercice
     """
+    if (resultatExerciceM2 == 0):
+        resultatExerciceM2 = resultatExercice
+    if (resultatExerciceM3 == 0):
+        resultatExerciceM3 = resultatExercice
+
     moyenne = (resultatExerciceM2 + resultatExerciceM3)/2
     croissance = ((resultatExercice - moyenne)/moyenne)*100
     return croissance
@@ -104,20 +115,21 @@ def variationInteretTotal(donneesF):
                 i de 1 à 5: les pt d'interet selon les 5 méthodes
     Sortie : le taux d'intéret final du pret
     """
-    listeChiffreAff = donneesF['chiffreAff']
+    listeChiffreAff = donneesF['chiffre affaire']
     i11 = evolutionChiffreAff(listeChiffreAff[-1],listeChiffreAff[-2],listeChiffreAff[-3])
     i12 = ptChiffreAff(i11)
 
-    listeResultatEx = donneesF['resultatEx']
+    listeResultatEx = donneesF['resultat exercice']
     i21 = evolutionResultatEx(listeResultatEx[-1],listeResultatEx[-2],listeResultatEx[-3])
     i22 = ptResultat(i21)
 
     i3 = rentabilite(i11,i12)
-    i4 = solvabilite(donneesF['actif'],donneesF['disponibilité'],donneesF['dette'])
-    i5 = poidsRemboursement(donneesF['dette'],listeChiffreAff[-1])
+    i4 = solvabilite(donneesF['total actif'],donneesF['disponibilites'],donneesF['emprunts'])
+    i5 = poidsRemboursement(donneesF['emprunts'], listeChiffreAff[-1])
 
     total = i12 + i22 + i3 + i4 + i5
-    variationPt = min(4,max(-4,total))
+    #variationPt = min(4,max(-4,total))
+    variationPt = total
     variationPourcentage = variationPt/10
     return variationPourcentage
 
@@ -132,21 +144,19 @@ def affichageInteret():
                                   la situation de l'entreprise
     Sortie : Le texte à afficher
     """
-    #Lecture des données finance
-    with open('donneesFinance', 'rb') as fichierFinance:
-        depickler = pickle.Unpickler(fichierFinance)
-        donneesF = depickler.load()
-
-    variationInteret = variationInteretTotal(donneesF)
+    if window.listePret == []:
+        variationInteret = 0
+    else:
+        variationInteret = variationInteretTotal(window.donneesF)
 
     #Texte à trous
     if variationInteret < (-2):
         texte1 = "nous pouvons vous faire confiance"
         texte2 = "bas"
-    elif variationInteret > 2:
+    elif (variationInteret > 2) and (variationInteret <= 4):
         texte1 = "nous sommes méfiants en votre capacité à rembourser vos prêts"
         texte2 = "élevé"
-    else:
+    elif (variationInteret >= (-2)) and (variationInteret <= 2):
         texte1 = "nous sommes assez confiants en votre capacité à rembourser vos prêts"
         texte2 = "correct"
 
@@ -187,11 +197,8 @@ def dureePretMois(typePret,duree):
 #On determine le montant maximal du pret en fonction de la durée du pret
 def montantPret(duree):
     #On récupère les données finance
-    with open('donneesFinance', 'rb') as fichierFinance:
-        depickler = pickle.Unpickler(fichierFinance)
-        donneesF = depickler.load()
 
-    montantAnnee = round((donneesF['capital'] + donneesF['report à nouveau'])/10,2)
+    montantAnnee = round((window.donneesF['capital'] + window.donneesF['report à nouveau'])/10,2)
     montant = round(montantAnnee*(duree/12),2)
 
     return montant
@@ -240,11 +247,51 @@ def affichageFinal(tauxInteret,capitalPret,duree,tauxAssurance):
     print("Total: "+str(total)+"€")
     print("Prix du prêt par mois: "+str(totalMois)+"€")
 
+"""
+Fonction qui vérifie la disponibilité des prêts, à chaque fois que l'on souhaite contracter un pret
+"""
+def disponibilitePret(listePret, temps):
+    """
+    listePret --> liste de pret déjà effectués, disponible dans window 
+    pretCourt/moyen/long[0] --> date de disponibilité du pret
+    pretCourt/moyen/long[1] --> disponibilité du pret
+    """
+    pretCourt = ('', True)
+    pretMoyen = ('', True)
+    pretLong = ('', True)
+    oneMonthList = []
+    court = False
+    for pret in listePret:
+        oneMonth = add_months(pret.dateDebut, 1)
+        oneMonthList.append(add_months(pret.dateDebut, 1))
+        if datetime.datetime(2018, 1, 1) < oneMonth:
+            if (pret.type == 'court'):
+                court = True
+                pretCourt = (add_months(pret.dateDebut, 13), False)
+            if court == False:
+                pretCourt = (min(oneMonthList), False)
+            pretMoyen = (min(oneMonthList), False)
+            pretLong = (min(oneMonthList), False)
+
+    return pretCourt, pretMoyen, pretLong
+
+"""
+Fonction qui vérifie si l'utlisateur a le droit de contracter un pret
+"""
+def droitAuPret(variationInteretTotal):
+    if variationInteretTotal > 2:
+        print('La situation de votre entreprise prouve que vous n\'êtes pas digne de confiance. Nous cessons de vous proposer des prêts. Bonne continuation. Votre Banque.')
+        return False 
+    else:
+        return True
+
+    
 
 ####################################################
 ################| TESTS UNITAIRES |#################
 ####################################################
 
+# Obselete
 def testUnitaire():
     donneesF = {
     "chiffreAff": [3000,4000,5000],
@@ -255,12 +302,9 @@ def testUnitaire():
     "capital": 30000,
     "report à nouveau": 15000
     }
-    with open('donneesFinance', 'wb') as fichierFinance:
-        pickler = pickle.Pickler(fichierFinance)
-        pickler.dump(donneesF)
 
-    affichageInteret();
+    affichageInteret()
     print("\n\n\n")
-    affichageTypePret('moyen',2.2);
+    affichageTypePret('moyen',2.2)
     print("\n\n\n")
-    affichageFinal(2.2,30000,24,2);
+    affichageFinal(2.2,30000,24,2)

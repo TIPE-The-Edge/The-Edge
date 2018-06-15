@@ -31,6 +31,7 @@ class Save():
         self.argent = 0
 
         self.donneesF = {}
+        self.listePret = []
 
         self.sha = ''
         self.user_name = ''

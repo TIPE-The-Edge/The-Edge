@@ -15,6 +15,9 @@ from math import *
 
 import numpy as np
 import operator
+
+import datetime
+import calendar
 ####################################
 
 
@@ -249,6 +252,17 @@ def affichMatOper(liste) :
     #>>> Sortie <<<#
     return(affichage)
 
+"""
+    FONCTION       : ajoute un nombre de mois à une date
+
+"""
+def add_months(sourcedate, months):
+
+     month = sourcedate.month - 1 + months
+     year = sourcedate.year + month // 12
+     month = month % 12 + 1
+     day = min(sourcedate.day, calendar.monthrange(year, month)[1])
+     return datetime.date(year, month, day)
 
 '''
 def nom_fontion() :
