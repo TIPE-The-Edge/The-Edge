@@ -308,6 +308,36 @@ def completedProject(projets, produits, employes, magasins) :
                 magasins.append(Machine(proj.produit.operations))
             delProject(projets, employes, proj.id)
 
+def genAutoProduit(population, produits, materiaux, operations) :
+    """
+    FONCTION       : Créé un produit automatiquement
+    ENTREES        : La population cible (string), la liste des produits,
+                     la liste des matériaux et des opération.
+    SORTIE         : La liste des produits avec un produit en plus
+    """
+    #>>> Initialisation des variables locales <<<#
+    
+    # On initialise une liste vide d'employés 
+    employes = []
+    # On initialise la liste des paliers
+    paliers=[1,1,1,1]
+    # On crée un projet nommé "proje"
+    projet = Projet("projet")
+    # On ajoute ce projet à la liste des projets
+    projets = [projet]
+
+    #>>> Corps de la fonction <<<#
+    projet.avancement = 1
+    cout = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations)
+    cout = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations)
+    for i in range(3):
+        projet.avancement = 1
+        cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
+    
+    # On ajoute le produit à la liste des produits 
+    completedProject(projets, produits, employes)
+
+
 ####################################
 ############| CLASSES |#############
 ####################################
@@ -400,13 +430,10 @@ class Prototype(object):
 
     def creaMater(self, materiaux) :
         """
-        FONCTION       : Defini les materiaux necessaires
-                         a la creation du prototype
-        ENTREES        : Un prototype sans materiaux
-        SORTIE         : Le prototype avec des materiaux
-                         associes.
-        REMARQUES      : nb matériaux entre 3 et 5.
-        TEST UNITAIRE  : ...
+        FONCTION       : Défini les materiaux necessaires à la creation du prototype.
+        ENTREES        : Un prototype sans materiaux.
+        SORTIE         : Le prototype avec des materiaux associés.
+        REMARQUES      : Nombre de matériaux créés entre 3 et 5.
         """
 
         for i in range(random.randint(3, 5)):
@@ -419,7 +446,7 @@ class Prototype(object):
 
             # On ajoute le matériaux ainsi trouvé à la liste des matériaux
             # du prototype
-            self.materiaux.append([new, random.randint(1, 5)])
+            self.materiaux.append([new.nom, random.randint(1, 5)])
 
     def creaOpera(self, operations) :
         """
@@ -442,7 +469,7 @@ class Prototype(object):
 
             # On ajoute l'opération ainsi trouvée à la liste des opérations
             # du prototype
-            self.operations.append([new, random.randint(3, 5)])
+            self.operations.append([new.nom, random.randint(3, 5)])
 
     def creaCout(self) :
         """
@@ -457,7 +484,7 @@ class Prototype(object):
             # Initialise le cout moyen du matériaux
             couts=0
             # On récupère les données concernant les prix
-            recup = readLineCSV("materiaux.csv", "materiaux", mat[0].nom, ["cout unitaire"])
+            recup = readLineCSV("materiaux.csv", "materiaux", mat[0], ["cout unitaire"])
             # On fait une moyenne de ces prix
             for prix in recup :
                 couts += float(prix[0])*mat[1]

@@ -240,7 +240,7 @@ def nomPhase(phase, identifiant) :
     return(nom)
 
 
-def affichMatOper(materiaux) :
+def affichMatOper(liste) :
     """
     FONCTION       :
     ENTREES        :
@@ -251,8 +251,8 @@ def affichMatOper(materiaux) :
     #>>> Initialisation des variables locales <<<#
     affichage = []
     #>>> Corps de la fonction <<<#
-    for objet in materiaux :
-        affichage.append(objet[0].nom+" : "+str(objet[1]))
+    for objet in liste :
+        affichage.append(objet[0]+" : "+str(objet[1]))
     #>>> Sortie <<<#
     return(affichage)
 
