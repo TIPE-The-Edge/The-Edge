@@ -1416,7 +1416,10 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
 
     path = 'img/icon/right_white_arrow'
     button_arrow = Button_img(0, path, 0, 0, None, [])
-    text = 'Projet ' + str(proj_id)
+    if proj_id >= 0 :
+        text = 'Projet ' + str(proj_id)
+    else :
+        text = 'Projet'  + str(proj_id)
     name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
     frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
     frame_back.set_direction('horizontal')
