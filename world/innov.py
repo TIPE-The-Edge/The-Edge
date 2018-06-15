@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 14/03/2018
+#>>> DATE    : 15/06/2018
 ####################################
 
 
@@ -440,7 +440,7 @@ class Prototype(object):
             new = materiaux[random.randint(0, (len(materiaux)-1))]
             # Tant que le matériaux qu'on récupère existe dans la liste
             # des matériaux du prototype, on en récupère un autre
-            while new in [ m[0] for m in self.materiaux] :
+            while new.nom in [ m[0] for m in self.materiaux] :
                 new = materiaux[random.randint(0, (len(materiaux)-1))]
 
             # On ajoute le matériaux ainsi trouvé à la liste des matériaux
@@ -463,7 +463,7 @@ class Prototype(object):
             new = operations[random.randint(0, (len(operations)-1))]
             # Tant que l'opérations qu'on récupère existe dans la liste
             # des opérations du prototype, on en récupère une autre
-            while new in [o[0] for o in self.operations] :
+            while new.nom in [o[0] for o in self.operations] :
                 new = operations[random.randint(0, (len(operations)-1))]
 
             # On ajoute l'opération ainsi trouvée à la liste des opérations
