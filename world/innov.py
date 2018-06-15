@@ -5,7 +5,7 @@
 ####################################
 #>>> AUTEUR  : LAFAGE Adrien
 #>>> SUJET   : R&D / INNOVATION
-#>>> DATE    : 14/03/2018
+#>>> DATE    : 15/06/2018
 ####################################
 
 
@@ -303,7 +303,8 @@ def completedProject(projets, produits, employes, magasin) :
         if proj.phase == 5 :
             if proj.id > 0 :
                 produits.append(proj.produit)
-                magasin.append(Machine(proj.produit.operations))
+                ope = [op[0] for op in proj.produit.operations]
+                magasin.append(Machine(ope))
             delProject(projets, employes, proj.id)
 
 def genAutoProduit(population, produits, materiaux, operations, magasin) :
@@ -331,8 +332,8 @@ def genAutoProduit(population, produits, materiaux, operations, magasin) :
     for i in range(3):
         projet.avancement = 1
         cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
-    
-    # On ajoute le produit à la liste des produits 
+
+    # On ajoute le produit à la liste des produits
     completedProject(projets, produits, employes, magasin)
 
 
@@ -439,7 +440,7 @@ class Prototype(object):
             new = materiaux[random.randint(0, (len(materiaux)-1))]
             # Tant que le matériaux qu'on récupère existe dans la liste
             # des matériaux du prototype, on en récupère un autre
-            while new in [ m[0] for m in self.materiaux] :
+            while new.nom in [ m[0] for m in self.materiaux] :
                 new = materiaux[random.randint(0, (len(materiaux)-1))]
 
             # On ajoute le matériaux ainsi trouvé à la liste des matériaux
@@ -462,7 +463,7 @@ class Prototype(object):
             new = operations[random.randint(0, (len(operations)-1))]
             # Tant que l'opérations qu'on récupère existe dans la liste
             # des opérations du prototype, on en récupère une autre
-            while new in [o[0] for o in self.operations] :
+            while new.nom in [o[0] for o in self.operations] :
                 new = operations[random.randint(0, (len(operations)-1))]
 
             # On ajoute l'opération ainsi trouvée à la liste des opérations
@@ -594,9 +595,6 @@ class Projet(object):
             #| vis à vis du concept.
             Concept.sondage(self.produit)
 
-            # Prix moyen d'un sondage.
-            couts=[self.nom+" | Sondages", 50]
-
             Projet.verifPhase1(self, palier, utilisateur)
 
         elif self.avancement == palier and self.attente==True :
@@ -622,7 +620,7 @@ class Projet(object):
         if utilisateur==True :
 
             # Coût de création du prototype
-            couts=[self.nom+" | Création prototype" , self.produit.cout]
+            couts=[self.nom+" : Création du prototype" , self.produit.cout]
 
             self.attente = False
             # On réinitialise l'avancement
@@ -705,7 +703,7 @@ class Projet(object):
 
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
-            couts = [self.nom+" | Brevet",50]
+            couts = [self.nom+" : Brevet",50]
             # Initialisation de l'utilité
             utilite = Prototype.apprToUti(self.produit)
             # Transformation en produit
@@ -734,7 +732,7 @@ class Projet(object):
         elif utilisateur==True and self.essai == False :
 
             # // Warning : diminuer le capital d'une certaine somme //
-            couts = [self.nom+" | Mise à l'essai", 50]
+            couts = [self.nom+" : Mise à l'essai", 50]
             # On met le prototype à l'essai
             self.essai = True
             # On fait avancer le projet avec le bonus de la mise
@@ -898,7 +896,7 @@ class Ameliore() :
 
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
-            couts = [self.nom+" | Brevet",50]
+            couts = [self.nom+" : Brevet",50]
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
             if self.produit.nbr_ameliorations > 1 :

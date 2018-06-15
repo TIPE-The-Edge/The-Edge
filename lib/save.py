@@ -39,6 +39,9 @@ class Save():
         self.total_time = 0
         self.last_used = None
 
+        self.notifications = []
+
+
     def save(self, window):
 
         for attr, value in self.__dict__.items():
