@@ -304,7 +304,7 @@ def completedProject(projets, produits, employes, magasin) :
             if proj.id > 0 :
                 produits.append(proj.produit)
                 ope = [op[0] for op in proj.produit.operations]
-                magasins.append(Machine(ope))
+                magasin.append(Machine(ope))
             delProject(projets, employes, proj.id)
 
 def genAutoProduit(population, produits, materiaux, operations, magasin) :

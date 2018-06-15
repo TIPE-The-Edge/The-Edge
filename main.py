@@ -427,6 +427,8 @@ class Window():
         self.total_time = 0
         self.last_used = None
 
+        self.notifications = []
+
         self.save = Save()
 
     def set_window(self):

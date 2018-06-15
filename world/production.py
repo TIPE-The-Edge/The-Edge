@@ -64,16 +64,16 @@ def listeMat(stock, produit):
 
     return(liste)
 
-def addMachine(machines, machine) :
+def addMachine(machines, machine):
     """
-    FONCTION       : Ajoute une machine à la liste machines 
+    FONCTION       : Ajoute une machine à la liste machines
     ENTREES        : La liste machines et une machine
     SORTIE         : La liste machines à jour
-    """  
+    """
 
     # On crée une copie de la machine
     engine = Machine(machine.operations_realisables)
-    engine.nom = machine.nom 
+    engine.nom = machine.nom
     engine.prix = machine.prix
     # On ajoute la machine aux machines de l'entreprise
     machines.append(engine)
@@ -545,7 +545,7 @@ class Transport(object):
         for trans in transports:
             trans.tps_trajet -= 1
 
-    def arrivees(transports, stocks):
+    def arrivees(transports, stocks, notifications):
         """ Si un transport est terminé, ses materiaux et produits sont
         transférés dans le stock de destination. Et la liste des transports
         restants est retournée.
@@ -560,6 +560,26 @@ class Transport(object):
                     if stock.nom == trans.arrivee:
                         ajout(trans.materiaux, stock.materiaux)
                         ajout(trans.produits, stock.produits)
+
+                texte = ""
+
+                mats = trans.materiaux
+                for i in range(len(mats)):
+                    texte += str(mats[i][1]) + "x " + mats[i][0]
+                    if i+1 != len(mats):
+                        texte += ", "
+
+                prods = trans.produits
+
+                if len(mats) > 0 and len(prods) > 0:
+                    texte += " et "
+
+                for i in range(len(prods)):
+                    texte += str(prods[i][1]) + "x " + prods[i][0]
+                    if i+1 != len(prods):
+                        texte += ", "
+
+                notifications.append([1,"Production : transport terminée", "Le transport de " + texte + " entre " + trans.depart + " et " + trans.arrivee + " est bien arrivé."])
 
             else:
                 copy.append(trans)
