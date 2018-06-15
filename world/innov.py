@@ -303,7 +303,8 @@ def completedProject(projets, produits, employes, magasin) :
         if proj.phase == 5 :
             if proj.id > 0 :
                 produits.append(proj.produit)
-                magasin.append(Machine(proj.produit.operations))
+                ope = [op[0] for op in proj.produit.operations]
+                magasins.append(Machine(ope))
             delProject(projets, employes, proj.id)
 
 def genAutoProduit(population, produits, materiaux, operations, magasin) :
@@ -331,8 +332,8 @@ def genAutoProduit(population, produits, materiaux, operations, magasin) :
     for i in range(3):
         projet.avancement = 1
         cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
-    
-    # On ajoute le produit à la liste des produits 
+
+    # On ajoute le produit à la liste des produits
     completedProject(projets, produits, employes, magasin)
 
 

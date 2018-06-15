@@ -46,6 +46,7 @@ stocks       = []
 candidats    = [] # Individus pouvant etre recrutés
 departs      = [] # Individus quittant l'entreprise [id, nbr semaine qu'il est parti]
 couts        = [] # tous les couts générés
+notifications= []
 
 ####################################################
 ##################| PROGRAMME |#####################
@@ -130,7 +131,7 @@ if __name__ == "__main__" :
 
         # Transports
         Transport.updateTempsTrajet(transports)
-        transports = Transport.arrivees(transports, stocks)
+        transports = Transport.arrivees(transports, stocks, notifications)
 
         # Commandes
         Commande.updateCommandes(machines, individus, stocks[0])
@@ -319,16 +320,10 @@ if __name__ == "__main__" :
                     print(liste_mats)
                     print()
 
-                    mats_ajustes = Machine.ajusteCommande(stocks[0], prod, liste_mats)
-                    print("Apres ajustement")
-                    print(mats_ajustes)
-                    print()
-
-                    # Affiche le nbr de produit que ça fera
-                    prod_totaux = prodTotaux(prod, mats_ajustes)
-                    print(str(prod_totaux) + " " + str(prod.nom) + " au total")
-
-
+                    # mats_ajustes = Machine.ajusteCommande(stocks[0], prod, liste_mats) # inutile??
+                    # print("Apres ajustement")
+                    # print(mats_ajustes)
+                    # print()
 
                     os.system('clear') # works on Linux/Mac
 
@@ -364,13 +359,13 @@ if __name__ == "__main__" :
                                         obj_mach = mac
 
                     print()
-                    print("temps de prod : " + str(round(Commande(mats_ajustes, operations, prod).tps_total / Commande.capaciteUtilisateur(obj_mach.utilisateur), 1)) + " semaines")
+                    print("temps de prod : " + str(round(Commande(liste_mats, operations, prod).tps_total / Commande.capaciteUtilisateur(obj_mach.utilisateur), 1)) + " semaines")
 
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
 
                     if ok_commande == "ok" and Machine.verifUtilisateur(machines, id_mach):
-                        Machine.genCommande(machines, operations, mats_ajustes, id_mach, stocks[0], prod)
+                        Machine.genCommande(machines, operations, liste_mats, id_mach, stocks[0], prod)
                         menu = 0
 
                     else:
