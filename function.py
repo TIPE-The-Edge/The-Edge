@@ -695,7 +695,7 @@ def next_tour(widget, window, screen, *arg):
     window.transports = Transport.arrivees(window.transports, window.stocks, window.notifications)
 
     # Update des commandes
-    Commande.updateCommandes(window.machines, window.individus, window.stocks[0])
+    Commande.updateCommandes(window.machines, window.individus, window.stocks[0], window.notifications)
 
     if (window.temps.month != window.month):
        window.month = window.temps.month
@@ -1370,7 +1370,7 @@ def status(widget, window, screen, projet, *arg) :
         elif projet.phase==2 and projet.attente==True:
             msg_general.append("Vos chercheurs sont près à passer à la phase expérimentale.")
             msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
-            
+
             if window.argent>=round(projet.produit.cout, 2) :
                 boutons.append(["Accepter", actionPhase, [projet, True]])
             else :
@@ -2118,10 +2118,9 @@ def draw_prod(widget, window, screen, i, *arg):
         for machines in window.machines:
             for element in machines.commandes:
                 info = []
-                print(element)
-                info.append(create_label(str(element.prod_totaux) + 'x ' + str(element.produit.nom) , 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                info.append(create_label(str(int(element.prod_totaux)) + 'x ' + str(element.produit.nom) , 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
                 info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-                info.append(create_label('Produit restant : ' + element.prod_restants, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                info.append(create_label('Produit restant : ' + str(int(element.prod_restants)), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
                 info.append(create_label('Avancement du transport : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
                 info.append(create_label( ' ', 'calibri', 15, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -2174,7 +2173,7 @@ def draw_prod(widget, window, screen, i, *arg):
         label.make_pos()
 
         a = []
-        for element in window.materiaux:
+        for element in enhancedSort(window.materiaux, 'nom', False):
             info = []
 
             info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
@@ -2227,6 +2226,28 @@ def draw_prod(widget, window, screen, i, *arg):
     elif i == 3:
         button_stock = create_label("Stock", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [3])
 
+        items_list = []
+
+        for element in window.stocks[0].materiaux:
+            info = []
+
+            info.append(create_label(element[0], 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label('Quantité : ' + str(element[1]), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+            frame_item = Frame(0, 0, info, None, [])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(930, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            items_list.append(frame_item)
+
+        item_list_widget = Item_list(items_list, 330, 40, 1260, 40, 20, 680, 'produit')
+
+        items.append(item_list_widget)
     elif i == 4:
         button_machine = create_label("Machines", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [4])
 
@@ -2256,7 +2277,7 @@ def draw_prod(widget, window, screen, i, *arg):
             info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             if element.utilisateur != None:
-                info.append(create_label('Utilisateur : ' + element.utilisateur.nom, 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                info.append(create_label('Utilisateur : ' + element.utilisateur.nom + " " + element.utilisateur.prenom, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             else:
                 info.append(create_label('Utilisateur : Aucun', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -2274,6 +2295,17 @@ def draw_prod(widget, window, screen, i, *arg):
             frame_operations.set_bg_color((236, 240, 241))
             frame_operations.make_pos()
             info.append(frame_operations)
+
+            if element.utilisateur == None:
+                button_user = create_button("Ajouter un utilisateur à la machine", 'font/colvetica/colvetica.ttf', 25, (255, 255, 255), (230, 126, 34), 0, 0, 'auto', 'auto', draw_add_user_to_machine, [element.id])
+                button_user.set_padding(15,15,10,10)
+                button_user.make_pos()
+                info.append(button_user)
+            else:
+                button_user = create_button("Retirer l'utilisateur de la machine", 'font/colvetica/colvetica.ttf', 25, (255, 255, 255), (230, 126, 34), 0, 0, 'auto', 'auto', remove_machine_user, [element.id])
+                button_user.set_padding(15,15,10,10)
+                button_user.make_pos()
+                info.append(button_user)
 
             frame_item = Frame(0, 0, info, None, [])
             frame_item.set_direction('vertical')
@@ -2527,7 +2559,7 @@ def make_appro(widget, window, screen, fournisseur, commande, cout_total, *arg):
         window.argent = Fournisseur.approvisionnement(window.transports, window.couts, fournisseur, window.stocks[0], commande, window.argent)
         title_msg = ''
         msg = 'La commande de ' + str(commande[0][1]) + ' ' + commande[0][0] + ' à ' + fournisseur.nom +  ' a bien été effectuée.'
-        draw_prod(widget, window, screen, 1)
+        draw_prod(widget, window, screen, 0)
         draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
 def draw_quantity_produit(widget, window, screen, produit, quantity, *arg):
@@ -2698,7 +2730,7 @@ def draw_choose_machine(widget, window, screen, produit, max, quantity, *arg):
                 info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
                 info.append(create_label(' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
                 if element.utilisateur != None:
-                    info.append(create_label('Utilisateur : ' + element.utilisateur.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                    info.append(create_label('Utilisateur : ' + element.utilisateur.prenom + ' ' + element.utilisateur.nom, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
                 else:
                     info.append(create_label('Utilisateur : Aucun', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
@@ -2757,7 +2789,7 @@ def draw_add_machine_user(widget, window, screen, produit, quantity, machine, ma
             info.append(create_label(' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             info.append(create_label('Compétence : ' + str(element.competence_production), 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
-            frame_item = Frame(0, 0, info, add_user_to_machine, [produit, quantity, machine, element.id, max])
+            frame_item = Frame(0, 0, info, add_machine_user, [produit, quantity, machine, element.id, max])
             frame_item.set_direction('vertical')
             frame_item.set_items_pos('auto')
             frame_item.resize(920, 'auto')
@@ -2774,9 +2806,9 @@ def draw_add_machine_user(widget, window, screen, produit, quantity, machine, ma
         window.set_body_tmp(items_tmp)
         window.display(screen)
     else:
-        add_user_to_machine(widget, window, screen, produit, quantity, machine, None, max)
+        add_machine_user(widget, window, screen, produit, quantity, machine, None, max)
 
-def add_user_to_machine(widget, window, screen, produit, quantity, id_machine, ind_id, max, *arg):
+def add_machine_user(widget, window, screen, produit, quantity, id_machine, ind_id, max, *arg):
     if ind_id != None:
         ind = get_with_id(window.individus, ind_id)
         ind.role = 'prod'
@@ -2798,7 +2830,7 @@ def draw_summary_prod(widget, window, screen, produit, quantity, machine_id, max
     label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
     label_title.set_direction('horizontal')
     label_title.set_padding(10,0,0,0)
-    label_title.resize(870, 80)
+    label_title.resize(930, 80)
     label_title.set_align('center')
     label_title.make_pos()
 
@@ -2842,7 +2874,7 @@ def draw_summary_prod(widget, window, screen, produit, quantity, machine_id, max
     frame_total_mat.set_items_pos('auto')
     frame_total_mat.resize('auto', 'auto')
     frame_total_mat.set_marge_items(20)
-    frame_total_mat.set_padding(20,0,0,0)
+    frame_total_mat.set_padding(40,0,0,0)
     frame_total_mat.set_bg_color((236, 240, 241))
     frame_total_mat.make_pos()
 
@@ -2858,17 +2890,15 @@ def draw_summary_prod(widget, window, screen, produit, quantity, machine_id, max
     window.set_body_tmp([frame_head, frame_main])
     window.display(screen)
 
-def make_prod(widget, window, screen, produit, quantity, machine_id, *arg):
+def make_prod(widget, window, screen, produit, quantity, machine, *arg):
     title_msg = ''
     msg = 'La production de ' + str(quantity) + ' ' + produit + ' a bien été lancée.'
 
-    machine = get_with_id(window.machines, machine_id)
     product = get_with_name(window.produits, produit)
     total_mat = Machine.nbrProd_to_NbrMat(product, int(quantity))
+    Machine.genCommande(window.machines, window.operations, total_mat, machine.id, window.stocks[0], product)
 
-    Machine.genCommande(window.machines, window.operations, total_mat, machine, window.stocks[0], product)
-
-    draw_prod(widget, window, screen, 1)
+    draw_prod(widget, window, screen, 0)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
 def draw_magasin(widget, window, screen, *arg):
@@ -2946,6 +2976,79 @@ def buy_machine(widget, window, screen, machine_id):
         msg = 'La machine ' + machine.nom + ' a bien été achetée.'
         draw_prod(widget, window, screen, 4)
         draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def remove_machine_user(widget, window, screen, machine_id, *arg):
+    machine = get_with_id(window.machines, machine_id)
+    title_msg = ''
+    msg = "L'employé " + machine.utilisateur.prenom + ' ' + machine.utilisateur.nom + ' a été retiré de la machine.'
+
+    user = get_with_id(window.individus, machine.utilisateur.id)
+    user.role = None
+    machine.utilisateur = None
+
+    draw_prod(widget, window, screen, 4)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+def draw_add_user_to_machine(widget, window, screen, machine_id, *arg):
+    items_tmp = []
+    machine = get_with_id(window.machines, machine_id)
+    text = 'Choisir un utilisateur à ajouter à la machine ' + machine.nom
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
+    label_title.set_direction('horizontal')
+    label_title.set_padding(20,0,0,0)
+    label_title.resize(930, 80)
+    label_title.set_align('center')
+    label_title.make_pos()
+
+    frame_head = Frame(330, 40, [label_title], None, [])
+    frame_head.set_items_pos('auto')
+    frame_head.set_direction('horizontal')
+    frame_head.resize('auto', 'auto')
+    frame_head.set_bg_color((52,73,94))
+    frame_head.make_pos()
+
+    ind_with_no_role = []
+    for ind in window.individus:
+        if ind.role == None:
+            ind_with_no_role.append(ind)
+    a = []
+    for element in ind_with_no_role:
+        info = []
+
+        info.append(create_label(element.prenom + ' ' + element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        info.append(create_label(' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        info.append(create_label('Compétence : ' + str(element.competence_production), 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+        frame_item = Frame(0, 0, info, add_user_to_machine, [element.id, machine_id])
+        frame_item.set_direction('vertical')
+        frame_item.set_items_pos('auto')
+        frame_item.resize(920, 'auto')
+        frame_item.set_padding(20,0,20,20)
+        frame_item.set_bg_color((236, 240, 241))
+        frame_item.make_pos()
+
+        a.append(frame_item)
+
+    item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'employé')
+    items_tmp.append(item_list)
+    items_tmp.append(frame_head)
+
+    window.set_body_tmp(items_tmp)
+    window.display(screen)
+
+def add_user_to_machine(widget, window, screen, ind_id, machine_id, *arg):
+    machine = get_with_id(window.magasin, machine_id)
+    ind = get_with_id(window.individus, ind_id)
+    ind.role = 'prod'
+    machine = get_with_id(window.machines, machine_id)
+    machine.utilisateur = ind
+
+    title_msg = ''
+    msg = "L'employé " + machine.utilisateur.prenom + ' ' + machine.utilisateur.nom + ' a été ajouté de la machine ' + machine.nom + '.'
+
+
+    draw_prod(widget, window, screen, 4)
+    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
 
 '''
 ================================================================================

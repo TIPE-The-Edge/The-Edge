@@ -379,7 +379,7 @@ class Window():
             "capital": 30000,
             "report à nouveau": 15000
             }
-        self.argent = 40000
+        self.argent = 10000000
 
         initProduits(self.stocks, self.produits)
 

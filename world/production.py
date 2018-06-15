@@ -253,8 +253,8 @@ class Machine(object):
         self.prix = 0 # TODO
 
     def __repr__(self):
-        return "\n {} --> {} {} : \n{}".format(
-                self.utilisateur, self.id, self.nom, self.operations_realisables)
+        return "\n {} --> {} {} : \n{} \n {}".format(
+                self.utilisateur, self.id, self.nom, self.operations_realisables, self.commandes)
 
     def genNom(self):
         nom = random.choice(Machine.noms_dispo)
@@ -471,7 +471,7 @@ class Commande(object): # Commandes faites aux machines
         """ Renvoie la capacité de travail que peut fournir un utilisateur.
         """
 
-        x = Commande.utilisateur.competence_production
+        x = utilisateur.competence_production
 
         # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
         mins = int((300/9)*(x**2) - (300/9)*x + MINS_PAR_SEMAINE) # Polynome du second degré
@@ -481,13 +481,13 @@ class Commande(object): # Commandes faites aux machines
     def process(commandes, stock, utilisateur, notifications):
 
         # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
-        mins = capaciteUtilisateur(utilisateur)
+        mins = Commande.capaciteUtilisateur(utilisateur)
 
         while mins > 0 and len(commandes) > 0:
 
             if commandes[0].tps_restant == 0: # Supprime les commandes terminées
 
-                notifications.append([1, "Production : commande terminée", "La production de " + str(commande[0].prod_totaux) + "x " + commande[0].produit.nom + " est terminée"])
+                notifications.append([1, "Production : commande terminée", "La production de " + str(int(commandes[0].prod_totaux)) + "x " + commandes[0].produit.nom + " est terminée"])
                 commandes.remove(commandes[0])
 
             if len(commandes) > 0:
