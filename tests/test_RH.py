@@ -72,7 +72,7 @@ if __name__ == "__main__" :
     temps = datetime.datetime(2018,1,1) # Temps en semaines
     month = 1
 
-    argent = 0 #TODO
+    argent = 40000
 
     on = 1
     while on != 0:
@@ -89,12 +89,14 @@ if __name__ == "__main__" :
 
         if (temps.month != month): # Ajoute les couts de RH tous les mois
             month = temps.month
-            argent = RH.coutsRH(couts, lesRH)
+            argent = RH.coutsRH(couts, lesRH, argent)
 
             # MaJ des candidats chaque mois
             candidats = []
             for i in range (5):
                 candidats.append(Individu())
+
+        print(couts)
 
 
         ######## AFFICHAGE ########
@@ -103,7 +105,7 @@ if __name__ == "__main__" :
 
         # Temps
         print("------------------------ |{} {} {}| ------------------------\n".format(temps.day, temps.strftime("%B"), temps.year))
-
+        print((temps - datetime.datetime(2018,1,1)).days/7)
         menu = 1
         while menu != 0: # MENU PRINCIPAL
 

@@ -15,8 +15,10 @@ https://www.insee.fr/fr/statistiques/2021266
 ###### TODO ######
 ##################
 
-RECRUTEMENT :
-    Décider de la fréquence de renouvellement et le nombre des candidats. (A revoir)
+CHANGEMENT DE ROLE
+
+SALAIRES : 
+    Pour autre que R&D.
 
 ###################
 ###### BONUS ######

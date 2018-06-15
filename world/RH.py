@@ -15,28 +15,14 @@
 
 """ TO DO LIST
 
-RH :
-    update()
-        self.cout_emploi : changer le 0 par la valeur des charges indirectes
-            (voir NOTES)
-
-        self.part_masse_sal : récupérer le budget total (LC)
-
-    Etablir le cout des locaux (location de locaux)
-
-Rajouter les couts dans la liste des couts pour LC:
-    Diviser en:
-        locaux
-        salaires
-        charges sociales
-
-
 """
 
 """ NOTES
 Pour LC :
     Couts générés :
-        "cout RH"
+        "Salaires"
+        "Charges salariales et patronales"
+        "Loyer et charges associées"
 
 Cout de l'emploi :
     Les charges indirectes :
@@ -82,8 +68,8 @@ def fonction():
 class RH(object):
 
     def __repr__(self):
-        return "nbr employés: {} \nage moy: {} \n\nexp start up moy: {} \nexp R&D moy: {} \n\nnbr arrivees: {} \nnbr departs: {} \n\ncout formations: {} \nmoy formations: {} \n\nsalaire moy: {} \nmasse sal brute: {} \nmasse sal nette: {} \ncout emploi: {} \ncout moy emploi: {} \npart masse sal: {}".format(
-                self.nbr_employes, self.age_moy, self.exp_start_up_moy, self.exp_RetD_moy, self.nbr_arrivees, self.nbr_departs, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
+        return "nbr employés: {} \nage moy: {} \n\nexp start up moy: {} \nexp R&D moy: {} \n\nnbr arrivees: {} \nnbr departs: {} \n\ncout formations: {} \nmoy formations: {} \n\nsalaire moy: {} \nmasse sal brute: {} \nmasse sal nette: {} \ncout locaux: {} \ncout emploi: {} \ncout moy emploi: {} \npart masse sal: {}".format(
+                self.nbr_employes, self.age_moy, self.exp_start_up_moy, self.exp_RetD_moy, self.nbr_arrivees, self.nbr_departs, self.cout_formations, self.moy_formations, self.salaire_moy, self.masse_sal_brute, self.masse_sal_nette, self.cout_locaux, self.cout_emploi, self.cout_moy_emploi, self.part_masse_sal)
 
     def __init__(self):
         self.nbr_employes     = 0
@@ -109,12 +95,27 @@ class RH(object):
         self.salaire_moy     = 0
         self.masse_sal_brute = 0
         self.masse_sal_nette = 0
+        self.cout_locaux     = 0
         self.cout_emploi     = 0
         self.cout_moy_emploi = 0
-        self.part_masse_sal  = 0
 
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
         self.nbr_employes     = RH.nbr(individus)
+        self.cout_locaux     = RH.coutLocaux(self)
+
+        # Couts
+        self.masse_sal_brute = RH.masseSalBrute(individus) # Masse salariale brute
+        self.masse_sal_nette = RH.masseSalNette(individus) # Masse salariale nette
+        self.cout_emploi     = round(self.masse_sal_nette + (self.masse_sal_brute*0.22) + (self.masse_sal_brute*0.42) + self.cout_locaux, 2)
+                                # Cout total des employés =
+                                #   salaires nets
+                                # + charges sociales salariales
+                                # + charges patronales
+                                # + charges indirectes
+
+        # Flux
+        self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
+        self.nbr_departs   = RH.departs(departs, seuil_departs)
 
         if self.nbr_employes > 0:
 
@@ -126,9 +127,7 @@ class RH(object):
             self.exp_RetD_moy     = RH.expRetDMoyenne(individus)
 
             # Flux
-            self.nbr_arrivees  = RH.arrivees(individus, seuil_arrivees)
             # self.taux_arrivees = round(self.nbr_arrivees / self.nbr_employes, 1)
-            self.nbr_departs   = RH.departs(departs, seuil_departs)
             # self.taux_departs  = round(self.nbr_departs / self.nbr_employes, 1)
             # self.taux_rotation = round((self.nbr_arrivees + self.nbr_departs)/self.nbr_employes, 1) # turn over
 
@@ -138,15 +137,7 @@ class RH(object):
 
             # Couts
             self.salaire_moy     = RH.salaireMoyen(individus)
-            self.masse_sal_brute = RH.masseSalBrute(individus) # Masse salariale brute
-            self.masse_sal_nette = RH.masseSalNette(individus) # Masse salariale nette
-            self.cout_emploi     = round(self.masse_sal_brute + (self.masse_sal_brute*0.42) + 0, 2)
-                                    # Cout total des employés
-                                    # (salaire net + charges sociales salariales)
-                                    # + charges patronales
-                                    # + charges indirectes
             self.cout_moy_emploi = round(self.cout_emploi/self.nbr_employes, 2) # Coût moyen par emploi
-            self.part_masse_sal  = None # Part de la masse salariale dans le budget de fonctionnement (LC)
 
         else:
             # self.bonheur_moy      = 0
@@ -157,9 +148,7 @@ class RH(object):
             self.exp_RetD_moy     = 0
 
             # Flux
-            self.nbr_arrivees  = 0
             # self.taux_arrivees = 0
-            self.nbr_departs   = 0
             # self.taux_departs  = 0
             # self.taux_rotation = 0
 
@@ -169,12 +158,7 @@ class RH(object):
 
             # Couts
             self.salaire_moy     = 0
-            self.masse_sal_brute = 0
-            self.masse_sal_nette = 0
-            self.cout_emploi     = 0
             self.cout_moy_emploi = 0
-            self.part_masse_sal  = 0
-
 
     def nbr(individus):
         return len(individus)
@@ -263,10 +247,21 @@ class RH(object):
             somme += (ind.salaire * 0.78)
         return(int(somme))
 
+    def coutLocaux(RH):
+        palier = int(RH.nbr_employes/5)+1
+        cout = (palier * 5 + 5) * 23.5
+
+        return(cout)
+
     def coutsRH(couts, lesRH, argent):
-        couts.append(["cout RH", lesRH.cout_emploi])
+        couts.append(["Salaires", lesRH.masse_sal_nette]) # Salaires
+        couts.append(["Charges salariales et patronales", (lesRH.masse_sal_brute*0.22) + (lesRH.masse_sal_brute*0.42)]) # Charges
+        couts.append(["Loyer et charges associées", lesRH.cout_locaux]) # Locaux
+
 
         return(argent - lesRH.cout_emploi)
+
+
 
 ####################################################
 ##################| PROGRAMME |#####################

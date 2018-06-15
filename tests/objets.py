@@ -17,10 +17,6 @@ from outils import *
 
 """ TO DO LIST ✔✘
 
-Population : # de consommateurs
-    updateProduits() (voir comment on maj les produits vendus
-        et a quelle fréquence) (Adrien quand il sera dans la partie vente)
-
 Individu :
     exp:
         Mettre à jours les différentes exp quand les individus participent.
@@ -102,7 +98,7 @@ class Individu(object):
         self.competence_recherche = self.genCompetenceRD() # Efficacité à la recherche
         self.competence_direction = self.genCompetenceRD() # Capacité à diriger une équipe
             # Production
-        self.competence_production = self.genCompetenceProd() #TODO
+        self.competence_production = self.genCompetenceProd()
 
         # Caractéristique RH
         self.statut  = "CDI" # Pour l'instant, un seul statut
@@ -199,25 +195,20 @@ class Individu(object):
         return (int(round(comp_exp + comp_rand, 0)))
 
     def genSalaire(self):
-        """ Retourne un salaire en fonction du role et de l'experience.
+        """ Retourne un salaire en fonction de l'experience.
         """
-
-        # R&D
-        if self.role == "R&D":
-            if self.exp_RetD >= 1768:
-                return(4025)
-            elif self.exp_RetD >= 884:
-                return(3858)
-            elif self.exp_RetD >= 468:
-                return(3483)
-            elif self.exp_RetD >= 312:
-                return(2975)
-            elif self.exp_RetD >= 208:
-                return(2975)
-            else:
-                return(2550)
+        if   max(self.exp_RetD, self.exp_prod)>= 1768:
+            return(4025)
+        elif max(self.exp_RetD, self.exp_prod) >= 884:
+            return(3858)
+        elif max(self.exp_RetD, self.exp_prod) >= 468:
+            return(3483)
+        elif max(self.exp_RetD, self.exp_prod) >= 312:
+            return(2975)
+        elif max(self.exp_RetD, self.exp_prod) >= 208:
+            return(2975)
         else:
-            return(0)
+            return(2550)
 
     def updateExpStartUp(individus):
         """ MàJ le nbr de semaine qu'à passé l'employé dans l'entreprise.
@@ -235,8 +226,6 @@ class Population(object): # de consommateurs
         self.revenu = revenu
         self.nombre = nombre
         self.tps_adoption = [esp, ecart]
-
-        self.produits = [[]] # nbr d'utilisateur qui ont déja acheté par produit
 
     def __repr__(self):
         return "{} - nombre: {} revenu: {}.".format(
@@ -314,7 +303,7 @@ class Operation(object):
 
         self.nom = self.genNom()
 
-        self.consommation = 0  # TODO # Consommation énergétique? -> cout
+        self.consommation = 0  #BONUS # Consommation énergétique? -> cout
         self.duree = 1 # en minutes #TODO # Pour le moment à 1. Peut être
                        # changé plus tard.
 

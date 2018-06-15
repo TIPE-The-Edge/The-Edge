@@ -17,12 +17,6 @@ from world.lecture import *
 
 """ TO DO LIST
 
-Vérifier le fonctionnement global des fonctions de production. Lier
-    l'interface à la fin de la prod. Avec les verifs des machines etc.
-
-Machine :
-    self.operations_realisables (Besoin d'une fonction)
-
 """
 
 """ PROBLEMS
@@ -137,41 +131,20 @@ class Fournisseur(object):
                                     [],             # liste de produits
                                     tps_transport))
 
-        couts.append(["cout materiaux", cout_mat])
-        couts.append(["cout transport", cout_transport])
+        couts.append(["Achats de materiaux", cout_mat])
+        couts.append(["Cout transports", cout_transport])
 
         argent -= (cout_mat+cout_transport)
 
         return(argent)
 
-    def verifCommande(fournisseur, destination, commande, argent):
-        """ Vérifie que le cout de la commande est inferieur à l'argent restant
-        Entrée : le fournisseur (objet)
-                 la destination (objet)
-                 la commande [[mat1, nbr_mat1], [mat2, nbr_mat2]..]
-                 Les fonds disponibles
-        """
-
-        cout_mat       = Fournisseur.coutMateriaux(fournisseur, commande)
-        cout_transport = Fournisseur.coutTransport(fournisseur, destination)
-
-        if argent >= cout_mat + cout_transport:
-            return(True)
-        else:
-            print("pas assez d'argent") #TODO (Dorian, pop-up error)
-            return(False)
-
-    def coutMateriau(fournisseur, materiau): #TODO
+    def coutMateriau(fournisseur, materiau):
         """ Retourne le prix du'un materiau, pour un fournisseur donné.
         """
-        # print(fournisseur)
-        # print(materiau)
-
         liste = [mat for mat in readLineCSV("materiaux.csv","materiaux",materiau,["pays", "cout unitaire"])]
 
         for elt in liste:
             if elt[0] == fournisseur.localisation:
-                # print(elt[1])
                 return float(elt[1])
 
     def coutMateriaux(fournisseur, commande):
@@ -394,6 +367,21 @@ class Machine(object):
 
         return(liste)
 
+    def maxMat(stock, recette):
+        """ Retourne le nombre max de fois que l'on peut faire la recette
+        à partir des ressources du stock.
+        """
+
+        mat_stock = stock.materiaux
+        nombre = mat_stock[0][1] # init
+
+        for mat in recette:
+            for mater in mat_stock:
+                if mat[0] == mater[0]: # Meme nom
+                    nombre = min(nombre, int(mater[1]/mat[1]))
+
+        return(nombre)
+
 class Commande(object): # Commandes faites aux machines
 
     def __init__(self, materiaux, operations, produit):
@@ -439,19 +427,37 @@ class Commande(object): # Commandes faites aux machines
             if mat[0] == self.recette[0][0]:
                 self.prod_restants = mat[1] / self.recette[0][1]
 
-    def updateCommandes(machines, stock):
+    def updateCommandes(machines, individus, stock):
         for mac in machines:
             # Vérifie que la machine a au moins une commande et un utilisateur.
             if len(mac.commandes) > 0 and mac.utilisateur != None:
 
                 Commande.process(mac.commandes, stock, mac.utilisateur)
 
-    def process(commandes, stock, utilisateur):
+            # Enlève les utilisateurs des machines qui n'ont pas de commandes.
+            if len(mac.commandes) == 0 and mac.utilisateur != None:
+                # Reset le role de l'individu
+                for ind in individus:
+                    if ind.id == mac.utilisateur.id:
+                        ind.role = None
+                # Eleve l'utilisateur de la machine
+                mac.utilisateur = None
+
+    def capaciteUtilisateur(utilisateur):
+        """ Renvoie la capacité de travail que peut fournir un utilisateur.
+        """
 
         x = utilisateur.competence_production
 
         # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
         mins = int((300/9)*(x**2) - (300/9)*x + MINS_PAR_SEMAINE) # Polynome du second degré
+
+        return(mins)
+
+    def process(commandes, stock, utilisateur):
+
+        # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
+        mins = capaciteUtilisateur(utilisateur)
 
         while mins > 0 and len(commandes) > 0:
 
@@ -505,6 +511,7 @@ class Transport(object):
         self.arrivee = arrivee # Nom du Stock d'arrivée
 
         self.tps_trajet = tps_trajet # fontion calcul tps trajet
+        self.temps_total = tps_trajet
 
     def __repr__(self):
         return "{} -> {}, {} : {} et {}".format(
@@ -545,7 +552,7 @@ class Stock(object):
         self.nom = "The Edge"
         self.localisation = self.genLocalistation()
 
-        self.capacite  = 0 #TODO
+        self.capacite  = 0 #BONUS
         self.cout      = 0 # Cout par unite #TODO
 
         self.materiaux = [[]]
