@@ -1324,14 +1324,23 @@ def actionPhase(widget, window, screen, projet, choix , *arg) :
     draw_project(widget, window, screen, projet.id, 0)
 
 def status(widget, window, screen, projet, *arg) :
+    # Initialisation du message general à afficher
     msg_general = []
+    # Initialisation de la liste des boutons à créer
     boutons = []
+    # On initialise l'indicateur d'argent de l'utilisateur
+    desh = False
 
     if projet.id < 0 :
-        if projet.attente==True and projet.phase != 5  :
+        if projet.attente==True and projet.phase != 5 :
             msg_general.append("Vous avez amélioré votre produit. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
             msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
-            boutons.append(["Accepter", actionPhase, [projet, True]])
+
+            if window.argent>=50 :
+                boutons.append(["Accepter", actionPhase, [projet, True]])
+            else :
+                desh = True
+
         elif projet.phase == 5 :
             msg_general.append("Ce projet vient d'être achevé. Vous aurez accès à votre nouveau produit au prochain tour.")
         else :
@@ -1349,16 +1358,31 @@ def status(widget, window, screen, projet, *arg) :
         elif projet.phase==2 and projet.attente==True:
             msg_general.append("Vos chercheurs sont près à passer à la phase expérimentale.")
             msg_general.append("Voulez-vous réaliser un premier prototype ? Cela vous coutera : "+str(round(projet.produit.cout, 2))+" euros.")
-            boutons.append(["Accepter", actionPhase, [projet, True]])
+            
+            if window.argent>=round(projet.produit.cout, 2) :
+                boutons.append(["Accepter", actionPhase, [projet, True]])
+            else :
+                desh = True
+
         elif projet.phase==4 :
             if projet.attente==False and projet.essai==False :
                 msg_general.append("Vos chercheurs pensent qu'il serait bénéfique de mettre votre prototype à l'essai, cela permettrait d'accélérer la création du produit final")
                 msg_general.append("Voulez-vous mettre votre prototype à l'essai ? Cela vous coutera : "+str(50)+" euros.")
-                boutons.append(["Accepter", actionPhase, [projet, True]])
+
+                if window.argent>=50 :
+                    boutons.append(["Accepter", actionPhase, [projet, True]])
+                else :
+                    desh=True
+
             elif projet.attente==True:
                 msg_general.append("Votre prototype est en passe de devenir un de vos produits. Il vous faut cependant déposer un brevet pour sécuriser cette nouvelle propriété.")
                 msg_general.append("Voulez-vous déposer un brevet ? Cela vous coutera : "+str(50)+" euros.")
-                boutons.append(["Accepter", actionPhase, [projet, True]])
+
+                if window.argent>=50:
+                    boutons.append(["Accepter", actionPhase, [projet, True]])
+                else:
+                    desh=True
+
             else :
                 msg_general.append("En cours.")
 
@@ -1367,6 +1391,9 @@ def status(widget, window, screen, projet, *arg) :
 
         else :
             msg_general.append("En cours.")
+
+    if desh :
+        msg_general.append("Malheureusement vous n'avez pas assez d'argent.")
 
     return(msg_general, boutons)
 

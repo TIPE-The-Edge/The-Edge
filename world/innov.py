@@ -595,9 +595,6 @@ class Projet(object):
             #| vis à vis du concept.
             Concept.sondage(self.produit)
 
-            # Prix moyen d'un sondage.
-            couts=[self.nom+" | Sondages", 50]
-
             Projet.verifPhase1(self, palier, utilisateur)
 
         elif self.avancement == palier and self.attente==True :
@@ -623,7 +620,7 @@ class Projet(object):
         if utilisateur==True :
 
             # Coût de création du prototype
-            couts=[self.nom+" | Création prototype" , self.produit.cout]
+            couts=[self.nom+" : Création du prototype" , self.produit.cout]
 
             self.attente = False
             # On réinitialise l'avancement
@@ -706,7 +703,7 @@ class Projet(object):
 
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
-            couts = [self.nom+" | Brevet",50]
+            couts = [self.nom+" : Brevet",50]
             # Initialisation de l'utilité
             utilite = Prototype.apprToUti(self.produit)
             # Transformation en produit
@@ -735,7 +732,7 @@ class Projet(object):
         elif utilisateur==True and self.essai == False :
 
             # // Warning : diminuer le capital d'une certaine somme //
-            couts = [self.nom+" | Mise à l'essai", 50]
+            couts = [self.nom+" : Mise à l'essai", 50]
             # On met le prototype à l'essai
             self.essai = True
             # On fait avancer le projet avec le bonus de la mise
@@ -899,7 +896,7 @@ class Ameliore() :
 
         if utilisateur==True :
             # Dépot d'un brevet (Warning : frais supplémentaires)
-            couts = [self.nom+" | Brevet",50]
+            couts = [self.nom+" : Brevet",50]
             # On améliore une caractéristique de notre produit
             self = Ameliore.update(self)
             if self.produit.nbr_ameliorations > 1 :

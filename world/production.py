@@ -64,7 +64,7 @@ def listeMat(stock, produit):
 
     return(liste)
 
-def addMachine(machines, machine)
+def addMachine(machines, machine) :
     """
     FONCTION       : Ajoute une machine à la liste machines 
     ENTREES        : La liste machines et une machine
@@ -72,7 +72,7 @@ def addMachine(machines, machine)
     """  
 
     # On crée une copie de la machine
-    engine = Machine(machine.operations_réalisables)
+    engine = Machine(machine.operations_realisables)
     engine.nom = machine.nom 
     engine.prix = machine.prix
     # On ajoute la machine aux machines de l'entreprise
