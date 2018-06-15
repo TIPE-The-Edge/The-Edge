@@ -109,7 +109,7 @@ def appreciation(ref) :
     elif 75<ref<=90 :
         rep = "enthousiastes"
     else :
-        rep = "tres enthousiaste"
+        rep = "tres enthousiastes"
 
     #>>> Sortie <<<#
     return((rep,ref))
@@ -173,7 +173,6 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations) 
     FONCTION       : Fait progresser tous les projets de la liste de projets.
     ENTREES        : Une liste de projets (Projet/Ameliore list).
     SORTIE         : La liste des projets mise à jour (Projet/Ameliore list).
-    TEST UNITAIRE  : ...
     """
     # Initialisation de la liste des dépenses
     depenses = []
@@ -222,10 +221,9 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations) 
 
 def genNotif(projets, paliers) :
     """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    TEST UNITAIRE  : ...
+    FONCTION       : Génère les notifications de la partie R&D
+    ENTREES        : La liste des projets et la liste des paliers
+    SORTIE         : Une liste des notifications.
     """
     notifications = []
 
@@ -293,7 +291,7 @@ def avance(projets, paliers, employes) :
 
     return(projets)
 
-def completedProject(projets, produits, employes, magasins) :
+def completedProject(projets, produits, employes, magasin) :
     """
     FONCTION       :
     ENTREES        :
@@ -305,7 +303,7 @@ def completedProject(projets, produits, employes, magasins) :
         if proj.phase == 5 :
             if proj.id > 0 :
                 produits.append(proj.produit)
-                magasins.append(Machine(proj.produit.operations))
+                magasin.append(Machine(proj.produit.operations))
             delProject(projets, employes, proj.id)
 
 def genAutoProduit(population, produits, materiaux, operations, magasin) :
@@ -333,8 +331,8 @@ def genAutoProduit(population, produits, materiaux, operations, magasin) :
     for i in range(3):
         projet.avancement = 1
         cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
-
-    # On ajoute le produit à la liste des produits
+    
+    # On ajoute le produit à la liste des produits 
     completedProject(projets, produits, employes, magasin)
 
 
@@ -504,21 +502,20 @@ class Prototype(object):
         Prototype.creaOpera(self, operations)
         Prototype.creaCout(self)
 
-    def appr_to_uti(self) :
+    def apprToUti(self) :
         """
         FONCTION       : Convertie pour chaque population l'appréciation
                          en utilité.
         ENTREES        : Un prototype (Prototype) et une liste de
                          population (Population list)
         SORTIE         : L'utilité associée à ces appréciations
-        REMARQUES      :
-        TEST UNITAIRE  : ("OK"/"...")
+        TEST UNITAIRE  : OK
         """
 
         utilite = []
 
         for app in self.appreciation :
-            val = ((app[0][1])**2)*(4/500)
+            val = ((app[0][1])**2)*(1/125)
             utilite.append([app[1], val])
 
         return(utilite)
@@ -710,7 +707,7 @@ class Projet(object):
             # Dépot d'un brevet (Warning : frais supplémentaires)
             couts = [self.nom+" | Brevet",50]
             # Initialisation de l'utilité
-            utilite = Prototype.appr_to_uti(self.produit)
+            utilite = Prototype.apprToUti(self.produit)
             # Transformation en produit
             self.produit = Produit(produits, utilite, self.produit.materiaux,
                                    self.produit.operations, self.produit.cible)
@@ -957,10 +954,20 @@ class Test(unittest.TestCase) :
         test = Concept.ciblage(test, "Jeunes")
         self.assertEqual(test.cible, reponse)
 
+    def test_apprToUti(self) :
+
+        #>>> Test 1 <<<#
+
+        reponse = [["Jeunes",80],["Actifs",80], ["Seniors",80]]
+        appreciation = [ [["tres enthousiastes", 100], "Jeunes"], [["tres enthousiastes", 100], "Actifs"], [["tres enthousiastes", 100], "Seniors"]]
+        test = Prototype(appreciation, "")
+        test = Prototype.apprToUti(test)
+        self.assertEqual(test, reponse)
+
 
 ####################################
 ###########| PROGRAMME |############
 ####################################
 
 if __name__=="__main__" :
-    pass
+    unittest.main()

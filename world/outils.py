@@ -69,7 +69,6 @@ def aleaLoiNormale(esperance, ecart_type) :
     #>>> Sortie <<<#
     return(valeur)
 
-
 # Fonction Compétence "Recherche"
 def compRecherche(individus) :
     """
@@ -112,7 +111,6 @@ def progres(individus, nom_projet) :
 
     return(compRecherche(chercheurs)+(compGroupe(chercheurs)/100)*compRecherche(chercheurs))
 
-
 def readNameFile(fichier):
     """ Lis un fichier .txt et retourne la liste de ses éléments.
     Entrée : le nom du fichier
@@ -128,7 +126,6 @@ def readNameFile(fichier):
 
     return liste
 
-
 def enhancedSort(liste, comparateur, ordre):
     """ Trie une liste d'objets selon le comparateur.
     Entree : La liste
@@ -139,14 +136,12 @@ def enhancedSort(liste, comparateur, ordre):
 
     return sorted(liste, key=operator.attrgetter(comparateur), reverse=ordre)
 
-
 def semaine_to_annee(semaines):
     """ converti un nombre de semaines en années.
     Entree : Nbr de semaines
     Sortie : Nbr d'années
     """
     return(round(semaines/52, 1)) # Arrondi à 1 chiffre après la virgule
-
 
 def ajout(liste_depart, liste_arrivee):
     """ Ajoute les valeur d'une liste à la 2e, au bon endroit.
@@ -158,7 +153,6 @@ def ajout(liste_depart, liste_arrivee):
         for couple_arrivee in liste_arrivee:
             if couple_depart[0] == couple_arrivee[0]:
                 couple_arrivee[1] += couple_depart[1]
-
 
 def retire(liste_depart, liste_arrivee):
     """ Retire les valeur d'une liste à la 2e, au bon endroit.
@@ -211,7 +205,6 @@ def existProjet(projets, nom) :
             return(True)
 
     return(False)
-
 
 
 def nomPhase(phase, identifiant) :
