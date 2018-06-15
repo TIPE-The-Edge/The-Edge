@@ -451,12 +451,12 @@ class Commande(object): # Commandes faites aux machines
             if mat[0] == self.recette[0][0]:
                 self.prod_restants = mat[1] / self.recette[0][1]
 
-    def updateCommandes(machines, individus, stock):
+    def updateCommandes(machines, individus, stock, notifications):
         for mac in machines:
             # Vérifie que la machine a au moins une commande et un utilisateur.
             if len(mac.commandes) > 0 and mac.utilisateur != None:
 
-                Commande.process(mac.commandes, stock, mac.utilisateur)
+                Commande.process(mac.commandes, stock, mac.utilisateur, notifications)
 
             # Enlève les utilisateurs des machines qui n'ont pas de commandes.
             if len(mac.commandes) == 0 and mac.utilisateur != None:
@@ -471,14 +471,14 @@ class Commande(object): # Commandes faites aux machines
         """ Renvoie la capacité de travail que peut fournir un utilisateur.
         """
 
-        x = utilisateur.competence_production
+        x = Commande.utilisateur.competence_production
 
         # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
         mins = int((300/9)*(x**2) - (300/9)*x + MINS_PAR_SEMAINE) # Polynome du second degré
 
         return(mins)
 
-    def process(commandes, stock, utilisateur):
+    def process(commandes, stock, utilisateur, notifications):
 
         # mins est l'équivalent en minute de travail que peut fournir l'utilisateur
         mins = capaciteUtilisateur(utilisateur)
@@ -486,6 +486,8 @@ class Commande(object): # Commandes faites aux machines
         while mins > 0 and len(commandes) > 0:
 
             if commandes[0].tps_restant == 0: # Supprime les commandes terminées
+
+                notifications.append([1, "Production : commande terminée", "La production de " + str(commande[0].prod_totaux) + "x " + commande[0].produit.nom + " est terminée"])
                 commandes.remove(commandes[0])
 
             if len(commandes) > 0:
