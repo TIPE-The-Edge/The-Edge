@@ -217,7 +217,14 @@ class Machine(object):
     # Liste des noms existants
     noms_dispo = readNameFile("./world/Name_Files/machine.txt")
 
+    # Initialisation des identifiants
+    id = 0
+
     def __init__(self, liste_operations):
+
+        # Identifiant pour le repérer rapidement dans la liste des individus
+        self.id = Machine.id
+        Machine.id += 1
 
         # Infos basiques
         self.nom = self.genNom()
@@ -230,8 +237,8 @@ class Machine(object):
         self.materiaux = [[]]
 
     def __repr__(self):
-        return "\n {} --> {} : \n{}".format(
-                self.utilisateur, self.nom, self.operations_realisables)
+        return "\n {} --> {} {} : \n{}".format(
+                self.utilisateur, self.id, self.nom, self.operations_realisables)
 
     def genNom(self):
         nom = random.choice(Machine.noms_dispo)
@@ -241,26 +248,26 @@ class Machine(object):
 
         return nom
 
-    def verifOperations(machines, machine, produit):
+    def verifOperations(machines, id_machine, produit):
         """ Vérifie que les opérations nécessaires sont bien dans la liste
         des opérations réalisables par la machine.
 
         INUTILE?
         """
         for mac in machines:
-            if mac.nom == machine: # La machine qui nous interresse.
+            if mac.id == id_machine: # La machine qui nous interresse.
 
                 for ope in produit.operations:
                     if ope[0] not in mac.operations_realisables:
                         return(False)
                 return(True)
 
-    def verifUtilisateur(machines, machine):
+    def verifUtilisateur(machines, id_machine):
         """ Vérifie si une machine a un utilisateur.
-        Entrée : le nom de la machine
+        Entrée : l'id de la machine
         """
         for mac in machines:
-            if mac.nom == machine: # La machine qui nous interresse.
+            if mac.id == id_machine: # La machine qui nous interresse.
 
                 if mac.utilisateur == None:
                     return(False)
@@ -336,16 +343,16 @@ class Machine(object):
 
         return(new_materiaux)
 
-    def genCommande(machines, operations, liste_materiaux, machine, stock, produit):
+    def genCommande(machines, operations, liste_materiaux, id_machine, stock, produit):
         """
         Entrée : la liste des materiaux utilisés et leur nombre
-                 le nom de la machine utilisée
+                 l'id de la machine utilisée
                  le stock contenant les materiaux (objet)
                  le produit à créer (objet)
         """
         # Créé la commande.
         for mac in machines:
-            if mac.nom == machine:
+            if mac.id == id_machine:
                 mac.commandes.append(Commande(liste_materiaux, operations, produit))
 
         # Retire les mat du stock.

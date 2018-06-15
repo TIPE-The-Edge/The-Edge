@@ -61,6 +61,10 @@ if __name__ == "__main__" :
     # for i in range(0):
     #     produits.append(Produit(produits, None, None, None, None))
 
+    # individus
+    for i in range(3):
+        individus.append(Individu())
+
     # opérations
     for i in range(0 + preset_prod):
         operations.append(Operation())
@@ -96,13 +100,7 @@ if __name__ == "__main__" :
         # Tests sur le fonctionnement des Commandes et Machines.
             # Machines
 
-    ind = Individu()
-    ind.competence_production = 10
-    machines[0].utilisateur = ind
 
-    ind = Individu()
-    ind.competence_production = 1
-    machines[1].utilisateur = ind
 
 
     ######## VARIABLES DE JEU ########
@@ -120,7 +118,7 @@ if __name__ == "__main__" :
     initMateriaux(stocks, materiaux)
 
     # Pour les tests
-    argent = 100000 #TODO
+    argent = 40000
     # stocks[0].materiaux[0][1] = 20000
     # stocks[0].materiaux[1][1] = 20000
     ajout([[materiaux[0].nom, 100000], [materiaux[1].nom, 100000], [materiaux[2].nom, 100000]], stocks[0].materiaux)
@@ -135,7 +133,7 @@ if __name__ == "__main__" :
         transports = Transport.arrivees(transports, stocks)
 
         # Commandes
-        Commande.updateCommandes(machines, stocks[0]) # test commandes
+        Commande.updateCommandes(machines, individus, stocks[0])
 
 
         ######## AFFICHAGE ########
@@ -218,10 +216,12 @@ if __name__ == "__main__" :
                         if fou.nom == four:
                             four = fou
 
-                    cout_u     = Fournisseur.coutMateriau(four, mat)
+                    cout_u      = Fournisseur.coutMateriau(four, mat)
+
+                    max_produit = int(argent/cout_u)
                     print("cout/unité de " + mat + " = " + str(cout_u))
 
-                    nbr = int(input("combien? "))
+                    nbr = int(input("combien? (0-" + str(max_produit) + ")"))
 
                     commande = [[mat, nbr]]
 
@@ -247,12 +247,16 @@ if __name__ == "__main__" :
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
 
-                    if ok_commande == "ok" and Fournisseur.verifCommande(four, desti, commande, argent):
+                    bool = (argent >= cout_tot)
+                    if ok_commande == "ok" and bool:
                         argent = Fournisseur.approvisionnement(transports, couts, four, desti, commande, argent)
                         four     = ""
                         commande = ""
                         mat      = ""
                         menu     = 0
+
+                    elif not bool:
+                        print("pas assez d'argent") #TODO (Dorian, pop-up error)
 
                     else:
                         menu = 1
@@ -289,15 +293,6 @@ if __name__ == "__main__" :
                         if prods.nom == prod:
                             prod = prods
 
-                    os.system('clear') # works on Linux/Mac
-
-                    # Recherche des machines adéquates
-                    liste_machines = Machine.listeMach(machines, prod)
-                    print("Machines dispos : ")
-                    print(liste_machines)
-                    print()
-
-                    mach = input("machine? ")
 
                     os.system('clear') # works on Linux/Mac
 
@@ -312,7 +307,10 @@ if __name__ == "__main__" :
                     print(prod.materiaux)
                     print()
 
-                    nbr_prod = int(input("nbr de " + prod.nom + "? "))
+                    # Nombre de max que tu peux produire
+                    max_prod = Machine.maxMat(stocks[0], prod.materiaux)
+
+                    nbr_prod = int(input("nbr de " + prod.nom + "? (0-" + str(max_prod) + ")"))
 
                     # La liste des nombres de materiaux respectifs pour
                     # la quantité de produits voulue.
@@ -330,18 +328,50 @@ if __name__ == "__main__" :
                     prod_totaux = prodTotaux(prod, mats_ajustes)
                     print(str(prod_totaux) + " " + str(prod.nom) + " au total")
 
+
+
+                    os.system('clear') # works on Linux/Mac
+
+                    # Recherche des machines adéquates
+                    liste_machines = Machine.listeMach(machines, prod)
+                    print("Machines dispos : ")
+                    print(liste_machines)
+                    print()
+
+                    id_mach = int(input("id machine? "))
+
+
+
+                    if not Machine.verifUtilisateur(machines, id_mach):
+
+                        print("Personnel disponible")
+                        for ind in individus:
+                            if ind.role == None:
+                                print(ind)
+
+                        id_ind = int(input("la machine n'a pas d'utilisateur, veuillez en choisir un : "))
+
+                        for ind in individus:
+                            if ind.id == id_ind:
+
+                                # Change le role de l'utilisateur
+                                ind.role = "prod"
+
+                                # L'ajoute à la bonne machine
+                                for mac in machines:
+                                    if mac.id == id_mach:
+                                        mac.utilisateur = ind
+                                        obj_mach = mac
+
+                    print()
+                    print("temps de prod : " + str(round(Commande(mats_ajustes, operations, prod).tps_total / Commande.capaciteUtilisateur(obj_mach.utilisateur), 1)) + " semaines")
+
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
 
-                    if ok_commande == "ok" and Machine.verifUtilisateur(machines, mach):
-                        Machine.genCommande(machines, operations, mats_ajustes, mach, stocks[0], prod)
+                    if ok_commande == "ok" and Machine.verifUtilisateur(machines, id_mach):
+                        Machine.genCommande(machines, operations, mats_ajustes, id_mach, stocks[0], prod)
                         menu = 0
-
-                    elif not Machine.verifUtilisateur(machines, mach):
-                        # Affichage console pour les tests, sinon sur interface.
-                        print("la machine n'a pas d'utilisateur") #TODO Dorian
-                        input()
-                        menu = 1
 
                     else:
                         menu = 1

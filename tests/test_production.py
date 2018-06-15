@@ -4,7 +4,7 @@
 ########################
 # Python 3.4.2
 # Author: Maxence BLANC
-# Last modified : 12/2017
+# Last modified : 06/2018
 # Titre du Fichier : programme test pour la partie production
 ########################
 
@@ -338,9 +338,11 @@ if __name__ == "__main__" :
                     print(liste_machines)
                     print()
 
-                    mach = input("machine? ")
+                    id_mach = int(input("id machine? "))
 
-                    if not Machine.verifUtilisateur(machines, mach):
+
+
+                    if not Machine.verifUtilisateur(machines, id_mach):
 
                         print("Personnel disponible")
                         for ind in individus:
@@ -357,7 +359,7 @@ if __name__ == "__main__" :
 
                                 # L'ajoute à la bonne machine
                                 for mac in machines:
-                                    if mac.nom == mach:
+                                    if mac.id == id_mach:
                                         mac.utilisateur = ind
                                         obj_mach = mac
 
@@ -367,8 +369,8 @@ if __name__ == "__main__" :
                     ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
                                                   # tant qu'un champs est vide)
 
-                    if ok_commande == "ok" and Machine.verifUtilisateur(machines, mach):
-                        Machine.genCommande(machines, operations, mats_ajustes, mach, stocks[0], prod)
+                    if ok_commande == "ok" and Machine.verifUtilisateur(machines, id_mach):
+                        Machine.genCommande(machines, operations, mats_ajustes, id_mach, stocks[0], prod)
                         menu = 0
 
                     else:
