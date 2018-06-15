@@ -529,7 +529,7 @@ class Transport(object):
         for trans in transports:
             trans.tps_trajet -= 1
 
-    def arrivees(transports, stocks):
+    def arrivees(transports, stocks, notifications):
         """ Si un transport est terminé, ses materiaux et produits sont
         transférés dans le stock de destination. Et la liste des transports
         restants est retournée.
@@ -544,6 +544,25 @@ class Transport(object):
                     if stock.nom == trans.arrivee:
                         ajout(trans.materiaux, stock.materiaux)
                         ajout(trans.produits, stock.produits)
+
+                texte = ""
+
+                mats = trans.materiaux
+                for i in range(len(mats)):
+                    texte += mats[i][1] + "x " + mats[i][0]
+                    if i+1 != len(mats):
+                        texte += ", "
+
+                if len(mat_s) > 0:
+                    texte += " et "
+
+                prods = trans.produits
+                for i in range(len(prods)):
+                    texte += prods[i][1] + "x " + prods[i][0]
+                    if i+1 != len(prods):
+                        texte += ", "
+
+                notifications.append([1,"Production : transport terminée", "Le transport de " + texte + " entre " + trans.depart + " et " + trans.arrivee + " est bien arrivé."])
 
             else:
                 copy.append(trans)
