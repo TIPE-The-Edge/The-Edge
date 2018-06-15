@@ -19,6 +19,7 @@ class Save():
         self.candidats    = []
         self.departs      = []
         self.couts        = []
+        self.magasin      = []
 
         self.depenses = []
         self.projets = []

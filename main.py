@@ -381,6 +381,15 @@ class Window():
             }
         self.argent = 40000
 
+        initProduits(self.stocks, self.produits)
+
+        initMateriaux(self.machines, self.materiaux)
+        initMateriaux(self.stocks, self.materiaux)
+
+        # TEMPORAIRE
+
+        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+
     def set_var(self):
         self.time_used = 0
         self.time_start = 0
@@ -388,7 +397,7 @@ class Window():
 
         self.individus    = []
         self.produits     = []
-        self.magasins     = []
+        self.magasin      = []
         self.operations   = []
         self.materiaux    = []
         self.formations   = []

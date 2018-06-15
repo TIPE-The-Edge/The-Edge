@@ -308,7 +308,7 @@ def completedProject(projets, produits, employes, magasins) :
                 magasins.append(Machine(proj.produit.operations))
             delProject(projets, employes, proj.id)
 
-def genAutoProduit(population, produits, materiaux, operations) :
+def genAutoProduit(population, produits, materiaux, operations, magasin) :
     """
     FONCTION       : Créé un produit automatiquement
     ENTREES        : La population cible (string), la liste des produits,
@@ -316,8 +316,8 @@ def genAutoProduit(population, produits, materiaux, operations) :
     SORTIE         : La liste des produits avec un produit en plus
     """
     #>>> Initialisation des variables locales <<<#
-    
-    # On initialise une liste vide d'employés 
+
+    # On initialise une liste vide d'employés
     employes = []
     # On initialise la liste des paliers
     paliers=[1,1,1,1]
@@ -333,9 +333,9 @@ def genAutoProduit(population, produits, materiaux, operations) :
     for i in range(3):
         projet.avancement = 1
         cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
-    
-    # On ajoute le produit à la liste des produits 
-    completedProject(projets, produits, employes)
+
+    # On ajoute le produit à la liste des produits
+    completedProject(projets, produits, employes, magasin)
 
 
 ####################################

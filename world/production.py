@@ -236,6 +236,8 @@ class Machine(object):
 
         self.materiaux = [[]]
 
+        self.prix = 0 # TODO
+
     def __repr__(self):
         return "\n {} --> {} {} : \n{}".format(
                 self.utilisateur, self.id, self.nom, self.operations_realisables)
