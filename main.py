@@ -43,6 +43,7 @@ from world.outils import *
 from world.innov import *
 from world.contracterPret import *
 from world.production import *
+from world.majFinance import *
 
 from lib.save import *
 
@@ -372,6 +373,7 @@ class Window():
         self.temps = datetime.datetime(2018,1,1)
         self.tempsDebut = datetime.datetime(2018, 1, 1)  # Temps en semaines
         self.month = 1
+
         self.donneesF = {
             ### BILAN ###
             "amenagement locaux" : 0,
@@ -418,16 +420,8 @@ class Window():
             "resultat exercice compte": 0
             }
         self.argent = 40000
-        self.TVA = 0
-
-        initProduits(self.stocks, self.produits)
-
-        initMateriaux(self.machines, self.materiaux)
-        initMateriaux(self.stocks, self.materiaux)
-
-        # TEMPORAIRE
-
-        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+        self.capital = 40000
+        self.tva = 0
         self.bilan = {
             ### BILAN ###
             "amenagement locaux": 0,
@@ -482,6 +476,16 @@ class Window():
         self.exBilan = {}
         self.exCompteResultat = {}
 
+        initProduits(self.stocks, self.produits)
+
+        initMateriaux(self.machines, self.materiaux)
+        initMateriaux(self.stocks, self.materiaux)
+
+        # TEMPORAIRE
+
+        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+
+
         print(self.sha)
         print(self.user_name)
 
@@ -509,14 +513,20 @@ class Window():
         self.projets = []
         self.produits = []
 
+        self.tempsDebut = 0
         self.donneesF = {}
+        self.bilan = {}
+        self.compteResultat = {}
+        self.exBilan = {}
+        self.exCompteResultat = {}
         self.listePret = []
-        self.TVA = 0
+        self.tva = 0
 
         self.temps = None
         self.lesRH = None
         self.month = 1
         self.argent = 0
+        self.capital = 40000
 
         self.sha = ''
         self.user_name = ''

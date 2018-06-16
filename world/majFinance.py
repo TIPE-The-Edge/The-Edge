@@ -8,7 +8,7 @@ def coutPret(listePret):
     total = 0
     for pret in listePret:
         total += pret.parMois
-    
+
     return total
 
 
@@ -20,7 +20,7 @@ def listeDepenseFinance(listeDepense,listePret):
     if cout == 0:
         return listeDepense
     else:
-        return listeDepense.append(('Remboursement des prêts'),cout)
+        return listeDepense.append(['Remboursement des prêts',cout])
 
 
 """
@@ -31,12 +31,13 @@ def repartitionDepenses(listeDepense, listePret):
     listeDepense = listeDepenseFinance(listeDepense,listePret)
     depensesOrdo = [[],[]]
 
-    for depense in listeDepense:
-        if 'Chiffre' in depense[0]:
-            depensesOrdo[0].append(depense)
-        else:
-            depensesOrdo[1].append(depense)
-    
+    if listeDepense != None:
+        for depense in listeDepense:
+            if 'Chiffre' in depense[0]:
+                depensesOrdo[0].append(depense)
+            else:
+                depensesOrdo[1].append(depense)
+
     return depensesOrdo
 
 def resetValeur(window):
@@ -77,7 +78,7 @@ def majMois(window):
     window.donneesF["interet et charges"] = cout
     window.donneesF["total resultat financier"] = cout
     window.argent -= cout
-    
+
     #Maj listePret
     for i in range(len(window.listePret)):
         if window.temps > window.listePret[i].dateFin:
@@ -162,9 +163,9 @@ def majMois(window):
 
     donneesF["report à nouveau"] += donneesF["resultat exercice"][0]
     resetValeur(window)
-    
 
-    
+
+
 
 #listeDepense = [('chiffreAffaire',10),('coutRH',50)]
 #print(repartitionDepenses(listeDepense))
@@ -172,7 +173,7 @@ def majMois(window):
 #Fais les modifications nécessaires des données finances de fin de moi, afin de préparer le bilan et le compte de résultat
 def majBilanCompte(window):
     donneesF = window.donneesF
-    
+
     if donneesF['amenagement locaux'] == 0:
         donneesF['amenagement locaux'] = 500
         window.argent -= 500
@@ -180,11 +181,11 @@ def majBilanCompte(window):
 
     ###COMPTE DE RESULTAT###
     donneesF['total produits exploitation'] = donneesF['chiffre affaire'][0] + donneesF['production stockee']
-    
-    donneesF["dettes fiscales"] = window.TVA
+
+    donneesF["dettes fiscales"] = window.tva
     donneesF['dotations amortissements'] = 0
     donneesF['total charges exploitation'] = 0
-    
+
     donneesF['resultat exercice compte'] = donneesF['total produits exploitation'] + \
         donneesF['total charges exploitation'] + ["total resultat financier"]
 
@@ -192,7 +193,7 @@ def majBilanCompte(window):
         impotBenefice = donneesF['resultat exercice compte'] * 15/100
         donneesF['resultat exercice compte'] -= impotBenefice
         donneesF['impots'] += impotBenefice
-    
+
 
     ###BILAN###
 
@@ -217,7 +218,7 @@ def majBilanCompte(window):
         else:
             reserveLegal += dotation
             resultat -= dotation
-        
+
         donneesF['reserve legal'] = reserveLegal
 
     donneesF['resultat exercice'][0] = resultat
@@ -225,11 +226,11 @@ def majBilanCompte(window):
     donneesF['total capitaux propres'] = donneesF['capital'] + \
         donneesF['reserve legal'] + donneesF['report à nouveau'] + \
         donneesF['resultat exercice'][0]
-    
+
     totalDette = 0
     for pret in window.listePret:
         totalDette += pret.montantPret
-    
+
     donneesF['emprunts'] = totalDette
     donneesF['dettes sociales'] = donneesF['charges sociales']
     donneesF['total dettes'] = donneesF['emprunts'] + \
@@ -249,7 +250,7 @@ def majDonneesF(window,listeDepense):
     for depense in listeDepense:
         if 'Chiffre' in depense[0]:
             donneesF['chiffre affaire'] += depense[1]
-        
+
         elif depense[0] == 'Salaires':
             donneesF['salaires'] = depense[1]
 
@@ -261,7 +262,7 @@ def majDonneesF(window,listeDepense):
 
         elif depense[0] == 'Achats des matériaux':
             donneesF['achats matieres premieres'] += depense[1]
-        
+
         elif depense[0] == 'Achat machine':
             donneesF['machines'].append([depense[1], depense[1]])
 
@@ -276,9 +277,9 @@ def majDonneesF(window,listeDepense):
 
 
 def payerTaxe(window):
-    window.donneesF['impots'] += window.TVA
-    window.argent -= window.TVA
-    window.TVA = 0
+    window.donneesF['impots'] += window.tva
+    window.argent -= window.tva
+    window.tva = 0
 
 
 #A appeler chaque semaine
@@ -299,4 +300,3 @@ listeDepense = [
     ('Achat machine',0),
     ('Achats des matériaux',0),
     ]
-

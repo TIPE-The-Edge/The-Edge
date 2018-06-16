@@ -30,8 +30,14 @@ class Save():
         self.month = 1
         self.argent = 0
 
+        self.tempsDebut = 0
         self.donneesF = {}
+        self.bilan = {}
+        self.compteResultat = {}
+        self.exBilan = {}
+        self.exCompteResultat = {}
         self.listePret = []
+        self.tva = 0
 
         self.sha = ''
         self.user_name = ''

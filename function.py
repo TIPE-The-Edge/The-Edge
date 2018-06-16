@@ -40,6 +40,9 @@ from world.outils import *
 from world.innov import *
 from world.contracterPret import *
 from world.production import *
+from world.majFinance import *
+from world.Pret import *
+from world.gameOver import *
 
 from lib.save import *
 
@@ -3082,23 +3085,56 @@ def draw_finance(widget, window, screen, i, *arg):
 
         if i == 0:
             button_resume_pret = create_label("     Résumé", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0])
+
+            content_list = repartitionDepenses(window.depenses, window.listePret)
+
+            content = []
+
+            content.append(create_label('Revenus', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            for element in content_list[0]:
+                content.append(create_label(element[0] + ' : ' + element[1] + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            content.append(create_label('Dépenses', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            for element in content_list[1]:
+                content.append(create_label(element[0] + ' : ' + element[1] + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+
+            main_frame = Frame(0, 0, content, None, [])
+            main_frame.set_direction('vertical')
+            main_frame.set_items_pos('auto')
+            main_frame.resize(910, 'auto')
+            main_frame.set_padding(50,0,50,0)
+            main_frame.set_marge_items(30)
+            main_frame.set_bg_color((236, 240, 241))
+            main_frame.make_pos()
+
+            item_list = Item_list([main_frame], 330, 40, 1260, 40, 20, 680, 'salut')
+            item_list.bg_color = (236, 240, 241)
+            items_tmp.append(item_list)
         elif i == 0.1:
             button_lst_pret = create_label("     Liste des prêts", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.1])
 
             prets = []
 
-            for pret in range(0,5):
+            for pret in window.listePret:
                 pret_info = []
 
-                pret_info.append(create_label('Nom du pret', 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+                # pret_info.append(create_label('Nom du pret', 'font/colvetica/colvetica.ttf', 50, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
                 info1, info2 = [], []
-                info1.append(['Capital emprunté', '1'])
-                info1.append(['Total', '1'])
-                info1.append(['Début', '1'])
-                info2.append(['Intérêt', '1'])
-                info2.append(['Mensualité', '1'])
-                info2.append(['Fin', '1'])
+                info1.append(['Capital emprunté', str(pret.capital)+'€'])
+                info1.append(['Total', str(pret.montantPret)+'€'])
+                info1.append(['Début', str(pret.dateDebut.strftime('%d-%m-%Y'))])
+                info2.append(['Intérêt', str(pret.tauxInteret)+'%'])
+                info2.append(['Mensualité', str(pret.parMois)+'€'])
+                info2.append(['Fin', str(pret.dateFin.strftime('%d-%m-%Y'))])
 
                 infos1 = [info1]
                 infos2 = [info2]
@@ -3141,9 +3177,13 @@ def draw_finance(widget, window, screen, i, *arg):
                 label_avancement.set_items_pos('auto')
                 label_avancement.make_pos()
 
-                pourcentage = str(int(50*100 / 100))
+                duree = (pret.dateFin - pret.dateDebut)/7
+                ecoule = (window.temps - pret.dateDebut)/7
+                value = ecoule
+                value_max = duree
+                pourcentage = str(int(value*100 / value_max))
                 label_pourcentage = create_label(pourcentage+'%', 'calibri', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-                progress_bar = Progress_bar(0, 0, 600, 30, None, [], 50, 100, (46, 204, 113), (255, 255, 255))
+                progress_bar = Progress_bar(0, 0, 600, 30, None, [], value, value_max, (46, 204, 113), (255, 255, 255))
 
                 frame_progress_bar = Frame(0, 0, [label_pourcentage, progress_bar], None, [])
                 frame_progress_bar.set_direction('horizontal')
@@ -3182,7 +3222,11 @@ def draw_finance(widget, window, screen, i, *arg):
         elif i == 0.2:
             button_ask_pret = create_label("     Contracter un prêt", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.2])
 
-            variationInteret = variationInteretTotal(window.donneesF)
+
+            if int(((window.temps - datetime.datetime(2018,1,1)).days)/7) < 4:
+                variationInteret = 0
+            else:
+                variationInteret = variationInteretTotal(window.donneesF)
 
             #Texte à trous
             if variationInteret < (-2):
@@ -3337,7 +3381,7 @@ def draw_get_pret(widget, window, screen, type_pret, taux_interet, duree_entry, 
     frame_duree.set_bg_color((236, 240, 241))
     frame_duree.make_pos()
 
-    montant_max = montantPret(dureePretMois(type_pret.lower(), int(duree_entry)))
+    montant_max = montantPret(dureePretMois(type_pret.lower(), int(duree_entry)),window)
 
     label_montant = create_label('Montant du prêt : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
     label_scale_montant = create_label('compris entre 0 et '+ str(montant_max)+ ' €', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
@@ -3408,7 +3452,7 @@ def draw_get_pret(widget, window, screen, type_pret, taux_interet, duree_entry, 
         frame_tmp.make_pos()
         frame_labels1.append(frame_tmp)
 
-    button_ok = create_button("Ok", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, create_pret, [montant_entry, taux_interet, interet, total, totalMois, assurance, assuranceMois, dureePretMois(type_pret, int(duree_entry)), lst_interet[0]])
+    button_ok = create_button("Ok", 'font/colvetica/colvetica.ttf', 40, (255, 255, 255), (230, 126, 34), 0, 0, 400, 60, create_pret, [[montant_entry, taux_interet, interet, total, totalMois, assurance, assuranceMois, dureePretMois(type_pret, int(duree_entry)), type_pret]])
 
     main_frame = Frame(0, 0, frame_labels + [frame_duree, frame_montant, generate_button, frame_bilan] + frame_labels1 + [button_ok], None, [])
     main_frame.set_direction('vertical')
@@ -3435,28 +3479,28 @@ def get_pret(widget, window, screen, type_pret, taux_interet, *arg):
     if entry['duree'] == '' or entry['montant'] == '':
         draw_alert(widget, window, screen, "Erreur", "Certains champs sont invalides", clear_overbody, [])
     else:
-        montant_max = montantPret(dureePretMois(type_pret.lower() ,int(entry['duree'])))
+        montant_max = montantPret(dureePretMois(type_pret.lower() ,int(entry['duree'])),window)
         if duree[0] <= int(entry['duree']) <= duree[1] and 0 <= int(entry['montant']) <= montant_max:
             draw_get_pret(widget, window, screen, type_pret, taux_interet, entry['duree'], entry['montant'])
         else:
             draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
 def create_pret(widget, window, screen, donnees, *arg):
-    donnees = {
-        'capital': donnees[0]
-        'taux interet': donnees[1]
-        'interet': donnees[2]
-        'montantPret': donnees[3]
-        'montantMois': donnees[4]
-        'assurance': donnees[5]
-        'assuranceMois': donnees[6]
-        'duree': donnees[7]
-        'type': donnees[8]
+    data = {
+        'capital': donnees[0],
+        'taux interet': donnees[1],
+        'interet': donnees[2],
+        'montantPret': donnees[3],
+        'montantMois': donnees[4],
+        'assurance': donnees[5],
+        'assuranceMois': donnees[6],
+        'duree': donnees[7],
+        'type': donnees[8],
     }
-    window.listePret.append(Pret(window.temps,donnees))
+    window.listePret.append(Pret(window.temps,data))
     draw_finance(widget, window, screen, 0.1, *arg)
-     draw_alert(widget, window, screen, "Bravo! ", "Votre prêt a bien été contracté.", clear_overbody, [])
-    
+    draw_alert(widget, window, screen, "Bravo! ", "Votre prêt a bien été contracté.", clear_overbody, [])
+
 
 
 '''

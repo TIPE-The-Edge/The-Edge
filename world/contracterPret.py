@@ -32,7 +32,10 @@ def evolutionChiffreAff(chiffreAff,chiffreAffM2,chiffreAffM3):
         chiffreAffM3 = chiffreAff
 
     moyenne = (chiffreAffM2 + chiffreAffM3)/2
-    croissance = ((chiffreAff - moyenne)/moyenne)*100
+    if moyenne != 0:
+        croissance = ((chiffreAff - moyenne)/moyenne)*100
+    else:
+        croissance = 0
     return croissance
 
 def ptChiffreAff(evChiffreAff):
@@ -59,7 +62,10 @@ def evolutionResultatEx(resultatExercice,resultatExerciceM2,resultatExerciceM3):
         resultatExerciceM3 = resultatExercice
 
     moyenne = (resultatExerciceM2 + resultatExerciceM3)/2
-    croissance = ((resultatExercice - moyenne)/moyenne)*100
+    if moyenne != 0:
+        croissance = ((resultatExercice - moyenne)/moyenne)*100
+    else:
+        croissance = 0
     return croissance
 
 def ptResultat(evResultatExercice):
@@ -144,6 +150,7 @@ def affichageInteret():
                                   la situation de l'entreprise
     Sortie : Le texte à afficher
     """
+
     if window.listePret == []:
         variationInteret = 0
     else:
@@ -195,16 +202,16 @@ def dureePretMois(typePret,duree):
         return (duree*12)
 
 #On determine le montant maximal du pret en fonction de la durée du pret
-def montantPret(duree):
+def montantPret(duree,window):
     #On récupère les données finance
 
-    montantAnnee = round((window.donneesF['capital'] + window.donneesF['report à nouveau'])/10,2)
+    montantAnnee = round((window.capital + window.donneesF['report à nouveau'])/10,2)
     montant = round(montantAnnee*(duree/12),2)
 
     return montant
 
 # A appeler après avoir choisi entre pr^t à court/moyen/long terme
-def affichageTypePret(typePret,tauxInteret):
+def affichageTypePret(typePret,tauxInteret,window):
     """
     Entrée : typePret: en fonction où click l'utilisateur à la page précédente
              tauxInteret: à récupérer de la page précédente
@@ -222,7 +229,7 @@ def affichageTypePret(typePret,tauxInteret):
     duree = dureePretMois(typePret,int(input("Durée du prêt: (compris entre "+debutFin[0]+" et "+debutFin[1]+")")))
 
     #On determine le montant maximal du pret en fonction de la durée du pret
-    montantMax = montantPret(duree)
+    montantMax = montantPret(duree,window)
 
     montant = input("Montant du prêt: (compris entre 1€ et "+str(montantMax)+"€)")
 
@@ -252,7 +259,7 @@ Fonction qui vérifie la disponibilité des prêts, à chaque fois que l'on souh
 """
 def disponibilitePret(listePret, temps):
     """
-    listePret --> liste de pret déjà effectués, disponible dans window 
+    listePret --> liste de pret déjà effectués, disponible dans window
     pretCourt/moyen/long[0] --> date de disponibilité du pret
     pretCourt/moyen/long[1] --> disponibilité du pret
     """
@@ -281,11 +288,11 @@ Fonction qui vérifie si l'utlisateur a le droit de contracter un pret
 def droitAuPret(variationInteretTotal):
     if variationInteretTotal > 2:
         print('La situation de votre entreprise prouve que vous n\'êtes pas digne de confiance. Nous cessons de vous proposer des prêts. Bonne continuation. Votre Banque.')
-        return False 
+        return False
     else:
         return True
 
-    
+
 
 ####################################################
 ################| TESTS UNITAIRES |#################
