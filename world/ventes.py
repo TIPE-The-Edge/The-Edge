@@ -55,7 +55,6 @@ FAIRE LES COMMENTAIRES DES FONCTIONS
 
 #>>> Création des différentes populations de consommateurs
 
-
 def budget(revenus, periode) :
     """
     FONCTION       : Fonction calculant le budjet mensuel moyen des
@@ -88,7 +87,6 @@ def budget(revenus, periode) :
             rep.append(float(revenus[0][r])*(5/2400))
 
     return(rep)
-
 
 def consommateurs(periode) :
     """
@@ -145,7 +143,6 @@ def consommateurs(periode) :
     #>>> Sortie <<<#
     return(rep)
 
-
 #>>> Système de vente
 
 def nb_acheteur(population, produit) :
@@ -187,7 +184,6 @@ def nb_acheteur(population, produit) :
     #| résultat.
     return(acheteurs)
 
-
 def demande(acheteurs, produit, tps_adoption) :
     """
     FONCTION       : Détermine la demande d'un produit sur
@@ -200,7 +196,6 @@ def demande(acheteurs, produit, tps_adoption) :
     SORTIE         : Le nombre de demandes (int)
     REMARQUES      : A MODIFIER (Mettre de la documentation pour
                      expliquer cette fonction)
-    TEST UNITAIRE  : ...
     """
     #>>> Initialisation des variables locales <<<#
 
@@ -223,14 +218,12 @@ def demande(acheteurs, produit, tps_adoption) :
     #>>> Sortie <<<#
     return(demandes)
 
-
 def profit(nbr_ventes, produit) :
     """
     FONCTION       : Retourne le chiffre d'affaire en fonction
                      d'un nombre de vente et du prix du produit.
     ENTREES        : Nombre de ventes (int) et un produit (Produit)
     SORTIE         : Le chiffre d'affaire (float)
-    TEST UNITAIRE  : ...
     """
     # Variable représentant les frais du à la vente
     #| que ce soit la marge des distributeurs ou
@@ -248,20 +241,16 @@ def profit(nbr_ventes, produit) :
     #>>> Sortie <<<#
     return(gain)
 
-
-def ventes(market, populations, tva) :
+def ventes(market, populations, tva_global) :
     """
-    FONCTION       : Fonction principale que l'on exécutera tous
-                     les mois.
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
+    FONCTION       : Fonction principale que l'on exécutera tous les semaines.
+    ENTREES        : Le marché (Stock), les différentes populations créées (Population list) et la tva (int).
+    SORTIE         : Le marché mis à jour (Stock), la liste des gains (couple list) et la tva mis à jour (int).
     """
     #>>> Initialisation des variables locales <<<#
     demandes = 0
     tva = 20/100
-    gain = []
+    gains = []
 
     #>>> Corps de la fonction <<<#
     for offre in market.produits :
@@ -272,23 +261,21 @@ def ventes(market, populations, tva) :
         # On définit le nombre de vente du produit qui est
         #| la plus petite valeur entre l'offre et la demande.
         nbr_ventes = min(demandes, offre[1])
-
+        # On retire les produits vendus du stock 'market'.
         offre[1]-= nbr_ventes
-
+        # On calcule le chiffre d'affaire relatif aux produits vendus
         recette = profit(nbr_ventes, offre[0])
-
+        # On calcule le montant de la tva pour ces ventes.
         taxes = recette*tva
-
-        tva += taxes
-
+        # On ajoute ce montant au montant total de la tva.
+        tva_global += taxes
         # On calcule le profit des ventes
-        gain.append([["Chiffre d'affaire : "+offre[0].nom, recette]])
+        gains.append([["Chiffre d'affaire : "+offre[0].nom, recette]])
 
     #>>> Sortie <<<#
-    return(market, gain, tva)
+    return(market, gains, tva_global)
 
-
-def ajustStock(stock, produit, quantite) :
+def maxStock(stock, produit_nom) :
     """
     FONCTION       : Ajuste la quantité de produits mise
                      sur le marché.
@@ -297,47 +284,17 @@ def ajustStock(stock, produit, quantite) :
     REMARQUES      :
     TEST UNITAIRE  : ("OK"/"...")
     """
-    new_quantite = 0
-    
-    # A FAIRE
 
-    return(new_quantite)
+    #>>> Initialisation des variables locales <<<#
+    in_stock = 0
 
+    #>>> Corps de la fonction <<<#
+    for prod in stock.produits :
+        if prod[0]==produit_nom :
+            in_stock = prod[1]
 
-def inMarket(market, produits, produit, quantite) :
-    """
-    FONCTION       : Mettre un produit sur le marché
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
-    """
-
-    for prod in produits :
-        if prod.nom == produit :
-            if prod.marche == False :
-                prod.marche = True
-                market.produits.append([prod, quantite])
-            else :
-                ajout([prod.nom, quantite], market.produits)
-
-    return(market, produits)
-
-def outMarket(market, produits, produit) :
-    """
-    FONCTION       : Retirer un produit sur le marché
-    ENTREES        :
-    SORTIE         :
-    REMARQUES      :
-    TEST UNITAIRE  : ("OK"/"...")
-    """
-
-    for prod in produits :
-        if prod.nom == produit :
-            prod.marche=False
-            retireAll(produit, market.produits)
-
-    return(market, produits)
+    #>>> Sortie <<<#
+    return(in_stock)
 
 ####################################
 ########| TESTS UNITAIRES |#########
@@ -386,7 +343,7 @@ if __name__=="__main__" :
     Produit.fixePrix(produits, produits[int(choix)-1].nom, int(input("Fixez un prix : ")))
 
     # On met le produit en vente.
-    market, produits = inMarket(market, produits, produits[int(choix)-1].nom, int(quantite))
+    #market, produits = inMarket(market, produits, produits[int(choix)-1].nom, int(quantite))
 
     print(market)
 

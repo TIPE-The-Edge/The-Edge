@@ -43,6 +43,7 @@ from world.production import *
 from world.majFinance import *
 from world.Pret import *
 from world.gameOver import *
+from world.ventes import *
 
 from lib.save import *
 
@@ -699,6 +700,13 @@ def next_tour(widget, window, screen, *arg):
 
     # Update des commandes
     Commande.updateCommandes(window.machines, window.individus, window.stocks[0], window.notifications)
+
+    if (window.temps.year != window.year) :
+        window.year = window.temps.year
+
+        # Génération des consommateurs (populations)
+        window.populations = consommateurs(str(window.year))
+
 
     if (window.temps.month != window.month):
        window.month = window.temps.month
@@ -3509,6 +3517,41 @@ VENTES
 ================================================================================
 '''
 
+def inMarket(market, stock, produits, produit_nom, quantite) :
+    """
+    FONCTION       : Mettre un produit sur le marché
+    ENTREES        : Le marché (Stock), le stock (Stock), la liste des produits (Produit list), le nom du produit (string) et une quantité (entier)
+    SORTIE         : Le marché mis à jour (Stock) et le stock mis à jour (Stock)
+    """
+
+    produit = get_with_name(produits, produit_nom)
+    retire([produit_nom, quantite], stock.produits)
+
+    if produit.marche == False :
+        produit.marche = True
+        market.produits.append([produit, quantite])
+    else :
+        ajout([produit.nom, quantite], market.produits)
+
+    return(market, stock)
+
+def outMarket(market, stock, produits, produit_nom) :
+    """
+    FONCTION       : Retirer un produit sur le marché
+    ENTREES        : Le marché (Stock), le stock (Stock), la liste des produits (Produit list) et le nom du produit (string)
+    SORTIE         : Le marché mis à jour (Stock)
+    """
+
+    for prod in market.produits :
+        if prod[0] == produit_nom :
+            stock.produits.append([prod])
+
+    produit = get_with_name(produits, produit_nom)
+    produit.marche=False
+    retireAll(produit, market.produits)
+
+    return(market)
+
 def draw_sales(widget, window, screen, i, *arg):
     items = []
     items_tmp = []
@@ -3622,6 +3665,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
     product = get_with_name(window.produits, prod_name)
 
     items = []
+    items_tmp = []
 
     path = 'img/icon/right_white_arrow'
     button_arrow = Button_img(0, path, 0, 0, None, [])
@@ -3641,7 +3685,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     if not product.marche:
         text_product_kill = "Mettre en vente"
-        callback = start_sale
+        callback = draw_start_sale
         arg_tmp = [prod_name]
     else:
         text_product_kill = "Arrêter la distribution"
@@ -3649,12 +3693,15 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         f2 = ["Non", clear_overbody, []]
         callback = draw_alert_option
         arg_tmp = ['', 'Voulez-vous vraiment arrêter de vendre ' + product.nom  + ' ?',[f1, f2]]
+
     make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, callback, arg_tmp)
 
     focus_color = (41,128,185)
     if i == 0:
         info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,0])
 
+        #Info marché
+    
     elif i == 1:
         make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, callback, [])
 
@@ -3676,19 +3723,99 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     items.append(frame_left)
 
+    window.set_body_tmp(items_tmp)
     window.set_body(items)
     window.display(screen)
 
+def draw_start_sale(widget, window, screen, prod_name, *arg):
+
+    items = []
+
+    text = 'Mettre en vente '+prod_name 
+    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
+    label_title.set_direction('horizontal')
+    label_title.set_padding(10,0,0,0)
+    label_title.resize(870, 80)
+    label_title.set_align('center')
+    label_title.make_pos()
+    items.append(label_title)
+
+    max = maxStock(window.stock[0], prod_name)
+
+    label = create_label('Quantité à vendre : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    label_scale = create_label('compris entre 1 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+    frame_label = Frame(0, 0, [label, label_scale], None, [])
+    frame_label.set_direction('vertical')
+    frame_label.set_items_pos('auto')
+    frame_label.resize(300, 'auto')
+    frame_label.set_marge_items(10)
+    frame_label.set_padding(0,0,0,20)
+    frame_label.set_bg_color((236, 240, 241))
+    frame_label.make_pos()
+
+    entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
+    entry.set_entry('1')
+
+    frame_input = Frame(0, 0, [frame_label, entry], None, [])
+    frame_input.set_direction('horizontal')
+    frame_input.set_items_pos('auto')
+    frame_input.resize('auto', 'auto')
+    frame_input.set_marge_items(10)
+    frame_input.set_bg_color((236, 240, 241))
+    frame_input.make_pos()
+    items.append(frame_input)
+
+    label = create_label('Prix de vente : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+    #label_scale = create_label('compris entre 1 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+    frame_label = Frame(0, 0, [label], None, [])
+    frame_label.set_direction('vertical')
+    frame_label.set_items_pos('auto')
+    frame_label.resize(300, 'auto')
+    frame_label.set_marge_items(10)
+    frame_label.set_padding(0,0,0,20)
+    frame_label.set_bg_color((236, 240, 241))
+    frame_label.make_pos()
+
+    entry = Entry(0, 0, 200, 40, True, 'price', 0, None)
+    entry.set_entry('0')
+
+    frame_input = Frame(0, 0, [frame_label, entry], None, [])
+    frame_input.set_direction('horizontal')
+    frame_input.set_items_pos('auto')
+    frame_input.resize('auto', 'auto')
+    frame_input.set_marge_items(10)
+    frame_input.set_bg_color((236, 240, 241))
+    frame_input.make_pos()
+    items.append(frame_input)
+    
+    newt_button = create_button("Mettre en vente", 'font/colvetica/colvetica.ttf', 30, (255, 255, 255), (230, 126, 34), 0, 0, 200, 40, start_sale, [prod_name, max])
+    items.append(newt_button)
+
+    window.set_body_tmp(items)
+    window.display(screen)
+
 '''IMCOMPLET'''
-def start_sale(widget, window, screen, prod_name, *arg):
-    product = get_with_name(window.produits, prod_name)
-    title_msg = ''
-    msg = 'Vous avez mis en vente le produit ' + product.nom
+def start_sale(widget, window, screen, prod_name, max, *arg):
+    entry = get_entry(widget, window, screen, *arg)
 
-    # TODO
+    if entry['quantity'] == '' or entry['price'] == '':
+        draw_alert(widget, window, screen, "Erreur", "Certains champs sont invalides", clear_overbody, [])
+    else:
+        if 1 <= int(entry['quantity']) <= max :
+            product = get_with_name(window.produits, prod_name)
+            title_msg = ''
+            msg = 'Vous avez mis en vente le produit ' + product.nom
 
-    draw_sales(widget, window, screen, 1)
-    draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+            Produit.fixePrix(window.produits, prod_name, int(entry['price']))
+            window.market[0] = inMarket(window.market[0], window.stock[0], window.produits, prod_name)
+
+            draw_sales(widget, window, screen, 1)
+            draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
+
+        else:
+            draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
 '''IMCOMPLET'''
 def stop_sale(widget, window, screen, prod_name, *arg):
@@ -3696,7 +3823,7 @@ def stop_sale(widget, window, screen, prod_name, *arg):
     title_msg = ''
     msg = 'Vous avez arrêté de vendre ' + product.nom
 
-    # TODO
+    window.market[0] = outMarket(window.market[0], window.stock, window.produits, prod_name)
 
     draw_sales(widget, window, screen, 1)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])

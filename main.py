@@ -44,6 +44,7 @@ from world.innov import *
 from world.contracterPret import *
 from world.production import *
 from world.majFinance import *
+from world.ventes import *
 
 from lib.save import *
 
@@ -370,10 +371,13 @@ class Window():
             self.stocks.append(Stock())
 
         self.lesRH = RH()
-        self.temps = datetime.datetime(2018,1,1)
-        self.tempsDebut = datetime.datetime(2018, 1, 1)  # Temps en semaines
+        self.day = 1
         self.month = 1
 
+        self.year = 2010
+        self.temps = datetime.datetime(self.year,self.month, self.day)
+        self.tempsDebut = datetime.datetime(self.year, self.month, self.day)  # Temps en semaines
+        self.populations = consommateurs(str(self.year))
         self.donneesF = {
             ### BILAN ###
             "amenagement locaux" : 0,
@@ -422,6 +426,9 @@ class Window():
         self.argent = 40000
         self.capital = 40000
         self.tva = 0
+
+        self.market.append(Stock())
+
         self.bilan = {
             ### BILAN ###
             "amenagement locaux": 0,
@@ -497,6 +504,7 @@ class Window():
         self.individus    = []
         self.produits     = []
         self.magasin      = []
+        self.market       = []
         self.operations   = []
         self.materiaux    = []
         self.formations   = []
