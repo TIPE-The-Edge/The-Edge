@@ -2487,6 +2487,7 @@ def draw_choose_fournisseur(widget, window, screen, mat, *arg):
         info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
         info.append(create_label('Localisation : ' + element.localisation, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        info.append(create_label('Coût de transport : ' + str(int(Fournisseur.coutTransport(element, window.stocks[0])))+" €", 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
         # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -3978,6 +3979,9 @@ def get_pret(widget, window, screen, type_pret, taux_interet, *arg):
             draw_alert(widget, window, screen, "Erreur", "Les données entrées sont invalides", clear_overbody, [])
 
 def create_pret(widget, window, screen, donnees, *arg):
+    if donnees[8] == 'Court':
+        donnees[7] = int(donnees[7]/12)
+
     data = {
         'capital': donnees[0],
         'taux interet': donnees[1],
@@ -3989,6 +3993,7 @@ def create_pret(widget, window, screen, donnees, *arg):
         'duree': donnees[7],
         'type': donnees[8],
     }
+    window.argent += int(donnees[0])
     window.listePret.append(Pret(window.temps,data))
     draw_finance(widget, window, screen, 0.1, *arg)
     draw_alert(widget, window, screen, "Bravo! ", "Votre prêt a bien été contracté.", clear_overbody, [])
@@ -4040,13 +4045,13 @@ def draw_sales(widget, window, screen, i, *arg):
     items = []
     items_tmp = []
 
-    button_statue = create_label("Status", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_sales, [0])
+    button_statue = create_label("Tableau de bord", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_sales, [0])
     button_product = create_label("Produits", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_sales, [1])
 
 
     focus_color = (41,128,185)
     if i == 0:
-        button_statue = create_label("Status", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_sales, [0])
+        button_statue = create_label("Tableau de bord", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_sales, [0])
 
         main_content = []
 
