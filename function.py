@@ -4085,7 +4085,7 @@ def draw_sales(widget, window, screen, i, *arg):
             info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             info.append(create_label('Prix : ' + str(element[0].prix) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             info.append(create_label('Temps passé sur le marché : ' + str(element[0].age) + ' semaine(s)', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-            
+
             if element[1]!=0 :
                 info.append(create_label('Stock : ' + str(element[1]), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             else :
@@ -4186,19 +4186,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
     frame_back.make_pos()
 
     info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name, 0])
-
-    if not product.marche:
-        text_product_kill = "Mettre en vente"
-        callback = draw_sales_product
-        arg_tmp = [prod_name, 1]
-    else:
-        text_product_kill = "Retirer du marché"
-        f1 = ["Oui", stop_sale, [prod_name]]
-        f2 = ["Non", clear_overbody, []]
-        callback = draw_alert_option
-        arg_tmp = ['', 'Voulez-vous vraiment arrêter de vendre ' + product.nom  + ' ?',[f1, f2]]
-
-    make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, callback, arg_tmp)
+    make_sale = create_label('Mettre en vente', 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name, 1])
 
     focus_color = (41,128,185)
     if i == 0:
@@ -4207,7 +4195,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         #Info marché
 
     elif i == 1:
-        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, callback, arg_tmp)
+        make_sale = create_label('Mettre en vente', 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name, 1])
         items_tmp2 = []
 
         text = 'Mettre en vente '+prod_name
@@ -4290,6 +4278,16 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
 
     list_tmp = [info_market, make_sale]
+
+    if product.marche:
+        text_product_kill = "Retirer du marché"
+        f1 = ["Oui", stop_sale, [prod_name]]
+        f2 = ["Non", clear_overbody, []]
+        callback = draw_alert_option
+        arg_tmp = ['', 'Voulez-vous vraiment arrêter de vendre ' + product.nom  + ' ?',[f1, f2]]
+        sale_kil = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, callback, arg_tmp)
+        list_tmp += sale_kil
+
     for element in list_tmp:
         element.set_direction('horizontal')
         element.resize(250, 'auto')
