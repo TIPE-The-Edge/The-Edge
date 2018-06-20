@@ -328,6 +328,7 @@ if __name__=="__main__" :
     #>>> Variable de départ
     market= Stock()
     
+    tva_global = 0
     
     compteur = 1
 
@@ -348,8 +349,8 @@ if __name__=="__main__" :
     print(market)
 
     # Fonction que l'on appellera chaque semaine
-    gain = ventes(market, populations)
+    market, gains, tva_global = ventes(market, populations, tva_global)
 
-    print(gain)
+    print(gains)
 
     # Mettre à jour l'âge de tous les produits sur le marché !

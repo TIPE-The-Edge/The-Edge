@@ -21,7 +21,6 @@ class Save():
         self.couts        = []
         self.magasin      = []
 
-        self.depenses = []
         self.projets = []
         self.produits = []
 
@@ -47,6 +46,23 @@ class Save():
         self.last_used = None
 
         self.notifications = []
+
+        #Variables de classes
+        self.individus_id = 0
+        self.produits_id = 0
+        self.operations_noms = []
+        self.operations_indice = 0
+        self.materiaux_noms = []
+        self.materiaux_indice = 0
+
+        self.projets_id = 1
+        self.ameliores_id = -1
+
+        self.fournisseurs_noms = []
+        self.fournisseurs_locs = []
+        self.machines_noms = []
+        self.machines_id = 0
+        self.stocks_localisation = []
 
 
     def save(self, window):

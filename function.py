@@ -572,6 +572,23 @@ def draw_save(widget, window, screen, save_name, *arg):
 
 def load(widget, window, screen, save_name,*arg):
     window.save.load(window, save_name)
+
+    Individu.id = window.individus_id
+    Produit.id = window.produits_id
+    Operation.noms_dispo = window.operations_noms
+    Operation.indice_nom = window.operations_indice
+    Materiau.noms_dispo = window.materiaux_noms
+    Materiau.indice_nom = window.materiaux_indice
+
+    Projet.id = window.projets_id
+    Ameliore.id = window.ameliores_id
+
+    Fournisseur.noms_dispo = window.fournisseurs_noms
+    Fournisseur.localisations = window.fournisseurs_locs
+    Machine.noms_dispo = window.machines_noms
+    Machine.id = window.machines_id
+    Stock.localisations = window.stocks_localisation
+    
     start_game(window, screen)
 
 def start_game(window, screen):
@@ -591,6 +608,13 @@ def get_with_name(group, identifier):
         if obj.nom == identifier:
             return obj
     return None
+
+def get_quantity_with_prod(stock, prod_name):
+    for prod in stock :
+        if prod[0].nom == prod_name :
+            return(prod[1])
+    
+    return(0)
 
 def time_convert(time):
     hour = (time // 3600)
@@ -691,7 +715,7 @@ def next_tour(widget, window, screen, *arg):
     window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits, window.materiaux, window.operations)
 
     for i in range(len(frais_RD)) :
-        window.depenses.append(frais_RD[i])
+        window.couts.append(frais_RD[i])
     completedProject(window.projets, window.produits, window.individus, window.magasin)
 
     # Update des transports
@@ -701,6 +725,14 @@ def next_tour(widget, window, screen, *arg):
     # Update des commandes
     Commande.updateCommandes(window.machines, window.individus, window.stocks[0], window.notifications)
 
+    #Update RH
+    Individu.updateExpStartUp(window.individus)
+
+    if len(window.individus) != 0:
+        window.lesRH.update(window.individus, window.departs, 3, 3)
+    
+    RH.updateDeparts(window.departs)
+
     if (window.temps.year != window.year) :
         window.year = window.temps.year
 
@@ -709,14 +741,25 @@ def next_tour(widget, window, screen, *arg):
 
 
     if (window.temps.month != window.month):
-       window.month = window.temps.month
+        window.month = window.temps.month
            # events
-           # coûts
+        # Nouveaux candidats
+        window.candidats = []
+        for i in range(5) :
+            window.candidats.append(Individu())
+           # dépenses
+        RH.coutsRH(window.couts, window.lesRH)
 
+
+    # Systèmes des ventes
+    gains = []
+    window.market, gains, window.tva = ventes(window.market, window.populations, window.tva)
+    for g in gains :
+        window.couts.append(g)
 
     draw_home(widget, window, screen, *arg)
     save(widget, window, screen, *arg)
-    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2018,1,1)).days)/7)), [])
+    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2010,1,1)).days)/7)), [])
 
 
 
@@ -1340,9 +1383,9 @@ def update_product(widget, window, screen, lst_emp, product, *arg):
 
 def actionPhase(widget, window, screen, projet, choix , *arg) :
     if projet.id < 0 :
-        window.depenses.append(Ameliore.progression(projet, choix))
+        window.couts.append(Ameliore.progression(projet, choix))
     else :
-        window.depenses.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations))
+        window.couts.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations))
     draw_alert(widget, window, screen, 'Bravo', 'Le projet passe à la phase suivante', clear_overbody, [])
     draw_project(widget, window, screen, projet.id, 0)
 
@@ -2055,7 +2098,7 @@ def draw_prod(widget, window, screen, i, *arg):
 
     button_statue = create_label("Tableau de bord", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [0])
     button_appro = create_label("Approvisionnement", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [1])
-    button_prod = create_label("Production", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [2])
+    button_prod = create_label("Produire", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [2])
     button_stock = create_label("Stock", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [3])
     button_machine = create_label("Machines", 'calibri', 29, (255,255,255), (189,195,198), 0, 0, None, draw_prod, [4])
 
@@ -2279,12 +2322,12 @@ def draw_prod(widget, window, screen, i, *arg):
         label_stock.make_pos()
 
         a = []
-        for element in window.produits:
+        for element in window.stocks[0].produits:
             info = []
 
-            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label(element[0], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            info.append(create_label('Quantité : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label('Quantité : '+str(element[1]), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
             # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -3136,19 +3179,19 @@ def draw_finance(widget, window, screen, i, *arg):
         if i == 0:
             button_resume_pret = create_label("     Résumé", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0])
 
-            content_list = repartitionDepenses(window.depenses, window.listePret)
+            content_list = repartitionDepenses(window.couts, window.listePret)
 
             content = []
 
             content.append(create_label('Revenus', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             for element in content_list[0]:
-                content.append(create_label(element[0] + ' : ' + element[1] + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
             content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             content.append(create_label('Dépenses', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             for element in content_list[1]:
-                content.append(create_label(element[0] + ' : ' + element[1] + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+                content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
             # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -4138,6 +4181,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         label_title.set_align('center')
         label_title.make_pos()
 
+        print(window.stocks[0])
         max = maxStock(window.stocks[0], prod_name)
 
         if max !=0:
@@ -4244,7 +4288,7 @@ def start_sale(widget, window, screen, prod_name, max, *arg):
             msg = 'Vous avez mis en vente le produit ' + product.nom
 
             Produit.fixePrix(window.produits, prod_name, int(entry['price']))
-            window.market[0] = inMarket(window.market[0], window.stock[0], window.produits, prod_name)
+            window.market[0] = inMarket(window.market[0], window.stock[0], window.produits, prod_name, int(entry['quantity']))
 
             draw_sales(widget, window, screen, 1)
             draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
@@ -4314,6 +4358,23 @@ def draw_option(widget, window, screen, *arg):
 def save(widget, window, screen, *arg):
     window.time_used = round(time.time()) - window.time_start
     window.last_used = datetime.datetime.now().date()
+
+    window.individus_id = Individu.id
+    window.produits_id = Produit.id
+    window.operations_noms = Operation.noms_dispo
+    window.operations_indice = Operation.indice_nom
+    window.materiaux_noms = Materiau.noms_dispo
+    window.materiaux_indice = Materiau.indice_nom
+
+    window.projets_id = Projet.id
+    window.ameliores_id = Ameliore.id
+
+    window.fournisseurs_noms = Fournisseur.noms_dispo
+    window.fournisseurs_locs = Fournisseur.localisations
+    window.machines_noms = Machine.noms_dispo
+    window.machines_id = Machine.id
+    window.stocks_localisation = Stock.localisations
+
     window.save.save(window)
     draw_alert(widget, window, screen, "", "Partie sauvegardé !", clear_overbody, [])
 

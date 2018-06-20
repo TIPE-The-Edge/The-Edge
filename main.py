@@ -355,6 +355,29 @@ class Window():
         self.date_creation = datetime.datetime.now().date()
         self.timestart = round(time.time())
 
+        #Variables de classes
+        Individu.id = 0
+        Produit.id = 0
+        Operation.noms_dispo = readNameFile("./world/Name_Files/operations.txt")
+        Operation.indice_nom = 0
+        Materiau.noms_dispo = readNameFile("./world/Name_Files/materiaux.txt")
+        Materiau.indice_nom = 0
+
+        Projet.id = 1
+        Ameliore.id = -1
+
+        Fournisseur.noms_dispo = readNameFile("./world/Name_Files/fournisseurs.txt")
+        Fournisseur.localisations = ["Paris",
+                                 "New York",
+                                 "Los Angeles",
+                                 "Hong Kong",
+                                 "Berlin",
+                                 "Amsterdam"]
+        Machine.noms_dispo = readNameFile("./world/Name_Files/machine.txt")
+        Machine.id = 0
+        Stock.localisations = ["Paris", "Paris"]
+
+
         for i in range (5):
             self.candidats.append(Individu())
 
@@ -369,6 +392,8 @@ class Window():
 
         for i in range(1):
             self.stocks.append(Stock())
+
+        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
 
         self.lesRH = RH()
         self.day = 1
@@ -427,7 +452,7 @@ class Window():
         self.capital = 40000
         self.tva = 0
 
-        self.market.append(Stock())
+        self.market = Stock()
 
         self.bilan = {
             ### BILAN ###
@@ -482,15 +507,14 @@ class Window():
 
         self.exBilan = {}
         self.exCompteResultat = {}
-
+        
+        print(self.produits)
         initProduits(self.stocks, self.produits)
-
         initMateriaux(self.machines, self.materiaux)
         initMateriaux(self.stocks, self.materiaux)
 
-        # TEMPORAIRE
-
-        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+        print(self.stocks[0])
+        
 
 
         print(self.sha)
@@ -504,7 +528,7 @@ class Window():
         self.individus    = []
         self.produits     = []
         self.magasin      = []
-        self.market       = []
+        self.market       = None
         self.operations   = []
         self.materiaux    = []
         self.formations   = []
@@ -515,9 +539,8 @@ class Window():
         self.stocks       = []
         self.candidats    = []
         self.departs      = []
-        self.couts        = []
 
-        self.depenses = []
+        self.couts = []
         self.projets = []
         self.produits = []
 
@@ -533,6 +556,7 @@ class Window():
         self.temps = None
         self.lesRH = None
         self.month = 1
+        self.year = 2010
         self.argent = 0
         self.capital = 40000
 
@@ -543,6 +567,23 @@ class Window():
         self.last_used = None
 
         self.notifications = []
+
+        #Variables de classes
+        self.individus_id = 0
+        self.produits_id = 0
+        self.operations_noms = []
+        self.operations_indice = 0
+        self.materiaux_noms = []
+        self.materiaux_indice = 0
+
+        self.projets_id = 1
+        self.ameliores_id = -1
+
+        self.fournisseurs_noms = []
+        self.fournisseurs_locs = []
+        self.machines_noms = []
+        self.machines_id = 0
+        self.stocks_localisation = []
 
         self.save = Save()
 

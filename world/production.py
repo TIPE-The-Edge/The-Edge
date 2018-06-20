@@ -591,7 +591,7 @@ class Transport(object):
 class Stock(object):
 
     # Localisations
-    localisations = ["Paris"]
+    localisations = ["Paris", "Paris"]
 
     def __init__(self):
 
@@ -602,7 +602,7 @@ class Stock(object):
         self.cout      = 0 # Cout par unite #TODO
 
         self.materiaux = [[]]
-        self.produits  = [[]]
+        self.produits  = [] # liste de couples
 
     def __repr__(self):
         return "{}:\n\nMat : {}\n\nProd : {}".format(
