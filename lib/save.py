@@ -20,6 +20,7 @@ class Save():
         self.departs      = []
         self.couts        = []
         self.magasin      = []
+        self.market       = None
 
         self.projets = []
         self.produits = []

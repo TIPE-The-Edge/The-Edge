@@ -1281,6 +1281,7 @@ def draw_add_project(widget, window, screen, lst_ind, lst_ajout, product, *arg):
         employee_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
         employee_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         employee_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        employee_info.append(create_label('compétence en recherche : ' + str(ind.competence_recherche), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
         frame_employee = Frame(0, 0, employee_info, draw_add_project, [lst_ind_tmp, lst_ajout + [ind], product])
         frame_employee.set_direction('vertical')
@@ -3992,7 +3993,7 @@ def inMarket(market, stock, produits, produit_nom, quantite) :
     """
 
     produit = get_with_name(produits, produit_nom)
-    retire([produit_nom, quantite], stock.produits)
+    retire([[produit_nom, quantite]], stock.produits)
 
     if produit.marche == False :
         produit.marche = True
@@ -4181,7 +4182,6 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         label_title.set_align('center')
         label_title.make_pos()
 
-        print(window.stocks[0])
         max = maxStock(window.stocks[0], prod_name)
 
         if max !=0:
@@ -4286,9 +4286,9 @@ def start_sale(widget, window, screen, prod_name, max, *arg):
             product = get_with_name(window.produits, prod_name)
             title_msg = ''
             msg = 'Vous avez mis en vente le produit ' + product.nom
-
+            print(window.market)
             Produit.fixePrix(window.produits, prod_name, int(entry['price']))
-            window.market[0] = inMarket(window.market[0], window.stock[0], window.produits, prod_name, int(entry['quantity']))
+            window.market, window.stocks[0] = inMarket(window.market, window.stocks[0], window.produits, prod_name, int(entry['quantity']))
 
             draw_sales(widget, window, screen, 1)
             draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
@@ -4302,7 +4302,7 @@ def stop_sale(widget, window, screen, prod_name, *arg):
     title_msg = ''
     msg = 'Vous avez arrêté de vendre ' + product.nom
 
-    window.market[0] = outMarket(window.market[0], window.stock, window.produits, prod_name)
+    window.market = outMarket(window.market, window.stock, window.produits, prod_name)
 
     draw_sales(widget, window, screen, 1)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
