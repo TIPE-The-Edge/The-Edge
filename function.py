@@ -588,7 +588,7 @@ def load(widget, window, screen, save_name,*arg):
     Machine.noms_dispo = window.machines_noms
     Machine.id = window.machines_id
     Stock.localisations = window.stocks_localisation
-    
+
     start_game(window, screen)
 
 def start_game(window, screen):
@@ -613,7 +613,7 @@ def get_quantity_with_prod(stock, prod_name):
     for prod in stock :
         if prod[0].nom == prod_name :
             return(prod[1])
-    
+
     return(0)
 
 def time_convert(time):
@@ -730,7 +730,7 @@ def next_tour(widget, window, screen, *arg):
 
     if len(window.individus) != 0:
         window.lesRH.update(window.individus, window.departs, 3, 3)
-    
+
     RH.updateDeparts(window.departs)
 
     if (window.temps.year != window.year) :
@@ -3185,14 +3185,19 @@ def draw_finance(widget, window, screen, i, *arg):
             content = []
 
             content.append(create_label('Revenus', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-            content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            for element in content_list[0]:
-                content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            if content_list[0] == []:
+                content.append(create_label('Aucun revenu cette semaine', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            else:
+                for element in content_list[0]:
+                    content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
             content.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             content.append(create_label('Dépenses', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-            for element in content_list[1]:
-                content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            if content_list[1] == []:
+                content.append(create_label('Aucune dépense cette semaine', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            else:
+                for element in content_list[1]:
+                    content.append(create_label(str(element[0]) + ' : ' + str(element[1]) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
 
             # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
@@ -3402,21 +3407,24 @@ def draw_finance(widget, window, screen, i, *arg):
     elif i == 1:
         button_bilan = create_label("Bilan", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
 
+        bilan = window.bilan
+        exBilan = window.exBilan
+
         # TABLEAU 1 ============================================================
 
         col0 = [
-            [0, 'Actif'],
+            [0, 'ACTIF'],
             [1, 'Actif immobilisé'],
             [2, 'Aménagement locaux'],
             [2, 'Machines'],
             [2, 'Brevets'],
-            [2, 'TOTAL'],
+            [1, 'TOTAL'],
             [3, ''],
             [1, 'Actif circulant'],
             [2, 'Stock et en-cours'],
             [2, 'Avances sur les commandes'],
             [2, 'Disponabilités'],
-            [2, 'TOTAL'],
+            [1, 'TOTAL'],
             [3, ''],
             [1, 'TOTAL ACTIF'],
         ]
@@ -3424,69 +3432,69 @@ def draw_finance(widget, window, screen, i, *arg):
         col1 = [
             [0, 'Brut'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(bilan['amenagement locaux'],2))+' €'],
+            [2, str(round(bilan['machinesBrut'],2))+' €'],
+            [2, str(round(bilan['brevets'],2))+' €'],
+            [1, str(round(bilan['total actif immobilise'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(bilan['stocks et en-cours'],2))+' €'],
+            [2, str(round(bilan['avances et acomptes'],2))+' €'],
+            [2, str(round(bilan['disponibilites'],2))+' €'],
+            [1, str(round(bilan['total actif circulant'],2))+' €'],
             [3, ''],
-            [2, ''],
+            [1, str(round(bilan['total actif'],2))+' €'],
         ]
 
         col2 = [
             [0, 'Amortisst'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, '0'+' €'],
+            [2, str(round(bilan['machinesBrut'],2))+' €'],
+            [2, '0'+' €'],
+            [1, '0'+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, '0'+' €'],
+            [2, '0'+' €'],
+            [2, '0'+' €'],
+            [1, '0'+' €'],
             [3, ''],
-            [2, ''],
+            [1, str(round(bilan['machinesBrut'],2))+' €'],
         ]
 
         col3 = [
             [0, 'Net'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(bilan['amenagement locaux'],2))+' €'],
+            [2, str(round(bilan['machinesNet'],2))+' €'],
+            [2, str(round(bilan['brevets'],2))+' €'],
+            [1, str(round(bilan['total actif immobilise'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(bilan['stocks et en-cours'],2))+' €'],
+            [2, str(round(bilan['avances et acomptes'],2))+' €'],
+            [2, str(round(bilan['disponibilites'],2))+' €'],
+            [1, str(round(bilan['total actif circulant'],2))+' €'],
             [3, ''],
-            [2, ''],
+            [1, str(round(bilan['total actif'],2))+' €'],
         ]
 
         col4 = [
             [0, 'N-1'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(exBilan['amenagement locaux'],2))+' €'],
+            [2, str(round(exBilan['machinesNet'],2))+' €'],
+            [2, str(round(exBilan['brevets'],2))+' €'],
+            [1, str(round(exBilan['total actif immobilise'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(exBilan['stocks et en-cours'],2))+' €'],
+            [2, str(round(exBilan['avances et acomptes'],2))+' €'],
+            [2, str(round(exBilan['disponibilites'],2))+' €'],
+            [1, str(round(exBilan['total actif circulant'],2))+' €'],
             [3, ''],
-            [2, ''],
+            [1, str(round(exBilan['total actif'],2))+' €'],
         ]
 
         cols = [col0, col1, col2, col3, col4]
@@ -3544,7 +3552,7 @@ def draw_finance(widget, window, screen, i, *arg):
         # 2 Normal
         # 3 Espace
         col0 = [
-            [0, 'Passif'],
+            [0, 'PASSIF'],
             [1, 'Capitaux propres'],
             [2, 'Capital'],
             [2, 'Réserve légal'],
@@ -3565,40 +3573,40 @@ def draw_finance(widget, window, screen, i, *arg):
         col1 = [
             [0, 'Net'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [1, ''],
+            [2, str(round(bilan['capital'],2))+' €'],
+            [2, str(round(bilan['reserve legal'],2))+' €'],
+            [2, str(round(bilan['report à nouveau'],2))+' €'],
+            [2, str(round(bilan['resultat exercice'][0],2))+' €'],
+            [1, str(round(bilan['total capitaux propres'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [1, ''],
+            [2, str(round(bilan['emprunts'],2))+' €'],
+            [2, str(round(bilan['dettes fournisseurs'],2))+' €'],
+            [2, str(round(bilan['dettes sociales'],2))+' €'],
+            [2, str(round(bilan['dettes fiscales'],2))+' €'],
+            [1, str(round(bilan['total dettes'],2))+' €'],
             [3, ''],
-            [1, ''],
+            [1, str(round(bilan['total passif'],2))+' €'],
 
         ]
 
         col2 = [
             [0, 'N-1'],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [1, ''],
+            [2, str(round(exBilan['capital'],2))+' €'],
+            [2, str(round(exBilan['reserve legal'],2))+' €'],
+            [2, str(round(exBilan['report à nouveau'],2))+' €'],
+            [2, str(round(exBilan['resultat exercice'][0],2))+' €'],
+            [1, str(round(exBilan['total capitaux propres'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [1, ''],
+            [2, str(round(exBilan['emprunts'],2))+' €'],
+            [2, str(round(exBilan['dettes fournisseurs'],2))+' €'],
+            [2, str(round(exBilan['dettes sociales'],2))+' €'],
+            [2, str(round(exBilan['dettes fiscales'],2))+' €'],
+            [1, str(round(exBilan['total dettes'],2))+' €'],
             [3, ''],
-            [1, ''],
+            [1, str(round(exBilan['total passif'],2))+' €'],
 
         ]
 
@@ -3666,31 +3674,35 @@ def draw_finance(widget, window, screen, i, *arg):
     elif i == 2:
         button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
 
+
         # 0 Titre
         # 1 Sous-titre
         # 2 Normal
         # 3 Espace
+
+        compteResultat = window.compteResultat
+        exCompteResultat = window.exCompteResultat
+
         col0 = [
             [1, 'Produit d\'exploitation'],
             [2, 'Chiffre d\'affaire'],
             [2, 'Production stockée'],
-            [2, 'TOTAL'],
+            [1, 'TOTAL'],
             [3, ''],
             [1, 'Charges d\'exploitation'],
             [2, 'Achat de matières premières'],
             [2, 'Loyer immobilier et charges'],
-            [2, 'Assurance'],
             [2, 'Impôts'],
             [2, 'Salaires'],
             [2, 'Charges sociales'],
             [2, 'Datations ux ammortissements'],
-            [2, 'TOTAL'],
+            [1, 'TOTAL'],
             [3, ''],
             [1, 'Résultat d\'exploitation'],
             [3, ''],
             [1, 'Charges financières'],
             [2, 'Intérêts et charges assimilées'],
-            [2, 'TOTAL'],
+            [1, 'TOTAL'],
             [3, ''],
             [1, 'Résultat financier'],
             [3, ''],
@@ -3699,29 +3711,28 @@ def draw_finance(widget, window, screen, i, *arg):
 
         col1 = [
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(compteResultat['chiffre affaire'],2))+' €'],
+            [2, str(round(compteResultat['production stockee'],2))+' €'],
+            [1, str(round(compteResultat['total produits exploitation'],2))+' €'],
             [3, ''],
             [1, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
-            [2, ''],
+            [2, str(round(compteResultat['achats matieres premieres'],2))+' €'],
+            [2, str(round(compteResultat['loyer immobilier'],2))+' €'],
+            [2, str(round(compteResultat['impots'],2))+' €'],
+            [2, str(round(compteResultat['salaires'],2))+' €'],
+            [2, str(round(compteResultat['charges sociales'],2))+' €'],
+            [2, str(round(compteResultat['dotations amortissements'],2))+' €'],
+            [1, str(round(compteResultat['total charges exploitation'],2))+' €'],
+            [3, ''],
+            [1, str(round(compteResultat['total produits exploitation']-compteResultat['total charges exploitation'],2))+' €'],
             [3, ''],
             [1, ''],
+            [2, str(round(compteResultat['interet et charges'],2))+' €'],
+            [1, str(round(compteResultat['total resultat financier'],2))+' €'],
             [3, ''],
-            [1, ''],
-            [2, ''],
-            [2, ''],
+            [1, str(round(compteResultat['total resultat financier'],2))+' €'],
             [3, ''],
-            [1, ''],
-            [3, ''],
-            [0, ''],
+            [0, str(round(compteResultat['retultat exercice compte'],2))+' €'],
         ]
 
         cols = [col0, col1]

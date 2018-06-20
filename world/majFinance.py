@@ -33,10 +33,11 @@ def repartitionDepenses(listeDepense, listePret):
 
     if listeDepense != None:
         for depense in listeDepense:
-            if 'Chiffre' in depense[0]:
-                depensesOrdo[0].append(depense)
-            else:
-                depensesOrdo[1].append(depense)
+            if depense[1] != None:
+                if 'Chiffre' in depense[0]:
+                    depensesOrdo[0].append(depense)
+                else:
+                    depensesOrdo[1].append(depense)
 
     return depensesOrdo
 
@@ -70,8 +71,8 @@ def majStock(window):
 #Mise à jour de fin du mois (bilan, compte de résultat)
 def majMois(window):
 
-    window.exBilan = window.bilan
-    window.exCompteResultat = window.compteResultat
+    window.exBilan = (window.bilan).copy()
+    window.exCompteResultat = (window.compteResultat).copy()
 
     #Maj argent
     cout = coutPret(window.listePret)
@@ -84,18 +85,8 @@ def majMois(window):
         if window.temps > window.listePret[i].dateFin:
             window.listePret.pop(i)
 
-    #Maj machine
-    machineBrut = 0
-    
-    machineNet = 0
-
     #Maj stock
     valeurStock = majStock(window)
-
-    
-
-
-
 
     majBilanCompte(window)
     #Maj bilan
@@ -145,8 +136,6 @@ def majMois(window):
 
         "achats matieres premieres": donneesF["achats matieres premieres"],
         "loyer immobilier": donneesF["loyer immobilier"],
-        "assurance": donneesF["assurance"],
-        "charges externes": donneesF["charges externes"],
         "impots": donneesF["impots"],
         "salaires": donneesF["salaires"],
         "charges sociales": donneesF["charges sociales"],
@@ -179,6 +168,8 @@ def majBilanCompte(window):
 
     #Amortissement
     amortissement = 0
+    machineBrut = 0
+    machineNet = 0
     for machine in window.donneesF['machines']:
         machineBrut += machine[0]
         parAnnee = machine[0]/10
@@ -208,7 +199,7 @@ def majBilanCompte(window):
         impotBenefice = donneesF['resultat exercice compte'] * 15/100
         donneesF['resultat exercice compte'] -= impotBenefice
         donneesF['impots'] += impotBenefice
-    
+
     donneesF['total charges exploitation'] = donneesF['achats matieres premieres'] + \
         donneesF['loyer immobilier'] + donneesF['impots'] + \
         donneesF['salaires'] + \

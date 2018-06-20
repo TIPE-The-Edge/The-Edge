@@ -490,9 +490,7 @@ class Window():
             "total produits exploitation": 0,
 
             "achats matieres premieres": 0,
-            "loyer et charges": 0,
-            "assurance": 0,
-            "charges externes": 0,
+            "loyer immobilier": 0,
             "impots": 0,
             "salaires": 0,
             "charges sociales": 0,
@@ -505,16 +503,62 @@ class Window():
             "retultat exercice compte": 0
         }
 
-        self.exBilan = {}
-        self.exCompteResultat = {}
-        
-        print(self.produits)
+        self.exBilan = {
+            ### BILAN ###
+            "amenagement locaux": 0,
+            "machinesBrut": 0,
+            "machinesAmortissement": 0,
+            "machinesNet": 0,
+            "brevets": 0,
+            "total actif immobilise": 0,
+
+            "stocks et en-cours": 0,
+            "avances et acomptes": 0,
+            "disponibilites": 0,
+            "total actif circulant": 0,
+
+            "total actif": 0,
+
+            "capital": 0,
+            "reserve legal": 0,
+            "report à nouveau": 0,
+            "resultat exercice": [0,0,0],
+            "total capitaux propres": 0,
+
+            "emprunts": 0,
+            "dettes fournisseurs": 0,
+            "dettes sociales": 0,
+            "dettes fiscales": 0,
+            "total dettes": 0,
+
+            "total passif": 0
+        }
+
+        self.exCompteResultat = {
+            "chiffre affaire": 0,
+            "production stockee": 0,
+            "total produits exploitation": 0,
+
+            "achats matieres premieres": 0,
+            "loyer immobilier": 0,
+            "impots": 0,
+            "salaires": 0,
+            "charges sociales": 0,
+            "dotations amortissements": 0,
+            "total charges exploitation": 0,
+
+            "interet et charges": 0,
+            "total resultat financier": 0,
+
+            "retultat exercice compte": 0
+        }
+
         initProduits(self.stocks, self.produits)
         initMateriaux(self.machines, self.materiaux)
         initMateriaux(self.stocks, self.materiaux)
 
         print(self.stocks[0])
-        
+
 
 
         print(self.sha)
