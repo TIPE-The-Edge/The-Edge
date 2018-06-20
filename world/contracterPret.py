@@ -85,10 +85,13 @@ def rentabilite(evChiffreAff,evResultatExercice):
                 evResultatExercice: sorti de evolutionResultatEx
     Sortie : la rentabilite en point
     """
-    rentabilite = evResultatExercice/evChiffreAff
-    if rentabilite >= 1: pt = 2
-    else: pt = -2
-    return pt
+    if evChiffreAff == 0:
+        return 0
+    else:
+        rentabilite = evResultatExercice/evChiffreAff
+        if rentabilite >= 1: pt = 2
+        else: pt = -2
+        return pt
 
 def solvabilite(actif,dispo,dette):
     """
@@ -98,9 +101,12 @@ def solvabilite(actif,dispo,dette):
                 dette: total dette
     Sortie : la solvabilité en point (compris entre -4 et 4)
     """
-    solvabilite = (actif-dispo)/dette
-    pt = (8*solvabilite - 32)/3
-    return min(4,max(-4,pt))
+    if dette == 0:
+        return 4
+    else:
+        solvabilite = (actif-dispo)/dette
+        pt = (8*solvabilite - 32)/3
+        return min(4,max(-4,pt))
 
 def poidsRemboursement(dette, chiffreAff):
     """
@@ -109,10 +115,13 @@ def poidsRemboursement(dette, chiffreAff):
                 dette: total dette
     Sortie : le poids en point (compris entre -4 et 4)
     """
-    poids = dette/chiffreAff
-    if poids >= 1: pt = 2
-    else: pt = -2
-    return pt
+    if chiffreAff == 0:
+        return 0
+    else:
+        poids = dette/chiffreAff
+        if poids >= 1: pt = 2
+        else: pt = -2
+        return pt
 
 def variationInteretTotal(donneesF):
     """
