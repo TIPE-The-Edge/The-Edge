@@ -710,7 +710,14 @@ def draw_home(widget, window, screen, *arg):
 def next_tour(widget, window, screen, *arg):
     window.notifications = []
     window.temps += datetime.timedelta(weeks=1)
-    #>>> partie RD
+
+    # Systèmes des ventes
+    gains = []
+    window.market, gains, window.tva = ventes(window.market, window.populations, window.tva)
+    for g in gains :
+        window.couts.append(g)
+
+    # Update RD
     window.projets = avance(window.projets, window.paliers, window.individus)
     window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits, window.materiaux, window.operations)
 
@@ -725,8 +732,11 @@ def next_tour(widget, window, screen, *arg):
     # Update des commandes
     Commande.updateCommandes(window.machines, window.individus, window.stocks[0], window.notifications)
 
-    #Update RH
+    # Update RH
     Individu.updateExpStartUp(window.individus)
+
+    # Update Ventes
+    Produit.ageUpdate(window.produits)
 
     if len(window.individus) != 0:
         window.lesRH.update(window.individus, window.departs, 3, 3)
@@ -750,12 +760,6 @@ def next_tour(widget, window, screen, *arg):
            # dépenses
         RH.coutsRH(window.couts, window.lesRH)
 
-
-    # Systèmes des ventes
-    gains = []
-    window.market, gains, window.tva = ventes(window.market, window.populations, window.tva)
-    for g in gains :
-        window.couts.append(g)
 
     draw_home(widget, window, screen, *arg)
     save(widget, window, screen, *arg)
@@ -4032,6 +4036,23 @@ def draw_sales(widget, window, screen, i, *arg):
     if i == 0:
         button_statue = create_label("Status", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_sales, [0])
 
+        main_content = []
+
+        main_content.append(create_label('Résumé des ventes', 'font/colvetica/colvetica.ttf', 45, (44, 62, 80), (236, 240, 241), 0, 0, 450, None, []))
+
+        main_content.append(create_label( 'Nombre de produits vendus à ce jour : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+
+        main_frame = Frame(330, 40, main_content, None, [])
+        main_frame.set_direction('vertical')
+        main_frame.set_items_pos('auto')
+        main_frame.resize(465, 'auto')
+        main_frame.set_padding(20,0,20,0)
+        main_frame.set_marge_items(30)
+        main_frame.set_bg_color((236,240,241))
+        main_frame.make_pos()
+        items_tmp.append(main_frame)
+
+
         text = 'Produit en vente'
         label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 805, 40, None, None, [])
         label_stock.set_direction('horizontal')
@@ -4046,14 +4067,18 @@ def draw_sales(widget, window, screen, i, *arg):
                 product_in_sale.append(produit)
 
         a = []
-        for element in product_in_sale:
+        for element in window.market.produits:
             info = []
 
-            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label(element[0].nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            info.append(create_label('Prix : ' + str(element.prix) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-            info.append(create_label('Temps passé sur le marché : ' + str(element.age) + ' semaine(s)', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-
+            info.append(create_label('Prix : ' + str(element[0].prix) + '€', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label('Temps passé sur le marché : ' + str(element[0].age) + ' semaine(s)', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            
+            if element[1]!=0 :
+                info.append(create_label('Stock : ' + str(element[1]), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            else :
+                info.append(create_label('Stock : en rupture', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
             # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
@@ -4151,12 +4176,13 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name, 0])
 
-    if not product.marche:
-        text_product_kill = "Mettre en vente"
-        callback = draw_sales_product
-        arg_tmp = [prod_name, 1]
-    else:
-        text_product_kill = "Arrêter la distribution"
+    
+    text_product_kill = "Mettre en vente"
+    callback = draw_sales_product
+    arg_tmp = [prod_name, 1]
+    
+    if product.marche:
+        text_product_kill = "Retirer du marché"
         f1 = ["Oui", stop_sale, [prod_name]]
         f2 = ["Non", clear_overbody, []]
         callback = draw_alert_option
@@ -4302,7 +4328,7 @@ def stop_sale(widget, window, screen, prod_name, *arg):
     title_msg = ''
     msg = 'Vous avez arrêté de vendre ' + product.nom
 
-    window.market = outMarket(window.market, window.stock, window.produits, prod_name)
+    window.market = outMarket(window.market, window.stocks[0], window.produits, prod_name)
 
     draw_sales(widget, window, screen, 1)
     draw_alert(widget, window, screen, title_msg, msg, clear_overbody, [])
