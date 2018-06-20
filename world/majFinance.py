@@ -86,21 +86,13 @@ def majMois(window):
 
     #Maj machine
     machineBrut = 0
-    amortissement = 0
+    
     machineNet = 0
 
     #Maj stock
     valeurStock = majStock(window)
 
-    for machine in window.donneesF['machines']:
-        machineBrut += machine[0]
-        parAnnee = machine[0]/10
-        amortissement += parAnnee
-        machineNet += (machine[0] - machine[1])
-        machine[1] += parAnnee
-
-        if machine[0] == machine[1]:
-            window.donneesF['machines'].remove(machine)
+    
 
 
 
@@ -180,25 +172,48 @@ def majMois(window):
 def majBilanCompte(window):
     donneesF = window.donneesF
 
+    #Locaux
     if donneesF['amenagement locaux'] == 0:
         donneesF['amenagement locaux'] = 500
         window.argent -= 500
 
+    #Amortissement
+    amortissement = 0
+    for machine in window.donneesF['machines']:
+        machineBrut += machine[0]
+        parAnnee = machine[0]/10
+        amortissement += parAnnee
+        machineNet += (machine[0] - machine[1])
+        machine[1] += parAnnee
+
+        if machine[0] == machine[1]:
+            window.donneesF['machines'].remove(machine)
 
     ###COMPTE DE RESULTAT###
     donneesF['total produits exploitation'] = donneesF['chiffre affaire'][0] + donneesF['production stockee']
 
     donneesF["dettes fiscales"] = window.tva
-    donneesF['dotations amortissements'] = 0
-    donneesF['total charges exploitation'] = 0
+    donneesF['dotations amortissements'] = amortissement
+    donneesF['total charges exploitation'] = donneesF['achats matieres premieres'] + \
+        donneesF['loyer immobilier'] + donneesF['impots'] + \
+        donneesF['salaires'] + \
+        donneesF['charges sociales'] + \
+        donneesF['dotations amortissements']
 
     donneesF['resultat exercice compte'] = donneesF['total produits exploitation'] + \
         donneesF['total charges exploitation'] + ["total resultat financier"]
 
+    #Impot sur le revenus
     if donneesF['resultat exercice compte'] > 0:
         impotBenefice = donneesF['resultat exercice compte'] * 15/100
         donneesF['resultat exercice compte'] -= impotBenefice
         donneesF['impots'] += impotBenefice
+    
+    donneesF['total charges exploitation'] = donneesF['achats matieres premieres'] + \
+        donneesF['loyer immobilier'] + donneesF['impots'] + \
+        donneesF['salaires'] + \
+        donneesF['charges sociales'] + \
+        donneesF['dotations amortissements']
 
 
     ###BILAN###
@@ -264,7 +279,7 @@ def majDonneesF(window,listeDepense):
             donneesF['charges sociales'] = depense[1]
 
         elif depense[0] == 'Loyer et charges associées':
-            donneesF['loyer et charges'] = depense[1]
+            donneesF['loyer immobilier'] = depense[1]
 
         elif depense[0] == 'Achats des matériaux':
             donneesF['achats matieres premieres'] += depense[1]

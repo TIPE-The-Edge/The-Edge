@@ -29,7 +29,8 @@ class Save():
         self.lesRH = None
         self.month = 1
         self.argent = 0
-
+        self.capital = 40000
+        
         self.tempsDebut = 0
         self.donneesF = {}
         self.bilan = {}
