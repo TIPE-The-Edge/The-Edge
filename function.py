@@ -3125,6 +3125,7 @@ def draw_finance(widget, window, screen, i, *arg):
     focus_color = (41,128,185)
 
     if 0 <= i < 1:
+
         button_pret = create_label("Prêt", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [0])
         lst_button_pret = [button_pret]
 
@@ -3356,8 +3357,390 @@ def draw_finance(widget, window, screen, i, *arg):
 
     elif i == 1:
         button_bilan = create_label("Bilan", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [1])
+
+        # TABLEAU 1 ============================================================
+
+        col0 = [
+            [0, 'Actif'],
+            [1, 'Actif immobilisé'],
+            [2, 'Aménagement locaux'],
+            [2, 'Machines'],
+            [2, 'Brevets'],
+            [2, 'TOTAL'],
+            [3, ''],
+            [1, 'Actif circulant'],
+            [2, 'Stock et en-cours'],
+            [2, 'Avances sur les commandes'],
+            [2, 'Disponabilités'],
+            [2, 'TOTAL'],
+            [3, ''],
+            [1, 'TOTAL ACTIF'],
+        ]
+
+        col1 = [
+            [0, 'Brut'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [2, ''],
+        ]
+
+        col2 = [
+            [0, 'Amortisst'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [2, ''],
+        ]
+
+        col3 = [
+            [0, 'Net'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [2, ''],
+        ]
+
+        col4 = [
+            [0, 'N-1'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [2, ''],
+        ]
+
+        cols = [col0, col1, col2, col3, col4]
+        col_list= []
+
+        for i in range(len(cols)):
+            if i == 0:
+                size_width = 320
+            else:
+                size_width = 150
+
+            label_list = []
+            for element in cols[i]:
+                if element[0] == 0:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 1:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 25, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 2:
+                    line = create_label(element[1], 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 3:
+                    line = create_label(element[1], 'calibri', 0, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+
+                line.resize('auto', 50)
+                line.set_direction('horizontal')
+                line.set_align('center')
+                line.set_padding(10,0,0,0)
+                line.make_pos()
+
+                label_list.append(line)
+
+            frame_col = Frame(0, 0, label_list, None, [])
+            frame_col.set_direction('vertical')
+            frame_col.set_items_pos('auto')
+            frame_col.resize(size_width, 'auto')
+            frame_col.set_padding(0,0,0,0)
+            frame_col.set_marge_items(0)
+            frame_col.set_bg_color((236, 240, 241))
+            frame_col.make_pos()
+
+            col_list.append(frame_col)
+
+        frame_tab = Frame(0, 0, col_list, None, [])
+        frame_tab.set_direction('horizontal')
+        frame_tab.set_items_pos('auto')
+        frame_tab.resize('auto', 'auto')
+        frame_tab.set_padding(0,0,0,0)
+        frame_tab.set_marge_items(2)
+        frame_tab.set_bg_color((218,223,225))
+        frame_tab.make_pos()
+
+        # TABLEAU 2 ============================================================
+
+        # 0 Titre
+        # 1 Sous-titre
+        # 2 Normal
+        # 3 Espace
+        col0 = [
+            [0, 'Passif'],
+            [1, 'Capitaux propres'],
+            [2, 'Capital'],
+            [2, 'Réserve légal'],
+            [2, 'Report à nouveau'],
+            [2, 'Résultat de l\'exercice'],
+            [1, 'TOTAL'],
+            [3, ''],
+            [1, 'Dettes'],
+            [2, 'Emprunts'],
+            [2, 'Dettes fournisseurs'],
+            [2, 'Dettes sociales'],
+            [2, 'Dettes fisclaes'],
+            [1, 'TOTAL'],
+            [3, ''],
+            [1, 'TOTAL PASSIF'],
+        ]
+
+        col1 = [
+            [0, 'Net'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [1, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [1, ''],
+            [3, ''],
+            [1, ''],
+
+        ]
+
+        col2 = [
+            [0, 'N-1'],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [1, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [1, ''],
+            [3, ''],
+            [1, ''],
+
+        ]
+
+        cols = [col0, col1, col2]
+        col_list= []
+
+        for i in range(len(cols)):
+            if i == 0:
+                size_width = 320
+            else:
+                size_width = 303
+
+            label_list = []
+            for element in cols[i]:
+                if element[0] == 0:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 1:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 25, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 2:
+                    line = create_label(element[1], 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 3:
+                    line = create_label(element[1], 'calibri', 0, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+
+                line.resize('auto', 50)
+                line.set_direction('horizontal')
+                line.set_align('center')
+                line.set_padding(10,0,0,0)
+                line.make_pos()
+
+                label_list.append(line)
+
+            frame_col = Frame(0, 0, label_list, None, [])
+            frame_col.set_direction('vertical')
+            frame_col.set_items_pos('auto')
+            frame_col.resize(size_width, 'auto')
+            frame_col.set_padding(0,0,0,0)
+            frame_col.set_marge_items(0)
+            frame_col.set_bg_color((236, 240, 241))
+            frame_col.make_pos()
+
+            col_list.append(frame_col)
+
+        frame_tab1 = Frame(0, 0, col_list, None, [])
+        frame_tab1.set_direction('horizontal')
+        frame_tab1.set_items_pos('auto')
+        frame_tab1.resize('auto', 'auto')
+        frame_tab1.set_padding(0,0,0,0)
+        frame_tab1.set_marge_items(2)
+        frame_tab1.set_bg_color((218,223,225))
+        frame_tab1.make_pos()
+
+        main_frame = Frame(0, 0, [frame_tab, frame_tab1], None, [])
+        main_frame.set_direction('vertical')
+        main_frame.set_items_pos('auto')
+        main_frame.resize(930, 'auto')
+        main_frame.set_padding(0,0,0,0)
+        main_frame.set_marge_items(30)
+        main_frame.set_bg_color((218,223,225))
+        main_frame.make_pos()
+
+        item_list = Item_list([main_frame], 330, 40, 1260, 40, 20, 680, 'salut')
+        item_list.bg_color = (218,223,225)
+        items_tmp.append(item_list)
+
     elif i == 2:
         button_compte = create_label("Compte de résultat", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [2])
+
+        # 0 Titre
+        # 1 Sous-titre
+        # 2 Normal
+        # 3 Espace
+        col0 = [
+            [1, 'Produit d\'exploitation'],
+            [2, 'Chiffre d\'affaire'],
+            [2, 'Production stockée'],
+            [2, 'TOTAL'],
+            [3, ''],
+            [1, 'Charges d\'exploitation'],
+            [2, 'Achat de matières premières'],
+            [2, 'Loyer immobilier et charges'],
+            [2, 'Assurance'],
+            [2, 'Impôts'],
+            [2, 'Salaires'],
+            [2, 'Charges sociales'],
+            [2, 'Datations ux ammortissements'],
+            [2, 'TOTAL'],
+            [3, ''],
+            [1, 'Résultat d\'exploitation'],
+            [3, ''],
+            [1, 'Charges financières'],
+            [2, 'Intérêts et charges assimilées'],
+            [2, 'TOTAL'],
+            [3, ''],
+            [1, 'Résultat financier'],
+            [3, ''],
+            [0, 'Résultat de l\'exercice'],
+        ]
+
+        col1 = [
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [3, ''],
+            [1, ''],
+            [2, ''],
+            [2, ''],
+            [3, ''],
+            [1, ''],
+            [3, ''],
+            [0, ''],
+        ]
+
+        cols = [col0, col1]
+        col_list= []
+
+        for i in range(len(cols)):
+            if i == 0:
+                size_width = 463
+            else:
+                size_width = 463
+
+            label_list = []
+            for element in cols[i]:
+                if element[0] == 0:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 1:
+                    line = create_label(element[1], 'font/colvetica/colvetica.ttf', 25, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 2:
+                    line = create_label(element[1], 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+                elif element[0] == 3:
+                    line = create_label(element[1], 'calibri', 0, (44, 62, 80), (236, 240, 241), 0, 0, size_width, None, [])
+
+                line.resize('auto', 50)
+                line.set_direction('horizontal')
+                line.set_align('center')
+                line.set_padding(10,0,0,0)
+                line.make_pos()
+
+                label_list.append(line)
+
+            frame_col = Frame(0, 0, label_list, None, [])
+            frame_col.set_direction('vertical')
+            frame_col.set_items_pos('auto')
+            frame_col.resize(size_width, 'auto')
+            frame_col.set_padding(0,0,0,0)
+            frame_col.set_marge_items(0)
+            frame_col.set_bg_color((236, 240, 241))
+            frame_col.make_pos()
+
+            col_list.append(frame_col)
+
+        frame_tab1 = Frame(0, 0, col_list, None, [])
+        frame_tab1.set_direction('horizontal')
+        frame_tab1.set_items_pos('auto')
+        frame_tab1.resize('auto', 'auto')
+        frame_tab1.set_padding(0,0,0,0)
+        frame_tab1.set_marge_items(2)
+        frame_tab1.set_bg_color((218,223,225))
+        frame_tab1.make_pos()
+
+        main_frame = Frame(0, 0, [frame_tab1], None, [])
+        main_frame.set_direction('vertical')
+        main_frame.set_items_pos('auto')
+        main_frame.resize(930, 'auto')
+        main_frame.set_padding(0,0,0,0)
+        main_frame.set_marge_items(30)
+        main_frame.set_bg_color((218,223,225))
+        main_frame.make_pos()
+
+        item_list = Item_list([main_frame], 330, 40, 1260, 40, 20, 680, 'salut')
+        item_list.bg_color = (218,223,225)
+        items_tmp.append(item_list)
+
     elif i == 3:
         button_macro = create_label("Macroéconomie", 'calibri', 30, (255,255,255), focus_color, 0, 0, None, draw_finance, [3])
 
