@@ -108,6 +108,12 @@ def majMois(window):
     majBilanCompte(window)
     #Maj bilan
     donneesF = window.donneesF
+
+    difference = donneesF["total actif"] - donneesF["total passif"]
+    if difference != 0 :
+        valeurStock -= difference
+        donneesF["total actif"] = donneesF["total passif"]
+
     window.bilan = {
         ### BILAN ###
         "amenagement locaux": donneesF["amenagement locaux"],
