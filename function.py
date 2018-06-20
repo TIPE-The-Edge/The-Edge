@@ -4176,12 +4176,11 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, draw_sales_product, [prod_name, 0])
 
-    
-    text_product_kill = "Mettre en vente"
-    callback = draw_sales_product
-    arg_tmp = [prod_name, 1]
-    
-    if product.marche:
+    if not product.marche:
+        text_product_kill = "Mettre en vente"
+        callback = draw_sales_product
+        arg_tmp = [prod_name, 1]
+    else:
         text_product_kill = "Retirer du marché"
         f1 = ["Oui", stop_sale, [prod_name]]
         f2 = ["Non", clear_overbody, []]
