@@ -2240,28 +2240,71 @@ def draw_prod(widget, window, screen, i, *arg):
     elif i == 3:
         button_stock = create_label("Stock", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [3])
 
-        items_list = []
+        text = 'Matériaux'
+        label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label_stock.set_direction('horizontal')
+        label_stock.set_padding(20,10,10,10)
+        label_stock.resize(475, 80)
+        label_stock.set_align('center')
+        label_stock.make_pos()
 
+        a = []
         for element in window.stocks[0].materiaux:
             info = []
 
-            info.append(create_label(element[0], 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
-            info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label(element[0], 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label(' ', 'font/colvetica/colvetica.ttf', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
             info.append(create_label('Quantité : ' + str(element[1]), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
             frame_item = Frame(0, 0, info, None, [])
             frame_item.set_direction('vertical')
             frame_item.set_items_pos('auto')
-            frame_item.resize(930, 'auto')
+            frame_item.resize(455, 'auto')
             frame_item.set_padding(20,0,20,20)
             frame_item.set_bg_color((236, 240, 241))
             frame_item.make_pos()
 
-            items_list.append(frame_item)
+            a.append(frame_item)
 
-        item_list_widget = Item_list(items_list, 330, 40, 1260, 40, 20, 680, 'produit')
+        item_list = Item_list(a, 330, 120, 785, 120, 20, 640, 'matériau')
+        items_tmp.append(item_list)
+        items_tmp.append(label_stock)
 
-        items.append(item_list_widget)
+        text = 'Produits'
+        label_stock = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 805, 40, None, None, [])
+        label_stock.set_direction('horizontal')
+        label_stock.set_padding(20,10,10,10)
+        label_stock.resize(475, 80)
+        label_stock.set_align('center')
+        label_stock.make_pos()
+
+        a = []
+        for element in window.produits:
+            info = []
+
+            info.append(create_label(element.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            info.append(create_label('Quantité : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+            # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+            # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
+            frame_item = Frame(0, 0, info, None, [])
+            frame_item.set_direction('vertical')
+            frame_item.set_items_pos('auto')
+            frame_item.resize(455, 'auto')
+            frame_item.set_padding(20,0,20,20)
+            frame_item.set_bg_color((236, 240, 241))
+            frame_item.make_pos()
+
+            a.append(frame_item)
+
+        item_list = Item_list(a, 805, 120, 1260, 120, 20, 640, 'produit')
+        items_tmp.append(item_list)
+        items_tmp.append(label_stock)
+
     elif i == 4:
         button_machine = create_label("Machines", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [4])
 
@@ -2334,8 +2377,6 @@ def draw_prod(widget, window, screen, i, *arg):
         item_list = Item_list(a, 330, 120, 1260, 120, 20, 640, 'machine')
         items_tmp.append(item_list)
         items_tmp.append(button_magasin)
-
-
 
     list_tmp = [button_statue, button_appro, button_prod, button_stock, button_machine]
     for element in list_tmp:
@@ -3685,8 +3726,8 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     if not product.marche:
         text_product_kill = "Mettre en vente"
-        callback = draw_start_sale
-        arg_tmp = [prod_name]
+        callback = draw_sales_product
+        arg_tmp = [prod_name, 1]
     else:
         text_product_kill = "Arrêter la distribution"
         f1 = ["Oui", stop_sale, [prod_name]]
@@ -3701,9 +3742,89 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,0])
 
         #Info marché
-    
+
     elif i == 1:
-        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, callback, [])
+        make_sale = create_label(text_product_kill, 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, callback, arg_tmp)
+        items_tmp2 = []
+
+        text = 'Mettre en vente '+prod_name
+        label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
+        label_title.set_direction('horizontal')
+        label_title.set_padding(10,0,0,0)
+        label_title.resize(950, 80)
+        label_title.set_align('center')
+        label_title.make_pos()
+
+        max = maxStock(window.stocks[0], prod_name)
+
+        if max !=0:
+
+            label = create_label('Quantité à vendre : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_scale = create_label('compris entre 1 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+            frame_label = Frame(0, 0, [label, label_scale], None, [])
+            frame_label.set_direction('vertical')
+            frame_label.set_items_pos('auto')
+            frame_label.resize(300, 'auto')
+            frame_label.set_marge_items(10)
+            frame_label.set_padding(0,0,0,20)
+            frame_label.set_bg_color((236, 240, 241))
+            frame_label.make_pos()
+
+            entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
+            entry.set_entry('1')
+
+            frame_input = Frame(0, 0, [frame_label, entry], None, [])
+            frame_input.set_direction('horizontal')
+            frame_input.set_items_pos('auto')
+            frame_input.resize('auto', 'auto')
+            frame_input.set_marge_items(10)
+            frame_input.set_bg_color((236, 240, 241))
+            frame_input.make_pos()
+            items_tmp2.append(frame_input)
+
+            label = create_label('Prix de vente : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+            label_scale = create_label('en €', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+            frame_label = Frame(0, 0, [label, label_scale], None, [])
+            frame_label.set_direction('vertical')
+            frame_label.set_items_pos('auto')
+            frame_label.resize(300, 'auto')
+            frame_label.set_marge_items(10)
+            frame_label.set_padding(0,0,0,20)
+            frame_label.set_bg_color((236, 240, 241))
+            frame_label.make_pos()
+
+            entry = Entry(0, 0, 200, 40, True, 'price', 0, None)
+            entry.set_entry('0')
+
+            frame_input = Frame(0, 0, [frame_label, entry], None, [])
+            frame_input.set_direction('horizontal')
+            frame_input.set_items_pos('auto')
+            frame_input.resize('auto', 'auto')
+            frame_input.set_marge_items(10)
+            frame_input.set_bg_color((236, 240, 241))
+            frame_input.make_pos()
+            items_tmp2.append(frame_input)
+
+            newt_button = create_button("Mettre en vente", 'font/colvetica/colvetica.ttf', 30, (255, 255, 255), (230, 126, 34), 0, 0, 200, 40, start_sale, [prod_name, max])
+            items_tmp2.append(newt_button)
+
+        else:
+            label = create_label('Vous n\'avez pas assez de ce produit en stock ! Lancer une production avant de vendre !', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, 1280-500, None, [])
+            items_tmp2.append(label)
+
+        frame_main = Frame(330, 120, items_tmp2, None, [])
+        frame_main.set_direction('vertical')
+        frame_main.set_items_pos('auto')
+        frame_main.resize('auto', 'auto')
+        frame_main.set_padding(20,0,20,0)
+        frame_main.set_marge_items(10)
+        frame_main.set_bg_color((236, 240, 241))
+        frame_main.make_pos()
+
+        items_tmp =  [label_title ,frame_main]
+
 
     list_tmp = [info_market, make_sale]
     for element in list_tmp:
@@ -3723,77 +3844,8 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
 
     items.append(frame_left)
 
-    window.set_body_tmp(items_tmp)
     window.set_body(items)
-    window.display(screen)
-
-def draw_start_sale(widget, window, screen, prod_name, *arg):
-
-    items = []
-
-    text = 'Mettre en vente '+prod_name 
-    label_title = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 0, 0, None, None, [])
-    label_title.set_direction('horizontal')
-    label_title.set_padding(10,0,0,0)
-    label_title.resize(870, 80)
-    label_title.set_align('center')
-    label_title.make_pos()
-    items.append(label_title)
-
-    max = maxStock(window.stock[0], prod_name)
-
-    label = create_label('Quantité à vendre : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-    label_scale = create_label('compris entre 1 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-
-    frame_label = Frame(0, 0, [label, label_scale], None, [])
-    frame_label.set_direction('vertical')
-    frame_label.set_items_pos('auto')
-    frame_label.resize(300, 'auto')
-    frame_label.set_marge_items(10)
-    frame_label.set_padding(0,0,0,20)
-    frame_label.set_bg_color((236, 240, 241))
-    frame_label.make_pos()
-
-    entry = Entry(0, 0, 200, 40, True, 'quantity', 0, None)
-    entry.set_entry('1')
-
-    frame_input = Frame(0, 0, [frame_label, entry], None, [])
-    frame_input.set_direction('horizontal')
-    frame_input.set_items_pos('auto')
-    frame_input.resize('auto', 'auto')
-    frame_input.set_marge_items(10)
-    frame_input.set_bg_color((236, 240, 241))
-    frame_input.make_pos()
-    items.append(frame_input)
-
-    label = create_label('Prix de vente : ', 'font/colvetica/colvetica.ttf', 40, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-    #label_scale = create_label('compris entre 1 et '+ str(max), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-
-    frame_label = Frame(0, 0, [label], None, [])
-    frame_label.set_direction('vertical')
-    frame_label.set_items_pos('auto')
-    frame_label.resize(300, 'auto')
-    frame_label.set_marge_items(10)
-    frame_label.set_padding(0,0,0,20)
-    frame_label.set_bg_color((236, 240, 241))
-    frame_label.make_pos()
-
-    entry = Entry(0, 0, 200, 40, True, 'price', 0, None)
-    entry.set_entry('0')
-
-    frame_input = Frame(0, 0, [frame_label, entry], None, [])
-    frame_input.set_direction('horizontal')
-    frame_input.set_items_pos('auto')
-    frame_input.resize('auto', 'auto')
-    frame_input.set_marge_items(10)
-    frame_input.set_bg_color((236, 240, 241))
-    frame_input.make_pos()
-    items.append(frame_input)
-    
-    newt_button = create_button("Mettre en vente", 'font/colvetica/colvetica.ttf', 30, (255, 255, 255), (230, 126, 34), 0, 0, 200, 40, start_sale, [prod_name, max])
-    items.append(newt_button)
-
-    window.set_body_tmp(items)
+    window.set_body_tmp(items_tmp)
     window.display(screen)
 
 '''IMCOMPLET'''
