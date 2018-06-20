@@ -37,7 +37,7 @@ from widget.progress_bar import *
 from widget.frame import *
 from widget.rectangle import *
 
-from world.function import *
+from world.RH import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
@@ -306,7 +306,7 @@ class Window():
 
     def draw_info(self):
         info1 = []
-        info1.append(['Capital disponible', str(self.argent)+' €'])
+        info1.append(['Capital disponible', str(round(self.argent, 2))+' €'])
         info1.append(['Date', self.temps.strftime('%d/%m/%y')])
         info1.append(['Nombre d\'employés', str(len(self.individus))])
 

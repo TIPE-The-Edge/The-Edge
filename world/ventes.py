@@ -270,7 +270,7 @@ def ventes(market, populations, tva_global) :
         # On ajoute ce montant au montant total de la tva.
         tva_global += taxes
         # On calcule le profit des ventes
-        gains.append([["Chiffre d'affaire : "+offre[0].nom, recette]])
+        gains.append(["Chiffre d'affaire : "+offre[0].nom, recette])
 
     #>>> Sortie <<<#
     return(market, gains, tva_global)

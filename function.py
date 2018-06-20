@@ -34,7 +34,7 @@ from widget.progress_bar import *
 from widget.frame import *
 from widget.rectangle import *
 
-from world.function import *
+from world.RH import *
 from world.objets import *
 from world.outils import *
 from world.innov import *
@@ -714,8 +714,9 @@ def next_tour(widget, window, screen, *arg):
     # Systèmes des ventes
     gains = []
     window.market, gains, window.tva = ventes(window.market, window.populations, window.tva)
-    for g in gains :
-        window.couts.append(g)
+    for gain in gains :
+        window.argent += gain[1]
+        window.couts.append(gain)
 
     # Update RD
     window.projets = avance(window.projets, window.paliers, window.individus)
@@ -758,7 +759,7 @@ def next_tour(widget, window, screen, *arg):
         for i in range(5) :
             window.candidats.append(Individu())
            # dépenses
-        RH.coutsRH(window.couts, window.lesRH)
+        window.argent = RH.coutsRH(window.couts, window.lesRH, window.argent)
 
 
     draw_home(widget, window, screen, *arg)
@@ -2255,7 +2256,7 @@ def draw_prod(widget, window, screen, i, *arg):
         items_tmp.append(label)
 
     elif i == 2:
-        button_prod = create_label("Production", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [2])
+        button_prod = create_label("Produire", 'calibri', 29, (255,255,255), focus_color, 0, 0, None, draw_prod, [2])
 
         text = 'Choisir un produit'
         label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 330, 40, None, None, [])
@@ -4014,7 +4015,7 @@ def inMarket(market, stock, produits, produit_nom, quantite) :
         produit.marche = True
         market.produits.append([produit, quantite])
     else :
-        ajout([produit.nom, quantite], market.produits)
+        ajout([[produit, quantite]], market.produits)
 
     return(market, stock)
 
@@ -4026,8 +4027,8 @@ def outMarket(market, stock, produits, produit_nom) :
     """
 
     for prod in market.produits :
-        if prod[0] == produit_nom :
-            stock.produits.append([prod])
+        if prod[0].nom == produit_nom :
+            ajout([[prod[0].nom, prod[1]]], stock.produits)
 
     produit = get_with_name(produits, produit_nom)
     produit.marche=False
@@ -4247,7 +4248,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
             frame_label.make_pos()
 
             entry = Entry(0, 0, 200, 40, True, 'price', 0, None)
-            entry.set_entry('0')
+            entry.set_entry(str(product.prix))
 
             frame_input = Frame(0, 0, [frame_label, entry], None, [])
             frame_input.set_direction('horizontal')
@@ -4286,7 +4287,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         callback = draw_alert_option
         arg_tmp = ['', 'Voulez-vous vraiment arrêter de vendre ' + product.nom  + ' ?',[f1, f2]]
         sale_kil = create_label(text_product_kill, 'calibri', 30, (255,255,255), (189,195,198), 0, 0, 250, callback, arg_tmp)
-        list_tmp += sale_kil
+        list_tmp.append(sale_kil)
 
     for element in list_tmp:
         element.set_direction('horizontal')
@@ -4320,7 +4321,7 @@ def start_sale(widget, window, screen, prod_name, max, *arg):
             product = get_with_name(window.produits, prod_name)
             title_msg = ''
             msg = 'Vous avez mis en vente le produit ' + product.nom
-            print(window.market)
+
             Produit.fixePrix(window.produits, prod_name, int(entry['price']))
             window.market, window.stocks[0] = inMarket(window.market, window.stocks[0], window.produits, prod_name, int(entry['quantity']))
 
