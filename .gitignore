@@ -1,1 +1,8 @@
-
+*.aux
+*.log
+*.nlo
+*.out
+*.pdf
+*.bak
+*.toc
+*.dvi

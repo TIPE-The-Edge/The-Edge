@@ -1,0 +1,43 @@
+\documentclass[12pt]{rapportECL}
+\usepackage{lipsum}
+\title{Rapport ECL - Template} %Titre du fichier
+\renewcommand{\thesection}{\arabic{section}} 
+
+\begin{document}
+
+%----------- Informations du rapport ---------
+
+\titre{TIPE - Le Serious Game de la Start-Up} %Titre du fichier .pdf
+%\UE{UE PRO} %Nom de la UE
+%\sujet{\LaTeX Approfondi} %Nom du sujet
+
+\enseignant{Martial \textsc{DUBOIS}} %Nom de l'enseignant
+
+\eleves{Maxence \textsc{BLANC} \\
+		Dorian \textsc{CHAU} \\
+		Adrien \textsc{LAFAGE} \\
+		Louis-Clément \textsc{LEROUX} \\ 
+		Lucas \textsc{MARCETTEAU} } %Nom des élèves
+
+%----------- Initialisation -------------------
+        
+\fairemarges %Afficher les marges
+\fairepagedegarde %Créer la page de garde
+\tabledematieres %Créer la table de matières
+\setcounter{page}{1}
+
+%------------ Corps du rapport ----------------
+
+\input{content.tex}
+
+\input{conclusion.tex}
+
+
+%-------------- Bibliogrphie -------------------
+\clearpage
+\bibliographystyle{plain}
+\nocite{*}
+\bibliography{biblio}
+
+%------------ Fin du document  -----------------
+\end{document}
