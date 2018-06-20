@@ -73,7 +73,7 @@ if __name__ == "__main__" :
     temps = datetime.datetime(2018,1,1) # Temps en semaines
     month = 1
 
-    argent = 0 #TODO
+    argent = 40000
 
     on = 1
     while on != 0:

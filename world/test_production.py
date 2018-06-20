@@ -245,8 +245,7 @@ if __name__ == "__main__" :
                     print("cout total = " + str(cout_tot))
                     print()
 
-                    ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
-                                                  # tant qu'un champs est vide)
+                    ok_commande = input("ok/...")
 
                     bool = (argent >= cout_tot)
                     if ok_commande == "ok" and bool:
@@ -257,7 +256,7 @@ if __name__ == "__main__" :
                         menu     = 0
 
                     elif not bool:
-                        print("pas assez d'argent") #TODO (Dorian, pop-up error)
+                        print("pas assez d'argent")
 
                     else:
                         menu = 1
@@ -361,8 +360,7 @@ if __name__ == "__main__" :
                     print()
                     print("temps de prod : " + str(round(Commande(liste_mats, operations, prod).tps_total / Commande.capaciteUtilisateur(obj_mach.utilisateur), 1)) + " semaines")
 
-                    ok_commande = input("ok/...") #TODO (Dorian Bouton grisé
-                                                  # tant qu'un champs est vide)
+                    ok_commande = input("ok/...")
 
                     if ok_commande == "ok" and Machine.verifUtilisateur(machines, id_mach):
                         Machine.genCommande(machines, operations, liste_mats, id_mach, stocks[0], prod)

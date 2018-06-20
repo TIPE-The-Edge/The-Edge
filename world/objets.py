@@ -85,7 +85,7 @@ class Individu(object):
         self.genre   = random.choice(["homme", "femme"])
         self.prenom  = self.genNom(self.genre) # Prénom (en fonction du genre)
         self.nom     = self.genNom("family")
-        self.age     = self.genAge()
+        self.age     = self.genAge() # Entre 23 et 60 ans
 
         # Experiences en nombre de semaines
         self.exp_RetD    = self.genExpRD()
@@ -239,7 +239,7 @@ class Population(object): # de consommateurs
             pop.produits.append([produit.nom, 0])
 
 class Produit(object):
-    id = 1
+    id = 0
 
     def __init__(self, produits, utilite, materiaux, operations, cible):
 

@@ -793,9 +793,9 @@ def draw_rh(widget, window, screen, *arg):
     info4.append(['Salaire moyen', rh.salaire_moy])
     info4.append(['Masse salariale brute', rh.masse_sal_brute])
     info4.append(['Masse salariale nette', rh.masse_sal_nette])
+    info4.append(['Coût des locaux', rh.cout_locaux])
     info4.append(['Coût de l\'emploi', rh.cout_emploi])
     info4.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
-    info4.append(['Part de la masse salariale dans le budget de l\'entreprise', rh.part_masse_sal])
 
     infos = [info1, info2, info3, info4]
     frame_labels = []

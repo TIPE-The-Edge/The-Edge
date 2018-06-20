@@ -100,7 +100,7 @@ class RH(object):
         self.cout_moy_emploi = 0
 
     def update(self, individus, departs, seuil_arrivees, seuil_departs):
-        self.nbr_employes     = RH.nbr(individus)
+        self.nbr_employes    = RH.nbr(individus)
         self.cout_locaux     = RH.coutLocaux(self)
 
         # Couts
@@ -248,8 +248,12 @@ class RH(object):
         return(int(somme))
 
     def coutLocaux(RH):
-        palier = int(RH.nbr_employes/5)+1
-        cout = (palier * 5 + 5) * 23.5
+
+        if RH.nbr_employes <= 2:
+            cout = 352.5
+        else:
+            palier = int(RH.nbr_employes/5)+1
+            cout = (palier * 5 + 5) * 23.5
 
         return(cout)
 
