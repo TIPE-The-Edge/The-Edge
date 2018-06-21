@@ -763,10 +763,18 @@ def next_tour(widget, window, screen, *arg):
            # dépenses
         window.argent = RH.coutsRH(window.couts, window.lesRH, window.argent)
 
-
+    majSemaine(window)
+    window.couts = []
     draw_home(widget, window, screen, *arg)
     save(widget, window, screen, *arg)
-    draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2010,1,1)).days)/7)), [])
+
+    print(droitAuPret(variationInteretTotal(window.donneesF)))
+    print(window.argent)
+    if faillite(window.argent,droitAuPret(variationInteretTotal(window.donneesF))):
+        print('ok')
+        draw_alert_tmp(widget, window, screen, 'Game Over', "Vous avez perdu !", [])
+    else:
+        draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2010,1,1)).days)/7)), [])
 
 
 
@@ -3333,82 +3341,101 @@ def draw_finance(widget, window, screen, i, *arg):
         elif i == 0.2:
             button_ask_pret = create_label("     Contracter un prêt", 'calibri', 20, (255,255,255), (52, 152, 219), 0, 0, None, draw_finance, [0.2])
 
+            if not droitAuPret(variationInteretTotal(window.donneesF)):
 
-            if int(((window.temps - datetime.datetime(2018,1,1)).days)/7) < 4:
-                variationInteret = 0
+                text = 'La situation de votre entreprise prouve que vous n\'êtes pas digne de confiance. Nous cessons de vous proposer des prêts. Bonne continuation.'
+
+                label_analyse = create_label(text, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 800, None, [])
+                label_signature = create_label("Votre banque."
+                                               , 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+
+                frame_right = Frame(330, 40, [label_analyse, label_signature], None, [])
+                frame_right.set_direction('vertical')
+                frame_right.set_items_pos('auto')
+                frame_right.resize('auto', 'auto')
+                frame_right.set_marge_items(30)
+                frame_right.set_padding(50,0,50,0)
+                frame_right.set_bg_color((236, 240, 241))
+                frame_right.make_pos()
+
             else:
-                variationInteret = variationInteretTotal(window.donneesF)
 
-            #Texte à trous
-            if variationInteret < (-2):
-                texte1 = "nous pouvons vous faire confiance"
-                texte2 = "bas"
-            elif variationInteret > 2:
-                texte1 = "nous sommes méfiants en votre capacité à rembourser vos prêts"
-                texte2 = "élevé"
-            else:
-                texte1 = "nous sommes assez confiants en votre capacité à rembourser vos prêts"
-                texte2 = "correct"
+                if int(((window.temps - datetime.datetime(2018,1,1)).days)/7) < 4:
+                    variationInteret = 0
+                else:
+                    variationInteret = variationInteretTotal(window.donneesF)
 
-            text = "Après une analyse de la situation de votre start-up, nous avons conclu "+ "que "+ texte1 +". Nous vous proposons donc un prêt à taux d'intérêt "+ texte2 +"."
+                #Texte à trous
+                if variationInteret < (-2):
+                    texte1 = "nous pouvons vous faire confiance"
+                    texte2 = "bas"
+                elif variationInteret > 2:
+                    texte1 = "nous sommes méfiants en votre capacité à rembourser vos prêts"
+                    texte2 = "élevé"
+                else:
+                    texte1 = "nous sommes assez confiants en votre capacité à rembourser vos prêts"
+                    texte2 = "correct"
 
-            label_analyse = create_label(text, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 800, None, [])
-            label_signature = create_label("Votre banque."
-                                           , 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
-            choose_pret = create_label("Choisissez votre type de prêt :", 'font/colvetica/colvetica.ttf', 30, (44,62,80), (236,240,241), 0, 0, None, None, [])
-            choose_pret.set_padding(0,0,20,0)
-            choose_pret.make_pos()
+                text = "Après une analyse de la situation de votre start-up, nous avons conclu "+ "que "+ texte1 +". Nous vous proposons donc un prêt à taux d'intérêt "+ texte2 +"."
 
-            interetCourt = round(1.5 + (variationInteret/2),1)
-            interetMoyen = round(1.6 + variationInteret,1)
-            interetLong = round(2.1 + variationInteret,1)
+                label_analyse = create_label(text, 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 800, None, [])
+                label_signature = create_label("Votre banque."
+                                               , 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, [])
+                choose_pret = create_label("Choisissez votre type de prêt :", 'font/colvetica/colvetica.ttf', 30, (44,62,80), (236,240,241), 0, 0, None, None, [])
+                choose_pret.set_padding(0,0,20,0)
+                choose_pret.make_pos()
 
-            court = ["Court", dureePret("court"), interetCourt]
-            moyen = ["Moyen", dureePret("moyen"), interetMoyen]
-            long = ["Long", dureePret("long"), interetLong]
+                interetCourt = round(1.5 + (variationInteret/2),1)
+                interetMoyen = round(1.6 + variationInteret,1)
+                interetLong = round(2.1 + variationInteret,1)
 
-            lst_interet = [court, moyen, long]
+                court = ["Court", dureePret("court"), interetCourt]
+                moyen = ["Moyen", dureePret("moyen"), interetMoyen]
+                long = ["Long", dureePret("long"), interetLong]
 
-            items1 = []
+                lst_interet = [court, moyen, long]
 
-            for element in lst_interet:
-                button = create_button(element[0], 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (230, 126, 34), 0, 0, 200, 60, draw_get_pret, [element[0], element[2], element[1][0].split()[0], '0'])
+                items1 = []
 
-                info = []
-                info.append(['Durée', 'De ' + element[1][0] + ' à ' + element[1][1]])
-                info.append(['Taux d\'intérêt', str(element[2]) + '%'])
+                for element in lst_interet:
+                    button = create_button(element[0], 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (230, 126, 34), 0, 0, 200, 60, draw_get_pret, [element[0], element[2], element[1][0].split()[0], '0'])
 
-                labels = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 'auto', 'auto')
+                    info = []
+                    info.append(['Durée', 'De ' + element[1][0] + ' à ' + element[1][1]])
+                    info.append(['Taux d\'intérêt', str(element[2]) + '%'])
 
-                frame_tmp1 = Frame(0, 0, labels, None, [])
-                frame_tmp1.set_direction('vertical')
-                frame_tmp1.set_items_pos('auto')
-                frame_tmp1.resize('auto', 'auto')
-                frame_tmp1.set_marge_items(0)
-                frame_tmp1.set_padding(0,0,0,0)
-                frame_tmp1.set_bg_color((236, 240, 241))
-                frame_tmp1.make_pos()
+                    labels = create_label_value(info, 'font/colvetica/colvetica.ttf', 'calibri', 25, 20, (44, 62, 80), (44, 62, 80), (236, 240, 241), (236, 240, 241), 'auto', 'auto')
 
-                frame_tmp = Frame(0, 0, [button, frame_tmp1], None, [])
-                frame_tmp.set_direction('horizontal')
-                frame_tmp.set_items_pos('auto')
-                frame_tmp.resize('auto', 'auto')
-                frame_tmp.set_align('center')
-                frame_tmp.set_marge_items(20)
-                frame_tmp.set_padding(0,0,0,0)
-                frame_tmp.set_bg_color((236, 240, 241))
-                frame_tmp.make_pos()
+                    frame_tmp1 = Frame(0, 0, labels, None, [])
+                    frame_tmp1.set_direction('vertical')
+                    frame_tmp1.set_items_pos('auto')
+                    frame_tmp1.resize('auto', 'auto')
+                    frame_tmp1.set_marge_items(0)
+                    frame_tmp1.set_padding(0,0,0,0)
+                    frame_tmp1.set_bg_color((236, 240, 241))
+                    frame_tmp1.make_pos()
 
-                items1.append(frame_tmp)
+                    frame_tmp = Frame(0, 0, [button, frame_tmp1], None, [])
+                    frame_tmp.set_direction('horizontal')
+                    frame_tmp.set_items_pos('auto')
+                    frame_tmp.resize('auto', 'auto')
+                    frame_tmp.set_align('center')
+                    frame_tmp.set_marge_items(20)
+                    frame_tmp.set_padding(0,0,0,0)
+                    frame_tmp.set_bg_color((236, 240, 241))
+                    frame_tmp.make_pos()
 
-            frame_right = Frame(330, 40, [label_analyse, label_signature, choose_pret] + items1, None, [])
-            frame_right.set_direction('vertical')
-            frame_right.set_items_pos('auto')
-            frame_right.resize('auto', 'auto')
-            frame_right.set_marge_items(30)
-            frame_right.set_padding(50,0,50,0)
-            frame_right.set_bg_color((236, 240, 241))
-            frame_right.make_pos()
+                    items1.append(frame_tmp)
+
+                frame_right = Frame(330, 40, [label_analyse, label_signature, choose_pret] + items1, None, [])
+                frame_right.set_direction('vertical')
+                frame_right.set_items_pos('auto')
+                frame_right.resize('auto', 'auto')
+                frame_right.set_marge_items(30)
+                frame_right.set_padding(50,0,50,0)
+                frame_right.set_bg_color((236, 240, 241))
+                frame_right.make_pos()
+
             items_tmp.append(frame_right)
 
 
@@ -3435,7 +3462,7 @@ def draw_finance(widget, window, screen, i, *arg):
             [1, 'Actif circulant'],
             [2, 'Stock et en-cours'],
             [2, 'Avances sur les commandes'],
-            [2, 'Disponabilités'],
+            [2, 'Disponibilités'],
             [1, 'TOTAL'],
             [3, ''],
             [1, 'TOTAL ACTIF'],
@@ -3575,8 +3602,7 @@ def draw_finance(widget, window, screen, i, *arg):
             [1, 'Dettes'],
             [2, 'Emprunts'],
             [2, 'Dettes fournisseurs'],
-            [2, 'Dettes sociales'],
-            [2, 'Dettes fisclaes'],
+            [2, 'Dettes fiscales'],
             [1, 'TOTAL'],
             [3, ''],
             [1, 'TOTAL PASSIF'],
@@ -3594,7 +3620,6 @@ def draw_finance(widget, window, screen, i, *arg):
             [1, ''],
             [2, str(round(bilan['emprunts'],2))+' €'],
             [2, str(round(bilan['dettes fournisseurs'],2))+' €'],
-            [2, str(round(bilan['dettes sociales'],2))+' €'],
             [2, str(round(bilan['dettes fiscales'],2))+' €'],
             [1, str(round(bilan['total dettes'],2))+' €'],
             [3, ''],
@@ -3614,7 +3639,6 @@ def draw_finance(widget, window, screen, i, *arg):
             [1, ''],
             [2, str(round(exBilan['emprunts'],2))+' €'],
             [2, str(round(exBilan['dettes fournisseurs'],2))+' €'],
-            [2, str(round(exBilan['dettes sociales'],2))+' €'],
             [2, str(round(exBilan['dettes fiscales'],2))+' €'],
             [1, str(round(exBilan['total dettes'],2))+' €'],
             [3, ''],
@@ -3744,7 +3768,7 @@ def draw_finance(widget, window, screen, i, *arg):
             [3, ''],
             [1, str(round(compteResultat['total resultat financier'],2))+' €'],
             [3, ''],
-            [0, str(round(compteResultat['retultat exercice compte'],2))+' €'],
+            [0, str(round(compteResultat['resultat exercice compte'],2))+' €'],
         ]
 
         cols = [col0, col1]

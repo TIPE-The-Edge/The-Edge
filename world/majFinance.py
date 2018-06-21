@@ -1,6 +1,14 @@
 import datetime
 import calendar
 
+
+def get_with_id(group, identifier):
+    for obj in group:
+        if obj.id == identifier:
+            return obj
+    return None
+
+
 """
 Fonction qui calcule le cout des prets du mois
 """
@@ -33,7 +41,7 @@ def repartitionDepenses(listeDepense, listePret):
 
     if listeDepense != None:
         for depense in listeDepense:
-            if depense[1] != None:
+            if depense[1] != None and depense[1] != 0:
                 if 'Chiffre' in depense[0]:
                     depensesOrdo[0].append(depense)
                 else:
@@ -53,8 +61,8 @@ def resetValeur(window):
     window.donneesF['chiffre affaire'].pop(0)
 
     #Maj liste report à nouveau
-    window.donneesF["report à nouveau"].append(0)
-    window.donneesF["report à nouveau"].pop(0)
+    window.donneesF["resultat exercice"].append(0)
+    window.donneesF["resultat exercice"].pop(0)
 
 
 def majStock(window):
@@ -62,14 +70,19 @@ def majStock(window):
     total = 0
     for product in listeProduits:
         nomProduit = product[0]
-        objet = get_with_id(window.produit,nomProduit)
-        prix = objet.prix
-        total += (prix*product[1])
+        objet = get_with_id(window.produits,nomProduit)
+        if objet != None:
+            prix = objet.prix
+            total += (prix*product[1])
 
     return total
 
 #Mise à jour de fin du mois (bilan, compte de résultat)
 def majMois(window):
+
+    if int(((window.temps - datetime.datetime(2010,1,1)).days)/7) == 5:
+        window.donneesF["capital"] = 40000
+        window.bilan['capital'] = 40000
 
     window.exBilan = (window.bilan).copy()
     window.exCompteResultat = (window.compteResultat).copy()
@@ -88,7 +101,12 @@ def majMois(window):
     #Maj stock
     valeurStock = majStock(window)
 
-    majBilanCompte(window)
+
+    machineDonnees = majBilanCompte(window)
+    machineBrut = machineDonnees[0]
+    machineNet = machineDonnees[1]
+    amortissement = machineDonnees[2]
+
     #Maj bilan
     donneesF = window.donneesF
 
@@ -116,7 +134,7 @@ def majMois(window):
         "capital": donneesF["capital"],
         "reserve legal": donneesF["reserve legal"],
         "report à nouveau": donneesF["report à nouveau"],
-        "resultat exercice": donneesF["resultat exercice"][0],
+        "resultat exercice": [donneesF["resultat exercice"][0]],
         "total capitaux propres": donneesF["total capitaux propres"],
 
         "emprunts": donneesF["emprunts"],
@@ -145,7 +163,7 @@ def majMois(window):
         "interet et charges": donneesF["interet et charges"],
         "total resultat financier": donneesF["total resultat financier"],
 
-        "retultat exercice compte": donneesF["retultat exercice compte"]
+        "resultat exercice compte": donneesF["resultat exercice compte"]
     }
 
     donneesF["report à nouveau"] += donneesF["resultat exercice"][0]
@@ -182,7 +200,6 @@ def majBilanCompte(window):
 
     ###COMPTE DE RESULTAT###
     donneesF['total produits exploitation'] = donneesF['chiffre affaire'][0] + donneesF['production stockee']
-
     donneesF["dettes fiscales"] = window.tva
     donneesF['dotations amortissements'] = amortissement
     donneesF['total charges exploitation'] = donneesF['achats matieres premieres'] + \
@@ -191,8 +208,9 @@ def majBilanCompte(window):
         donneesF['charges sociales'] + \
         donneesF['dotations amortissements']
 
-    donneesF['resultat exercice compte'] = donneesF['total produits exploitation'] + \
-        donneesF['total charges exploitation'] + ["total resultat financier"]
+
+    donneesF['resultat exercice compte'] = donneesF['total produits exploitation'] - \
+        donneesF['total charges exploitation'] - donneesF["total resultat financier"]
 
     #Impot sur le revenus
     if donneesF['resultat exercice compte'] > 0:
@@ -210,7 +228,7 @@ def majBilanCompte(window):
     ###BILAN###
 
     #ACTIF
-    donneesF['total actif immobilise'] = donneesF['machinesNet'] + \
+    donneesF['total actif immobilise'] = machineNet + \
         donneesF['amenagement locaux'] + donneesF['brevets']
     donneesF["disponibilites"] = window.argent
     donneesF['total actif circulant'] = donneesF['stocks et en-cours'] + donneesF["disponibilites"]
@@ -221,17 +239,18 @@ def majBilanCompte(window):
     resultat = donneesF['resultat exercice compte']
     reserveMax = donneesF['capital'] * 10/100
     reserveLegal = donneesF['reserve legal']
-    if reserveLegal <= reserveMax:
-        dotation = resultat * 5/1200
-        if dotation + reserveLegal > reserveMax:
-            dotation = reserveMax - reserveLegal
-            reserveLegal = reserveMax
-            resultat -= dotation
-        else:
-            reserveLegal += dotation
-            resultat -= dotation
+    if resultat > 0:
+        if reserveLegal <= reserveMax:
+            dotation = resultat * 5/1200
+            if dotation + reserveLegal > reserveMax:
+                dotation = reserveMax - reserveLegal
+                reserveLegal = reserveMax
+                resultat -= dotation
+            else:
+                reserveLegal += dotation
+                resultat -= dotation
 
-        donneesF['reserve legal'] = reserveLegal
+            donneesF['reserve legal'] = reserveLegal
 
     donneesF['resultat exercice'][0] = resultat
 
@@ -245,13 +264,11 @@ def majBilanCompte(window):
 
     donneesF['emprunts'] = totalDette
     donneesF['dettes sociales'] = donneesF['charges sociales']
-    donneesF['total dettes'] = donneesF['emprunts'] + \
-        donneesF['dettes sociales'] + donneesF['dettes fiscales']
-
+    donneesF['total dettes'] = donneesF['emprunts'] + donneesF['dettes fiscales']
     donneesF['total passif'] = donneesF['total capitaux propres'] + \
         donneesF['total dettes']
 
-
+    return [machineBrut, machineNet,amortissement]
 
 
 
@@ -297,10 +314,12 @@ def payerTaxe(window):
 #A appeler chaque semaine
 #Lance toutes les étapes nécessaires
 def majSemaine(window):
-    majDonneesF(window,window.listeDepense)
+    majDonneesF(window,window.couts)
+
     if int(window.temps.month) in [3,6,9,12]:
         payerTaxe(window)
     if (int(window.temps.day) < 8) and (window.temps != window.tempsDebut):
+
         majMois(window)
 
 listeDepense = [

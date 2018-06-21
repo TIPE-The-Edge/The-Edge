@@ -295,8 +295,8 @@ def disponibilitePret(listePret, temps):
 Fonction qui vérifie si l'utlisateur a le droit de contracter un pret
 """
 def droitAuPret(variationInteretTotal):
-    if variationInteretTotal > 2:
-        print('La situation de votre entreprise prouve que vous n\'êtes pas digne de confiance. Nous cessons de vous proposer des prêts. Bonne continuation. Votre Banque.')
+    if variationInteretTotal > 1:
+        # print('La situation de votre entreprise prouve que vous n\'êtes pas digne de confiance. Nous cessons de vous proposer des prêts. Bonne continuation. Votre Banque.')
         return False
     else:
         return True

@@ -473,7 +473,7 @@ class Window():
             "capital": 0,
             "reserve legal": 0,
             "report à nouveau": 0,
-            "resultat exercice": [0,0,0],
+            "resultat exercice": [0],
             "total capitaux propres": 0,
 
             "emprunts": 0,
@@ -500,7 +500,7 @@ class Window():
             "interet et charges": 0,
             "total resultat financier": 0,
 
-            "retultat exercice compte": 0
+            "resultat exercice compte": 0
         }
 
         self.exBilan = {
@@ -522,7 +522,7 @@ class Window():
             "capital": 0,
             "reserve legal": 0,
             "report à nouveau": 0,
-            "resultat exercice": [0,0,0],
+            "resultat exercice": [0],
             "total capitaux propres": 0,
 
             "emprunts": 0,
@@ -550,7 +550,7 @@ class Window():
             "interet et charges": 0,
             "total resultat financier": 0,
 
-            "retultat exercice compte": 0
+            "resultat exercice compte": 0
         }
 
         # initProduits(self.stocks, self.produits) # TO BE REMOVED?
