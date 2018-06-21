@@ -25,6 +25,9 @@
 \RequirePackage[hidelinks]{hyperref}%Paquet pour insérer légendes dans des sous-figures comme Figure 1a, 1b
 \RequirePackage[left=2.5cm,right=2.5cm,top=2cm,bottom=3.5cm]{geometry} %Configuration de la page
 \RequirePackage{amsmath}
+\RequirePackage{eurosym}
+\RequirePackage{stmaryrd}
+\RequirePackage{amssymb}
 
 %-------------------- Informations sur le rapport ----------------------
 
