@@ -717,6 +717,7 @@ def next_tour(widget, window, screen, *arg):
     window.market, gains, window.tva = ventes(window.market, window.populations, window.tva)
     for gain in gains :
         window.argent += gain[1]
+        print(gain)
         window.couts.append(gain)
 
     # Update RD

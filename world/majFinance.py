@@ -278,7 +278,7 @@ def majDonneesF(window,listeDepense):
     donneesF = window.donneesF
     for depense in listeDepense:
         if 'Chiffre' in depense[0]:
-            donneesF['chiffre affaire'] += depense[1]
+            donneesF['chiffre affaire'][0] += depense[1]
 
         elif depense[0] == 'Salaires':
             donneesF['salaires'] = depense[1]
