@@ -93,10 +93,13 @@ def compGroupe(individus) :
     TEST UNITAIRE  : ("OK"/"...")
     """
     # On fait la moyenne des capacités de travail de groupe des chercheurs
-    moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
-    leader = max([individu.competence_direction for individu in individus])
-    if leader >= 8 :
-        moyenne += (int(leader/8))+(leader-8)
+    if len(individus)>0 :
+        moyenne = sum([individu.competence_groupe for individu in individus])//len(individus)
+        leader = max([individu.competence_direction for individu in individus])
+        if leader >= 8 :
+            moyenne += (int(leader/8))+(leader-8)
+    else:
+        moyenne = 5
     return(10*moyenne -50)
 
 def progres(individus, nom_projet) :

@@ -335,7 +335,6 @@ if __name__=="__main__" :
     compteur = 1
 
     for prod in produits :
-        print(str(compteur)+" : ",prod)
         compteur += 1
 
     choix = input("Choisir un produit : ")
@@ -348,11 +347,11 @@ if __name__=="__main__" :
     # On met le produit en vente.
     #market, produits = inMarket(market, produits, produits[int(choix)-1].nom, int(quantite))
 
-    print(market)
+    # print(market)
 
     # Fonction que l'on appellera chaque semaine
     market, gains, tva_global = ventes(market, populations, tva_global)
 
-    print(gains)
+    # print(gains)
 
     # Mettre à jour l'âge de tous les produits sur le marché !

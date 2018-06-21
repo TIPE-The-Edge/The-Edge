@@ -393,7 +393,7 @@ class Window():
         for i in range(1):
             self.stocks.append(Stock())
 
-        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin, 1000000) # Génération automatique d'un produit
+        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin, 1000000, self.stocks[0]) # Génération automatique d'un produit
 
         self.lesRH = RH()
         self.day = 1
@@ -553,16 +553,9 @@ class Window():
             "retultat exercice compte": 0
         }
 
-        initProduits(self.stocks, self.produits)
+        # initProduits(self.stocks, self.produits) # TO BE REMOVED?
         initMateriaux(self.machines, self.materiaux)
         initMateriaux(self.stocks, self.materiaux)
-
-        print(self.stocks[0])
-
-
-
-        print(self.sha)
-        print(self.user_name)
 
     def set_var(self):
         self.time_used = 0

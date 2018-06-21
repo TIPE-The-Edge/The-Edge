@@ -290,7 +290,7 @@ def avance(projets, paliers, employes) :
 
     return(projets)
 
-def completedProject(projets, produits, employes, magasin) :
+def completedProject(projets, produits, employes, magasin, stock) :
     """
     FONCTION       :
     ENTREES        :
@@ -304,9 +304,14 @@ def completedProject(projets, produits, employes, magasin) :
                 produits.append(proj.produit)
                 ope = [op[0] for op in proj.produit.operations]
                 magasin.append(Machine(ope))
+            
+            if proj.id < 0 :
+                # TODO : Il faudra retirer l'ancien produit des stocks.
+                pass
+            stock.produits.append([proj.produit.nom, 0])
             delProject(projets, employes, proj.id)
 
-def genAutoProduit(population, produits, materiaux, operations, magasin, argent) :
+def genAutoProduit(population, produits, materiaux, operations, magasin, argent, stock) :
     """
     FONCTION       : Créé un produit automatiquement
     ENTREES        : La population cible (string), la liste des produits,
@@ -333,7 +338,7 @@ def genAutoProduit(population, produits, materiaux, operations, magasin, argent)
         cout, argent = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations, argent)
 
     # On ajoute le produit à la liste des produits
-    completedProject(projets, produits, employes, magasin)
+    completedProject(projets, produits, employes, magasin, stock)
 
 
 ####################################
@@ -757,7 +762,6 @@ class Projet(object):
 
         if self.phase == 1 :
             couts = Projet.phase1(self, paliers[0], utilisateur)
-            print(couts)
         elif self.phase == 2 :
             couts = Projet.phase2(self, paliers[1], utilisateur, materiaux, operations)
 

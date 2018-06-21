@@ -210,7 +210,6 @@ def get_entry(widget, window, screen, *arg):
             entry_values.update({item.id: item.entry})
     return entry_values
 
-'''INCOMPLET'''
 def change_tab(button, window, screen, *arg):
     for icon in window.nav:
         if icon.num == button.num:
@@ -428,7 +427,7 @@ def check_save(widget, window, screen, tosave, callback, *arg):
     else:
         f1 = ["Oui", check_save, [True, callback]]
         f2 = ["Non", callback, [True]]
-        draw_alert_option(widget, window, screen, "", ["Vous êtes sur le point de quitter votre partie.", "Voulez-vous sauvegarder la partie avant ?"], [f1, f2])
+        draw_alert_option(widget, window, screen, "", ["Vous êtes sur le point de quitter votre partie.", "Voulez-vous sauvegarder avant ?"], [f1, f2])
         # draw_alert_option(widget, window, screen, "", ["La partie n'as pas été sauvegardé.", "Voulez-vous sauvegarder la partie ?"], [f1, f2])
 
 def reset_game(widget, window, screen, force, *arg):
@@ -446,7 +445,6 @@ def close_game(widget, window, screen, force, *arg):
     else:
         check_save(widget, window, screen, False, close_game, *arg)
 
-'''INCOMPLET'''
 def draw_load_game(widget, window, screen, *arg):
     text = 'Sauvegardes'
     label = create_label(text, 'font/colvetica/colvetica.ttf', 45, (255,255,255), (52,73,94), 64, 48 , None, None, [])
@@ -519,7 +517,6 @@ def draw_load_game(widget, window, screen, *arg):
     window.body = [rect0, item_list_save, rect1, rect2, label, label_save, frame_right, frame_v]
     window.display(screen)
 
-'''IMCOMPLET'''
 def draw_save(widget, window, screen, save_name, *arg):
     save = window.save.getSave(save_name)
 
@@ -729,7 +726,7 @@ def next_tour(widget, window, screen, *arg):
 
     for i in range(len(frais_RD)) :
         window.couts.append(frais_RD[i])
-    completedProject(window.projets, window.produits, window.individus, window.magasin)
+    completedProject(window.projets, window.produits, window.individus, window.magasin, window.stocks[0])
 
     # Update des transports
     Transport.updateTempsTrajet(window.transports)
@@ -916,6 +913,7 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
         info3.append(['Compétence de coopération', ind.competence_groupe])
         info3.append(['Compétence en recherche', ind.competence_recherche])
         info3.append(['Compétence en management', ind.competence_direction])
+        info3.append(['Compétence en prodution', ind.competence_production])
         info4.append(['Statut', ind.statut])
         info4.append(['Rôle', ind.role])
         info5.append(['Salaire', str(ind.salaire) + " €"])
@@ -1053,15 +1051,16 @@ def draw_individu(widget, window, screen, ind_id, *arg):
 
     info1, info2, info3, info4, info5 = [], [], [], [], []
     info1.append(['Genre', ind.genre])
-    info1.append(['Âge', ind.age])
-    info2.append(['Expérience en R&D', ind.exp_RetD])
-    info2.append(['Expérience start-up', ind.exp_startup])
+    info1.append(['Âge', str(ind.age) + ' ans'])
+    info2.append(['Expérience en R&D', str(semaine_to_annee(ind.exp_RetD)) + ' année(s)' ])
+    info2.append(['Expérience start-up', str(ind.exp_startup) + ' semaine(s)'])
     info3.append(['Compétence de coopération', ind.competence_groupe])
     info3.append(['Compétence en recherche', ind.competence_recherche])
     info3.append(['Compétence en management', ind.competence_direction])
+    info3.append(['Compétence en prodution', ind.competence_production])
     info4.append(['Statut', ind.statut])
     info4.append(['Rôle', ind.role])
-    info5.append(['Salaire', ind.salaire])
+    info5.append(['Salaire', str(ind.salaire) + ' €'])
 
     infos = [info1, info2, info3, info4, info5]
     frame_labels = []
@@ -1650,7 +1649,7 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
         frame_v1 = Frame(330, 640, [button_add], draw_add_to_project, [lst_ind, [], projet.id])
         frame_v1.set_direction('horizontal')
         frame_v1.set_items_pos('auto')
-        frame_v1.resize('auto', 80)
+        frame_v1.resize(950, 80)
         frame_v1.set_align('center')
         frame_v1.set_bg_color((230, 126, 34))
         frame_v1.make_pos()
@@ -1722,6 +1721,7 @@ def draw_employee_project(widget, window, screen, ind_id, i, proj_id, *arg):
         info3.append(['Compétence de coopération', ind.competence_groupe])
         info3.append(['Compétence en recherche', ind.competence_recherche])
         info3.append(['Compétence en management', ind.competence_direction])
+        info3.append(['Compétence en prodution', ind.competence_production])
         info4.append(['Statut', ind.statut])
         info4.append(['Rôle', ind.role])
         info5.append(['Salaire', str(ind.salaire) + " €"])
