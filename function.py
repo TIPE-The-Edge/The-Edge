@@ -910,15 +910,15 @@ def draw_employee(widget, window, screen, ind_id, i, *arg):
 
         info1, info2, info3, info4, info5 = [], [], [], [], []
         info1.append(['Genre', ind.genre])
-        info1.append(['Âge', ind.age])
-        info2.append(['Expérience en R&D', ind.exp_RetD])
-        info2.append(['Expérience start-up', ind.exp_startup])
+        info1.append(['Âge', str(ind.age) + " ans"])
+        info2.append(['Expérience en R&D', str(semaine_to_annee(ind.exp_RetD)) + " année(s)"])
+        info2.append(['Expérience start-up', str(ind.exp_startup) +  " semaine(s)"])
         info3.append(['Compétence de coopération', ind.competence_groupe])
         info3.append(['Compétence en recherche', ind.competence_recherche])
         info3.append(['Compétence en management', ind.competence_direction])
         info4.append(['Statut', ind.statut])
         info4.append(['Rôle', ind.role])
-        info5.append(['Salaire', ind.salaire])
+        info5.append(['Salaire', str(ind.salaire) + " €"])
 
         infos = [info1, info2, info3, info4, info5]
         frame_labels = []
@@ -1483,9 +1483,9 @@ def draw_project(widget, window, screen, proj_id, i, *arg):
     path = 'img/icon/right_white_arrow'
     button_arrow = Button_img(0, path, 0, 0, None, [])
     if proj_id >= 0 :
-        text = 'Projet ' + str(proj_id)
+        text = 'Recherche'
     else :
-        text = 'Projet'  + str(proj_id)
+        text = 'Amélioration'
     name = create_label(text, 'font/colvetica/colvetica.ttf', 40, (255,255,255), (149,165,166), 0, 0, None, None, [])
     frame_back = Frame(0,0, [button_arrow, name], draw_rd, [0])
     frame_back.set_direction('horizontal')
@@ -1716,15 +1716,15 @@ def draw_employee_project(widget, window, screen, ind_id, i, proj_id, *arg):
 
         info1, info2, info3, info4, info5 = [], [], [], [], []
         info1.append(['Genre', ind.genre])
-        info1.append(['Âge', ind.age])
-        info2.append(['Expérience en R&D', ind.exp_RetD])
-        info2.append(['Expérience start-up', ind.exp_startup])
+        info1.append(['Âge', str(ind.age) + " ans"])
+        info2.append(['Expérience en R&D', str(semaine_to_annee(ind.exp_RetD)) + " année(s)"])
+        info2.append(['Expérience start-up', str(ind.exp_startup) +  " semaine(s)"])
         info3.append(['Compétence de coopération', ind.competence_groupe])
         info3.append(['Compétence en recherche', ind.competence_recherche])
         info3.append(['Compétence en management', ind.competence_direction])
         info4.append(['Statut', ind.statut])
         info4.append(['Rôle', ind.role])
-        info5.append(['Salaire', ind.salaire])
+        info5.append(['Salaire', str(ind.salaire) + " €"])
 
         infos = [info1, info2, info3, info4, info5]
         frame_labels = []
