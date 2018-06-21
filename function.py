@@ -720,7 +720,7 @@ def next_tour(widget, window, screen, *arg):
 
     # Update RD
     window.projets = avance(window.projets, window.paliers, window.individus)
-    window.projets, frais_RD, = allProgression(window.projets, window.individus, window.paliers, window.produits, window.materiaux, window.operations)
+    window.projets, frais_RD, window.argent = allProgression(window.projets, window.individus, window.paliers, window.produits, window.materiaux, window.operations, window.argent)
 
     for i in range(len(frais_RD)) :
         window.couts.append(frais_RD[i])
@@ -1391,7 +1391,8 @@ def actionPhase(widget, window, screen, projet, choix , *arg) :
     if projet.id < 0 :
         window.couts.append(Ameliore.progression(projet, choix))
     else :
-        window.couts.append(Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations))
+        couts, window.argent = Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations, window.argent)
+        window.couts.append(couts)
     draw_alert(widget, window, screen, 'Bravo', 'Le projet passe à la phase suivante', clear_overbody, [])
     draw_project(widget, window, screen, projet.id, 0)
 
@@ -4059,6 +4060,7 @@ def draw_sales(widget, window, screen, i, *arg):
 
         main_content.append(create_label( 'Nombre de produits vendus à ce jour : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
+
         main_frame = Frame(330, 40, main_content, None, [])
         main_frame.set_direction('vertical')
         main_frame.set_items_pos('auto')
@@ -4198,6 +4200,10 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
     if i == 0:
         info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,0])
 
+        #| - Chiffre de ventes du produit.
+        #| - Temps sur le marché.
+        #| - Son prix.
+        #| - La population ciblée.
         #Info marché
 
     elif i == 1:

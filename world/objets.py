@@ -253,6 +253,7 @@ class Produit(object):
 
         self.cible      = cible # Population ciblée
         self.prix       = 0     # Prix fixé
+        self.stat_vente = 0     # Chiffre de vente
 
         self.marche = False # Le produit est sur le marché ou non
         self.age    = 0     # Temps sur le marché du produit

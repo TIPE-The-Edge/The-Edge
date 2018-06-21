@@ -168,7 +168,7 @@ def delChercheurs(projet, employes, identifiant) :
 
     return(projet, employes)
 
-def allProgression(projets, employes, paliers, produits, materiaux, operations) :
+def allProgression(projets, employes, paliers, produits, materiaux, operations, argent) :
     """
     FONCTION       : Fait progresser tous les projets de la liste de projets.
     ENTREES        : Une liste de projets (Projet/Ameliore list).
@@ -185,39 +185,39 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations) 
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
-                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
+                    couts, argent = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations, argent)
 
                 else  :
                     if proj.produit.appreciation==[] :
-                        couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
+                        couts, argent = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations, argent)
                         depenses.append(couts)
 
-                    couts = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations)
+                    couts, argent = Projet.progression(proj, employes, paliers, "", produits, materiaux, operations, argent)
 
             elif proj.phase == 2 :
                 if proj.avancement<paliers[1] :
-                    couts=Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
+                    couts, argent = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations, argent)
                 else :
-                    couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
+                    couts, argent = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations, argent)
 
             elif proj.phase == 3 :
-                couts = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations)
+                couts, argent = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations, argent)
 
             elif proj.phase == 4 :
                 if proj.avancement<paliers[3] :
                     if proj.essai==False :
-                        couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
+                        couts, argent = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations, argent)
                     else :
-                        couts = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations)
+                        couts, argent = Projet.progression(proj, employes, paliers, None, produits, materiaux, operations, argent)
 
                 else :
-                    couts = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations)
+                    couts, argent = Projet.progression(proj, employes, paliers, False, produits, materiaux, operations, argent)
 
         # On ajoute les frais à notre liste de dépense
         if couts[1]!=0 :
             depenses.append(couts)
 
-    return(projets, depenses)
+    return(projets, depenses, argent)
 
 def genNotif(projets, paliers) :
     """
@@ -274,10 +274,9 @@ def selectProject(projets, identifiant) :
 
 def avance(projets, paliers, employes) :
     """
-    FONCTION       :
-    ENTREES        :
-    SORTIE         :
-    TEST UNITAIRE  : ...
+    FONCTION       : Fait progresser l'avancement de tous les projets.
+    ENTREES        : La liste des projets, la liste des paliers 
+    SORTIE         : La liste des projets mise à jour.
     """
     for proj in projets :
         # On fait avancer le projet.
@@ -307,7 +306,7 @@ def completedProject(projets, produits, employes, magasin) :
                 magasin.append(Machine(ope))
             delProject(projets, employes, proj.id)
 
-def genAutoProduit(population, produits, materiaux, operations, magasin) :
+def genAutoProduit(population, produits, materiaux, operations, magasin, argent) :
     """
     FONCTION       : Créé un produit automatiquement
     ENTREES        : La population cible (string), la liste des produits,
@@ -327,11 +326,11 @@ def genAutoProduit(population, produits, materiaux, operations, magasin) :
 
     #>>> Corps de la fonction <<<#
     projet.avancement = 1
-    cout = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations)
-    cout = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations)
+    cout, argent = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations, argent)
+    cout, argent = Projet.progression(projet, employes, paliers, population, produits, materiaux, operations, argent)
     for i in range(3):
         projet.avancement = 1
-        cout = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations)
+        cout, argent = Projet.progression(projet, employes, paliers, True, produits, materiaux, operations, argent)
 
     # On ajoute le produit à la liste des produits
     completedProject(projets, produits, employes, magasin)
@@ -744,7 +743,7 @@ class Projet(object):
 
         return(couts)
 
-    def progression(self, individus, paliers, utilisateur, produits, materiaux, operations) :
+    def progression(self, individus, paliers, utilisateur, produits, materiaux, operations, argent) :
         """
         FONCTION       : Modélise la progression du projet et
                          selon la phase de développement, appelle
@@ -758,7 +757,7 @@ class Projet(object):
 
         if self.phase == 1 :
             couts = Projet.phase1(self, paliers[0], utilisateur)
-
+            print(couts)
         elif self.phase == 2 :
             couts = Projet.phase2(self, paliers[1], utilisateur, materiaux, operations)
 
@@ -767,8 +766,11 @@ class Projet(object):
 
         elif self.phase == 4 :
             couts = Projet.phase4(self, individus, paliers[3], utilisateur, produits)
+        
+        # On met à jour l'argent de l'utilisateur
+        argent -= couts[1]
 
-        return(couts)
+        return(couts, argent)
 
     def __repr__(self) :
 

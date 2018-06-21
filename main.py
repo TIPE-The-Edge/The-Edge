@@ -393,7 +393,7 @@ class Window():
         for i in range(1):
             self.stocks.append(Stock())
 
-        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin)
+        genAutoProduit('Jeunes', self.produits, self.materiaux, self.operations, self.magasin, 1000000) # Génération automatique d'un produit
 
         self.lesRH = RH()
         self.day = 1
