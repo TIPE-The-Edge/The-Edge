@@ -428,7 +428,8 @@ def check_save(widget, window, screen, tosave, callback, *arg):
     else:
         f1 = ["Oui", check_save, [True, callback]]
         f2 = ["Non", callback, [True]]
-        draw_alert_option(widget, window, screen, "", ["La partie n'as pas été sauvegardé.", "Voulez-vous sauvegarder la partie ?"], [f1, f2])
+        draw_alert_option(widget, window, screen, "", ["Vous êtes sur le point de quitter votre partie.", "Voulez-vous sauvegarder la partie avant ?"], [f1, f2])
+        # draw_alert_option(widget, window, screen, "", ["La partie n'as pas été sauvegardé.", "Voulez-vous sauvegarder la partie ?"], [f1, f2])
 
 def reset_game(widget, window, screen, force, *arg):
     if force:
@@ -530,6 +531,9 @@ def draw_save(widget, window, screen, save_name, *arg):
     info1.append(['Date de création', save.date_creation.strftime('%d/%m/%y')])
     info1.append(['Temps d\'utilisation', time_convert(save.total_time)])
     info1.append(['Dernière utilisation', save.last_used.strftime('%d/%m/%y')])
+    info2.append(['Capital', str(round(save.argent))+' €'])
+    info2.append(['Date en jeu', save.temps.strftime('%d/%m/%y')])
+    info2.append(['Nombre d\'employés', str(len(save.individus))])
 
     infos = [info1, info2, info3, info4, info5]
     frame_labels = []
@@ -541,6 +545,7 @@ def draw_save(widget, window, screen, save_name, *arg):
         frame_tmp.set_direction('vertical')
         frame_tmp.resize('auto', 'auto')
         frame_tmp.set_bg_color((236, 240, 241))
+        frame_tmp.set_padding(0,0,0,30)
         frame_tmp.make_pos()
         frame_labels.append(frame_tmp)
 
@@ -780,22 +785,22 @@ def draw_rh(widget, window, screen, *arg):
     info1, info2, info3, info4 = [], [], [], []
     info1.append(['Nombre d\'employés', rh.nbr_employes])
     # info.append(['Bonheur moyen', rh.bonheur_moy])
-    info1.append(['Âge moyen', rh.age_moy])
-    info2.append(['Temps moyen passé dans la start-up', rh.exp_start_up_moy])
-    info2.append(['Expérience moyenne en R&D', rh.exp_RetD_moy])
-    info3.append(['Nombre d\'arrivées durant le dernier mois', rh.nbr_arrivees])
+    info1.append(['Âge moyen', str(rh.age_moy) + ' ans'])
+    info2.append(['Temps moyen passé dans la start-up', str(int(rh.exp_start_up_moy)) + " semaine(s)"])
+    info2.append(['Expérience moyenne en R&D', str(semaine_to_annee(rh.exp_RetD_moy)) + " année(s)"])
+    info3.append(['Nombre d\'arrivée(s) durant le dernier mois', rh.nbr_arrivees])
     # info.append(['Taux d\'arrivées', rh.taux_arrivees])
-    info3.append(['Nombre de départs durant le dernier mois', rh.nbr_departs])
+    info3.append(['Nombre de départ(s) durant le dernier mois', rh.nbr_departs])
     # info.append(['Taux de départ', rh.taux_departs])
     # info.append(['what', rh.taux_rotation])
     # info.append(['Coût de formations', rh.cout_formations])
     # info.append(['Moyenne formations', rh.moy_formations])
-    info4.append(['Salaire moyen', rh.salaire_moy])
-    info4.append(['Masse salariale brute', rh.masse_sal_brute])
-    info4.append(['Masse salariale nette', rh.masse_sal_nette])
-    info4.append(['Coût des locaux', rh.cout_locaux])
-    info4.append(['Coût de l\'emploi', rh.cout_emploi])
-    info4.append(['Coût moyen de l\'emploi', rh.cout_moy_emploi])
+    info4.append(['Salaire moyen', str(rh.salaire_moy) + ' €'])
+    info4.append(['Masse salariale brute', str(rh.masse_sal_brute) + ' €'])
+    info4.append(['Masse salariale nette', str(rh.masse_sal_nette) + ' €'])
+    info4.append(['Coût des locaux',str( rh.cout_locaux) + ' €'])
+    info4.append(['Coût de l\'emploi', str(rh.cout_emploi) + ' €'])
+    info4.append(['Coût moyen de l\'emploi', str(rh.cout_moy_emploi) + ' €'])
 
     infos = [info1, info2, info3, info4]
     frame_labels = []
@@ -4058,7 +4063,11 @@ def draw_sales(widget, window, screen, i, *arg):
 
         main_content.append(create_label('Résumé des ventes', 'font/colvetica/colvetica.ttf', 45, (44, 62, 80), (236, 240, 241), 0, 0, 450, None, []))
 
-        main_content.append(create_label( 'Nombre de produits vendus à ce jour : ', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        total_ventes = 0
+        for prod in window.produits :
+            total_ventes += prod.stat_vente
+
+        main_content.append(create_label( 'Nombre de produits vendus à ce jour : '+str(total_ventes), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 
 
         main_frame = Frame(330, 40, main_content, None, [])
@@ -4200,11 +4209,36 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
     if i == 0:
         info_market = create_label("Infos marché", 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name,0])
 
+        items_tmp2 = []
+
+        # item_info.append(create_label(ind.prenom + ' ' +  ind.nom, 'font/colvetica/colvetica.ttf', 30, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        
+        items_tmp2.append(create_label('Infos marché', 'font/colvetica/colvetica.ttf', 45, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        items_tmp2.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
+        items_tmp2.append(create_label('Chiffre de vente : ' + str(product.stat_vente)+ ' unités', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        items_tmp2.append(create_label('Temps sur le marché : ' + str(product.age) + ' semaine(s)', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        items_tmp2.append(create_label('Prix fixé : ' + str(product.prix)+' €', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+        items_tmp2.append(create_label('Population ciblée : ' + str(product.cible), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
+
         #| - Chiffre de ventes du produit.
         #| - Temps sur le marché.
         #| - Son prix.
         #| - La population ciblée.
         #Info marché
+
+        frame_main = Frame(330, 40, items_tmp2, None, [])
+        frame_main.set_direction('vertical')
+        frame_main.set_items_pos('auto')
+        frame_main.resize('auto', 'auto')
+        frame_main.set_padding(20,0,20,0)
+        frame_main.set_marge_items(10)
+        frame_main.set_bg_color((236, 240, 241))
+        frame_main.make_pos()
+
+        items_tmp =  [frame_main]
 
     elif i == 1:
         make_sale = create_label('Mettre en vente', 'calibri', 30, (255,255,255), focus_color, 0, 0, 250, draw_sales_product, [prod_name, 1])
@@ -4376,7 +4410,7 @@ def draw_option(widget, window, screen, *arg):
     frame_tmp1.set_bg_color((236, 240, 241))
     frame_tmp1.make_pos()
 
-    options = create_button("Options", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
+    # options = create_button("Options", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, None, [])
     save_button = create_button("Sauvegarder", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (52,73,94), 0, 0, 500, 60, save, [])
     f1 = ["Oui", reset_game, [False]]
     f2 = ["Non", clear_overbody, []]
@@ -4389,7 +4423,7 @@ def draw_option(widget, window, screen, *arg):
     msg = 'Supprimer la sauvegarde entraînera une perte définitive des données. Voulez-vous vraiment supprimer la sauvegarde ?'
     del_save = create_button("Supprimer la sauvegarde", 'font/colvetica/colvetica.ttf', 40, (236, 240, 241), (231, 76, 60), 0, 0, 500, 60, draw_alert_option, ['', msg,[f1, f2]])
 
-    frame = Frame(80, 40, [frame_tmp1, options, save_button, return_opening, quit, del_save], None, [])
+    frame = Frame(80, 40, [frame_tmp1, save_button, return_opening, quit, del_save], None, [])
     frame.set_direction('vertical')
     frame.set_items_pos('auto')
     frame.resize(1200, 680)
