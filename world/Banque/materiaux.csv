@@ -1,153 +1,152 @@
 materiaux,pays,cout unitaire,"
 "
 
-processeur,Los Angeles,100,"
+processeur,Los Angeles,10,"
 "
 
-ecran,New York,60,"
+ecran,New York,6,"
 "
 
-ecran,Hong Kong,55,"
+ecran,Hong Kong,5.5,"
 "
 
-diode,Amsterdam,0.40,"
+diode,Amsterdam,0.040,"
 "
 
-diode,Los Angeles,0.38,"
+diode,Los Angeles,0.038,"
 "
 
-diode,Paris,0.41,"
+diode,Paris,0.041,"
 "
 
-resistance,Berlin,0.04,"
+resistance,Berlin,0.004,"
 "
 
-resistance,Hong Kong,0.03,"
+resistance,Hong Kong,0.003,"
 "
 
-clavier,Berlin,10,"
+clavier,Berlin,1,"
 "
 
-vis,Paris,5,"
+vis,Paris,0.5,"
 "
 
-vis,Berlin,6,"
+vis,Berlin,0.6,"
 "
 
-vis,Amsterdam,5,"
+vis,Amsterdam,0.5,"
 "
 
-vis,New York,7,"
+vis,New York,0.7,"
 "
 
-vis,Hong Kong,4,"
+vis,Hong Kong,0.4,"
 "
 
-transistor,Amsterdam,1,"
+transistor,Amsterdam,0.1,"
 "
 
-batterie,Hong Kong,35,"
+batterie,Hong Kong,3.5,"
 "
 
-batterie,Los Angeles,40,"
+batterie,Los Angeles,4,"
 "
 
-micro,New York,8,"
+micro,New York,0.8,"
 "
 
-micro,Hong Kong,7,"
+micro,Hong Kong,0.7,"
 "
 
-port usb,Hong Kong,2,"
+port usb,Hong Kong,0.2,"
 "
 
-port usb,Amsterdam,3,"
+port usb,Amsterdam,0.3,"
 "
 
-souris,Berlin,5,"
+souris,Berlin,0.5,"
 "
 
-carte mere,Hong Kong,80,"
+carte mere,Hong Kong,8,"
 "
 
-carte mere,Los Angeles,75,"
+carte mere,Los Angeles,7.5,"
 "
 
-interrupteur,Amsterdam,4,"
+interrupteur,Amsterdam,0.4,"
 "
 
-clef usb,New York,25,"
+clef usb,New York,2.5,"
 "
 
-clef usb,Hong Kong,23,"
+clef usb,Hong Kong,2.3,"
 "
 
-clef usb,Berlin,26,"
+clef usb,Berlin,2.6,"
 "
 
-disque dur,Hong Kong,55,"
+disque dur,Hong Kong,5.5,"
 "
 
-ventilateur,Los Angeles,10.55,"
+ventilateur,Los Angeles,1.055,"
 "
 
-cable,Hong Kong,25,"
+cable,Hong Kong,2.5,"
 "
 
-cable,Paris,26,"
+cable,Paris,2.6,"
 "
 
-cable,New York,22,"
+cable,New York,2.2,"
 "
 
-boitier,Berlin,45,"
+boitier,Berlin,4.5,"
 "
 
-boitier,Amsterdam,45,"
+boitier,Amsterdam,4.5,"
 "
 
-verre,Berlin,33,"
+verre,Berlin,3.3,"
 "
 
-couteau suisse,Amsterdam,110,"
+couteau suisse,Amsterdam,11,"
 "
 
-gros bouton rouge,Hong Kong,13,"
+gros bouton rouge,Hong Kong,1.3,"
 "
 
-gros bouton rouge,Paris,15,"
+gros bouton rouge,Paris,1.5,"
 "
 
-carte graphique,Los Angeles,250,"
+carte graphique,Los Angeles,25,"
 "
 
-graveur blueray,Hong Kong,150,"
+graveur blueray,Hong Kong,15,"
 "
 
-graveur blueray,Paris,170,"
+graveur blueray,Paris,17,"
 "
 
-objectif photo,Hong Kong,160,"
+objectif photo,Hong Kong,16,"
 "
 
-port audio,Paris,12,"
+port audio,Paris,1.2,"
 "
 
-port audio,New York,12,"
+port audio,New York,1.2,"
 "
 
-laser,Berlin,30.66,"
+laser,Berlin,3.066,"
 "
 
-circuit imprime,Paris,25,"
+circuit imprime,Paris,2.5,"
 "
 
-circuit imprime,New York,24,"
+circuit imprime,New York,2.4,"
 "
 
-memoire ram,Hong Kong,90,"
+memoire ram,Hong Kong,9,"
 "
 
-radiateur,Paris,150,"
+radiateur,Paris,15,"
 "
-
