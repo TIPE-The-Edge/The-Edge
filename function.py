@@ -706,7 +706,6 @@ def draw_home(widget, window, screen, *arg):
     button_next.make_pos()
 
     window.set_body([label, item_list_notif, button_next])
-    window.draw_button_info('Aide', 'Salut')
     window.display(screen)
 
 def next_tour(widget, window, screen, *arg):
@@ -768,10 +767,7 @@ def next_tour(widget, window, screen, *arg):
     draw_home(widget, window, screen, *arg)
     save(widget, window, screen, *arg)
 
-    print(droitAuPret(variationInteretTotal(window.donneesF)))
-    print(window.argent)
     if faillite(window.argent,droitAuPret(variationInteretTotal(window.donneesF))):
-        print('ok')
         draw_alert_tmp(widget, window, screen, 'Game Over', "Vous avez perdu !", [])
     else:
         draw_alert_tmp(widget, window, screen, 'Nouvelle semaine', "Semaine " + str(int(((window.temps - datetime.datetime(2010,1,1)).days)/7)), [])
@@ -2461,7 +2457,6 @@ def draw_prod(widget, window, screen, i, *arg):
 
     window.set_body(items)
     window.set_body_tmp(items_tmp)
-    window.draw_button_info('Aide', '')
     window.display(screen)
 
 def draw_choose_fournisseur(widget, window, screen, mat, *arg):
@@ -4201,7 +4196,6 @@ def draw_sales(widget, window, screen, i, *arg):
 
     window.set_body(items)
     window.set_body_tmp(items_tmp)
-    window.draw_button_info('Aide', '')
     window.display(screen)
 
 '''INCOMPLET'''
@@ -4239,7 +4233,7 @@ def draw_sales_product(widget, window, screen, prod_name, i, *arg):
         # item_info.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
         # item_info.append(create_label('âge : ' + str(ind.age), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         # item_info.append(create_label('expérience : ' + str(ind.exp_RetD), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
-        
+
         items_tmp2.append(create_label('Infos marché', 'font/colvetica/colvetica.ttf', 45, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
         items_tmp2.append(create_label( ' ', 'calibri', 10, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
         items_tmp2.append(create_label('Chiffre de vente : ' + str(product.stat_vente)+ ' unités', 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, 1260-680, None, []))
