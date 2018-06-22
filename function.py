@@ -1398,7 +1398,8 @@ def update_product(widget, window, screen, lst_emp, product, *arg):
 
 def actionPhase(widget, window, screen, projet, choix , *arg) :
     if projet.id < 0 :
-        window.couts.append(Ameliore.progression(projet, choix))
+        couts, window.argent = Ameliore.progression(projet, choix, window.argent)
+        window.couts.append(couts)
     else :
         couts, window.argent = Projet.progression(projet, window.individus, window.paliers, choix, window.produits, window.materiaux, window.operations, window.argent)
         window.couts.append(couts)
@@ -4082,10 +4083,12 @@ def draw_sales(widget, window, screen, i, *arg):
         main_content = []
 
         main_content.append(create_label('Résumé des ventes', 'font/colvetica/colvetica.ttf', 45, (44, 62, 80), (236, 240, 241), 0, 0, 450, None, []))
-
+        """
         total_ventes = 0
         for prod in window.produits :
             total_ventes += prod.stat_vente
+        """
+        total_ventes = sum([prod.stat_vente for prod in window.produits])
 
         main_content.append(create_label( 'Nombre de produits vendus à ce jour : '+str(total_ventes), 'calibri', 20, (44, 62, 80), (236, 240, 241), 0, 0, None, None, []))
 

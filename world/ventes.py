@@ -264,7 +264,7 @@ def ventes(market, populations, tva_global) :
         # On retire les produits vendus du stock 'market'.
         offre[1]-= nbr_ventes
         # On met à jour le chiffre d'affaire du produit
-        offre[0].stat_vente = nbr_ventes
+        offre[0].stat_vente += nbr_ventes
         # On calcule le chiffre d'affaire relatif aux produits vendus
         recette = profit(nbr_ventes, offre[0])
         # On calcule le montant de la tva pour ces ventes.

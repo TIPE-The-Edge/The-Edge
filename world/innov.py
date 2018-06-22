@@ -181,7 +181,7 @@ def allProgression(projets, employes, paliers, produits, materiaux, operations, 
 
     for proj in projets :
         if proj.id < 0 :
-            couts = Ameliore.progression(proj, False)
+            couts, argent = Ameliore.progression(proj, False, argent)
         else :
             if proj.phase == 1 :
                 if proj.avancement<paliers[0] :
@@ -917,7 +917,7 @@ class Ameliore() :
 
         return(couts)
 
-    def progression(self, utilisateur) :
+    def progression(self, utilisateur, argent) :
         """
         FONCTION       : Modélise le développement de l'amélioration
                          d'un produit.
@@ -930,7 +930,10 @@ class Ameliore() :
         if self.avancement >= self.palier :
             couts = Ameliore.verif(self, utilisateur)
 
-        return(couts)
+        # On met à jour l'argent de l'utilisateur
+        argent -= couts[1]
+
+        return(couts, argent)
 
     def __repr__(self) :
         return("{}. {} // Produit en développement : {} | Progression : {}".format(self.id, self.nom, self.produit.nom, self.avancement))
