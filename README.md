@@ -3,6 +3,8 @@
 The Edge est un serious game relatif à la gestion d’entreprise. Développé dans le cadre du projet de TIPE, The Edge, a pour but de modéliser sous forme informatique les répercussions de nos choix dans le futur. Devenez dès maintenant le dirigeant d’une petite Start-up de conception de produits High-tech. Gérez vous-même vos produits, de leur conception à leur commercialisation. Engagez des employés qualifiés et attribuez-leur le poste qui convient le mieux. Apprenez à maîtriser vos revenus et vos dépenses ainsi qu’à gérer vos prêts pour faire prospérer votre entreprise.
 Ce sont vos choix qui feront évoluer votre Start-up et détermineront son avenir.
 
+**Auteurs :** [Maxence Blanc](https://github.com/maxenceblanc), [Dorian Chau](https://github.com/chaudorian), [Adrien Lafage](https://github.com/Aydens01) et [Louis-Clément Leroux](https://github.com/louis-clement-leroux).
+
 ## Contenu de l'archive
 
 * doc :
